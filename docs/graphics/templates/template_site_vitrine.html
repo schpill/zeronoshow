@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZeroNoShow — Les clients au rendez-vous</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#ECFDF5', 100: '#D1FAE5', 300: '#6EE7B7',
+              400: '#34D399', 500: '#10B981', 600: '#059669',
+              700: '#047857', 800: '#065F46', 900: '#064E3B',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .gradient-hero { background: linear-gradient(160deg, #F8FAFC 0%, #ECFDF5 50%, #F8FAFC 100%); }
+    .gradient-text { background: linear-gradient(135deg, #10B981, #047857); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .grid-bg { background-image: linear-gradient(rgba(16,185,129,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,.05) 1px, transparent 1px); background-size: 40px 40px; }
+    .sms-bubble { border-radius: 18px 18px 18px 4px; }
+    .sms-bubble-right { border-radius: 18px 18px 4px 18px; }
+  </style>
+</head>
+<body class="font-sans text-slate-900 bg-white antialiased">
+
+  <!-- NAVBAR -->
+  <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <!-- Logo inline -->
+      <div class="flex items-center gap-2.5">
+        <svg viewBox="0 0 80 84" class="h-8 w-8">
+          <defs>
+            <linearGradient id="ng" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#34D399"/>
+              <stop offset="100%" stop-color="#059669"/>
+            </linearGradient>
+          </defs>
+          <path d="M 40 5 C 20.7 5 5 20.7 5 40 C 5 49.7 9 58.5 15.4 64.8 L 11.9 75.4 C 11.4 76.9 12.8 78.3 14.3 77.8 L 24.9 74.3 C 29.5 76.2 34.6 77.3 40 77.3 C 59.3 77.3 75 61.6 75 42.3 C 75 23 59.3 5 40 5 Z" fill="url(#ng)"/>
+          <path d="M 24 42 L 33 51 L 56 28" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="text-lg font-extrabold text-slate-900">Zero<span class="font-normal text-slate-500">NoShow</span></span>
+      </div>
+      <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+        <a href="#comment" class="hover:text-slate-900 transition-colors">Comment ça marche</a>
+        <a href="#fonctionnalites" class="hover:text-slate-900 transition-colors">Fonctionnalités</a>
+        <a href="#tarifs" class="hover:text-slate-900 transition-colors">Tarifs</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="#" class="text-sm font-semibold text-slate-600 hover:text-slate-900">Connexion</a>
+        <a href="#" class="px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold rounded-lg transition-colors">Essai gratuit 14j</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="gradient-hero grid-bg pt-20 pb-24 overflow-hidden">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+        <!-- Left: Copy -->
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-brand-100 rounded-full mb-6">
+            <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+            <span class="text-xs font-semibold text-brand-800 tracking-wide uppercase">Zéro frais cachés · SMS à la carte</span>
+          </div>
+          <h1 class="text-5xl font-extrabold leading-tight tracking-tight text-slate-900 mb-6">
+            Les clients<br>
+            <span class="gradient-text">au rendez-vous.</span>
+          </h1>
+          <p class="text-lg text-slate-600 leading-relaxed mb-8 max-w-md">
+            ZeroNoShow envoie automatiquement des SMS de confirmation à vos clients et détecte les défaillances grâce au <strong class="text-slate-800">score de fiabilité</strong>. Sans caution. Sans friction.
+          </p>
+          <div class="flex flex-wrap gap-3 mb-10">
+            <a href="#" class="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-brand-500/20">
+              Démarrer gratuitement
+            </a>
+            <a href="#comment" class="px-6 py-3 bg-white border border-slate-200 hover:border-slate-300 text-slate-700 font-semibold rounded-xl transition-colors">
+              Voir comment ça marche →
+            </a>
+          </div>
+          <!-- Social proof -->
+          <div class="flex items-center gap-4 text-sm text-slate-500">
+            <div class="flex -space-x-2">
+              <div class="w-8 h-8 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-xs font-bold text-slate-600">M</div>
+              <div class="w-8 h-8 rounded-full bg-emerald-200 border-2 border-white flex items-center justify-center text-xs font-bold text-emerald-700">S</div>
+              <div class="w-8 h-8 rounded-full bg-blue-200 border-2 border-white flex items-center justify-center text-xs font-bold text-blue-700">D</div>
+            </div>
+            <span>Déjà utilisé par <strong class="text-slate-700">47 professionnels</strong> en France</span>
+          </div>
+        </div>
+
+        <!-- Right: SMS mockup -->
+        <div class="relative flex justify-center">
+          <!-- Phone frame -->
+          <div class="relative w-72 bg-slate-900 rounded-[40px] p-3 shadow-2xl">
+            <div class="bg-white rounded-[32px] overflow-hidden">
+              <!-- Status bar -->
+              <div class="bg-slate-50 px-5 pt-3 pb-2 flex justify-between text-[11px] font-medium text-slate-500">
+                <span>9:41</span>
+                <span>Messages</span>
+                <span>●●●</span>
+              </div>
+              <!-- Header -->
+              <div class="bg-white border-b border-slate-100 px-4 py-3 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,#34D399,#059669)">
+                  <svg viewBox="0 0 80 84" class="h-5 w-5"><defs><linearGradient id="mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#34D399"/><stop offset="100%" stop-color="#059669"/></linearGradient></defs><path d="M 40 5 C 20.7 5 5 20.7 5 40 C 5 49.7 9 58.5 15.4 64.8 L 11.9 75.4 C 11.4 76.9 12.8 78.3 14.3 77.8 L 24.9 74.3 C 29.5 76.2 34.6 77.3 40 77.3 C 59.3 77.3 75 61.6 75 42.3 C 75 23 59.3 5 40 5 Z" fill="#fff"/><path d="M 24 42 L 33 51 L 56 28" fill="none" stroke="#10B981" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-slate-900">ZeroNoShow</p>
+                  <p class="text-[10px] text-slate-400">Service de confirmation</p>
+                </div>
+              </div>
+              <!-- SMS conversation -->
+              <div class="bg-slate-50 px-4 py-4 space-y-3 min-h-[280px]">
+                <!-- Incoming SMS 1 -->
+                <div class="max-w-[85%]">
+                  <div class="sms-bubble bg-white border border-slate-200 px-3 py-2.5 shadow-sm">
+                    <p class="text-xs text-slate-700 leading-relaxed">Bonjour Marc, confirmez votre table pour <strong>4 pers. vendredi à 20h</strong> chez La Bonne Table.</p>
+                    <p class="text-[10px] text-brand-600 font-medium mt-1.5">→ Confirmer mon RDV</p>
+                  </div>
+                  <p class="text-[10px] text-slate-400 mt-1 ml-1">ZeroNoShow · 14h03</p>
+                </div>
+                <!-- Outgoing (client response) -->
+                <div class="flex justify-end">
+                  <div class="max-w-[75%]">
+                    <div class="sms-bubble-right bg-brand-500 px-3 py-2.5">
+                      <p class="text-xs text-white font-medium">✓ Confirmé !</p>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1 text-right mr-1">Marc · 14h07</p>
+                  </div>
+                </div>
+                <!-- Status update -->
+                <div class="flex justify-center">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-brand-100 rounded-full text-[10px] font-semibold text-brand-800">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                    Réservation confirmée automatiquement
+                  </span>
+                </div>
+                <!-- Second scenario -->
+                <div class="max-w-[85%] pt-2">
+                  <div class="sms-bubble bg-white border border-slate-200 px-3 py-2.5 shadow-sm">
+                    <p class="text-xs text-slate-700 leading-relaxed">⚠️ Rappel : votre RDV est dans <strong>30 min</strong>. Confirmez ou annulez.</p>
+                    <p class="text-[10px] text-red-500 font-medium mt-1.5">Score fiabilité : À risque 58%</p>
+                  </div>
+                  <p class="text-[10px] text-slate-400 mt-1 ml-1">ZeroNoShow · 19h30</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Floating badge -->
+          <div class="absolute -right-4 top-16 bg-white border border-slate-200 rounded-2xl px-4 py-3 shadow-lg">
+            <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">No-shows ce mois</p>
+            <div class="flex items-end gap-2">
+              <span class="text-2xl font-extrabold text-slate-900">−68%</span>
+              <span class="text-xs text-brand-600 font-semibold mb-0.5">↓</span>
+            </div>
+          </div>
+          <div class="absolute -left-4 bottom-24 bg-white border border-slate-200 rounded-2xl px-4 py-3 shadow-lg">
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full bg-brand-400"></div>
+              <span class="text-[10px] font-semibold text-brand-800">Fiable · 94%</span>
+            </div>
+            <p class="text-[10px] text-slate-500 mt-0.5">3 RDV · 0 no-show</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BAND -->
+  <section class="border-y border-slate-200 bg-white">
+    <div class="max-w-6xl mx-auto px-6 py-10 grid grid-cols-3 divide-x divide-slate-200">
+      <div class="text-center px-8">
+        <p class="text-4xl font-extrabold text-slate-900 mb-1">−68%</p>
+        <p class="text-sm font-medium text-slate-500">de no-shows en moyenne</p>
+      </div>
+      <div class="text-center px-8">
+        <p class="text-4xl font-extrabold text-brand-500 mb-1">3–4</p>
+        <p class="text-sm font-medium text-slate-500">no-shows évités = abonnement rentabilisé</p>
+      </div>
+      <div class="text-center px-8">
+        <p class="text-4xl font-extrabold text-slate-900 mb-1">&lt; 5 min</p>
+        <p class="text-sm font-medium text-slate-500">pour démarrer sans changer vos outils</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMENT ÇA MARCHE -->
+  <section id="comment" class="py-24 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <p class="text-[11px] font-semibold uppercase tracking-widest text-brand-600 mb-3">Simple par design</p>
+        <h2 class="text-3xl font-bold text-slate-900">Comment ça marche</h2>
+        <p class="mt-3 text-slate-500 max-w-md mx-auto">Branchez ZeroNoShow sur vos réservations existantes. Aucune migration. Aucun changement de workflow.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Step 1 -->
+        <div class="relative">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/25">1</div>
+            <div class="flex-1 h-px bg-slate-200"></div>
+          </div>
+          <h3 class="text-lg font-semibold text-slate-900 mb-2">Créez la réservation</h3>
+          <p class="text-sm text-slate-500 leading-relaxed">Saisissez le nom, le téléphone et la date. En 30 secondes, sans quitter votre carnet de réservations habituel.</p>
+          <div class="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              Numéro confirmé par téléphone → SMS ignoré
+            </div>
+          </div>
+        </div>
+        <!-- Step 2 -->
+        <div class="relative">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/25">2</div>
+            <div class="flex-1 h-px bg-slate-200"></div>
+          </div>
+          <h3 class="text-lg font-semibold text-slate-900 mb-2">Le SMS part automatiquement</h3>
+          <p class="text-sm text-slate-500 leading-relaxed">Votre client reçoit un SMS avec un lien de confirmation. Un tap suffit. Aucune app, aucun compte.</p>
+          <div class="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-2 text-xs text-slate-600">
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-400"></span>
+                Score &gt; 90% → aucun rappel
+              </div>
+              <div class="flex items-center gap-2 text-xs text-slate-600">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                Score 70–89% → rappel 2h avant
+              </div>
+              <div class="flex items-center gap-2 text-xs text-slate-600">
+                <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
+                Score &lt; 70% → rappels 2h + 30 min
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Step 3 -->
+        <div>
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/25">3</div>
+          </div>
+          <h3 class="text-lg font-semibold text-slate-900 mb-2">Vous savez à l'avance</h3>
+          <p class="text-sm text-slate-500 leading-relaxed">Le tableau de bord affiche en temps réel qui est confirmé, qui ne l'est pas. Les créneaux libérés sont immédiatement disponibles.</p>
+          <div class="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-600">Marc Dubois · 20h00</span>
+              <span class="px-2 py-0.5 bg-brand-100 text-brand-800 rounded-full font-semibold">Confirmé</span>
+            </div>
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-600">Claire Martin · 20h30</span>
+              <span class="px-2 py-0.5 bg-red-100 text-red-800 rounded-full font-semibold">No-show évité</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCORE DE FIABILITÉ — Feature highlight -->
+  <section class="py-24 bg-slate-900 overflow-hidden">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <p class="text-[11px] font-semibold uppercase tracking-widest text-brand-400 mb-3">Différenciant · Unique</p>
+          <h2 class="text-3xl font-bold text-white mb-4">Le score de fiabilité partagé entre tous vos collègues</h2>
+          <p class="text-slate-400 leading-relaxed mb-6">Un client qui fait un no-show chez le médecin en fera un au restaurant. Le score de fiabilité ZeroNoShow se construit sur l'ensemble de la plateforme — chaque professionnel bénéficie de l'expérience de tous les autres.</p>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <div class="w-5 h-5 rounded-full bg-brand-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <p class="text-sm text-slate-300">Connaissez la fiabilité d'un client avant même sa première réservation chez vous</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-5 h-5 rounded-full bg-brand-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <p class="text-sm text-slate-300">Le score s'améliore automatiquement — plus la plateforme grossit, plus il est précis</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-5 h-5 rounded-full bg-brand-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <p class="text-sm text-slate-300">Ajustez l'intensité des rappels en fonction du risque réel — pas d'e rappel inutile aux clients fiables</p>
+            </div>
+          </div>
+        </div>
+        <!-- Score display -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="col-span-2 bg-slate-800 rounded-2xl p-5 border border-slate-700">
+            <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-3">Profil client — Marc Dubois</p>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-2xl font-extrabold text-white">94<span class="text-lg text-brand-400">%</span></span>
+              <span class="px-3 py-1 bg-brand-500/20 text-brand-300 text-xs font-semibold rounded-full">Fiable</span>
+            </div>
+            <div class="w-full bg-slate-700 rounded-full h-2">
+              <div class="bg-gradient-to-r from-brand-400 to-brand-600 h-2 rounded-full" style="width:94%"></div>
+            </div>
+            <div class="flex justify-between mt-2 text-[10px] text-slate-500">
+              <span>17 réservations · 16 présences</span>
+              <span>0 annulation</span>
+            </div>
+          </div>
+          <div class="bg-slate-800 rounded-2xl p-4 border border-slate-700">
+            <p class="text-[10px] font-semibold text-slate-400 mb-2">À risque</p>
+            <p class="text-xl font-extrabold text-red-400">58%</p>
+            <div class="w-full bg-slate-700 rounded-full h-1.5 mt-2">
+              <div class="bg-red-500 h-1.5 rounded-full" style="width:58%"></div>
+            </div>
+            <p class="text-[10px] text-slate-500 mt-1.5">2 rappels envoyés</p>
+          </div>
+          <div class="bg-slate-800 rounded-2xl p-4 border border-slate-700">
+            <p class="text-[10px] font-semibold text-slate-400 mb-2">Moyen</p>
+            <p class="text-xl font-extrabold text-amber-400">76%</p>
+            <div class="w-full bg-slate-700 rounded-full h-1.5 mt-2">
+              <div class="bg-amber-400 h-1.5 rounded-full" style="width:76%"></div>
+            </div>
+            <p class="text-[10px] text-slate-500 mt-1.5">1 rappel · 2h avant</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TARIFS -->
+  <section id="tarifs" class="py-24 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-14">
+        <p class="text-[11px] font-semibold uppercase tracking-widest text-brand-600 mb-3">Transparent par principe</p>
+        <h2 class="text-3xl font-bold text-slate-900 mb-3">Rentabilisé dès le 1er no-show évité</h2>
+        <p class="text-slate-500">Une table de 2 à 35€ = 70€ économisés. L'abonnement se paie en moins d'un no-show évité.</p>
+      </div>
+      <div class="max-w-md mx-auto">
+        <div class="bg-white border-2 border-brand-500 rounded-2xl overflow-hidden shadow-xl shadow-brand-500/10">
+          <div class="bg-brand-500 px-6 py-4 text-center">
+            <span class="text-xs font-semibold uppercase tracking-widest text-brand-100">Offre unique · Simple</span>
+          </div>
+          <div class="px-8 py-8 text-center">
+            <div class="flex items-end justify-center gap-1 mb-2">
+              <span class="text-5xl font-extrabold text-slate-900">19<span class="text-3xl">€</span></span>
+              <span class="text-slate-500 mb-1.5">/mois</span>
+            </div>
+            <p class="text-sm text-slate-500 mb-6">+ SMS au coût réel (~0,07€/SMS)</p>
+            <ul class="text-left space-y-3 mb-8">
+              <li class="flex items-center gap-3 text-sm text-slate-700">
+                <svg class="w-5 h-5 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                Réservations illimitées
+              </li>
+              <li class="flex items-center gap-3 text-sm text-slate-700">
+                <svg class="w-5 h-5 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                Score de fiabilité cross-plateforme
+              </li>
+              <li class="flex items-center gap-3 text-sm text-slate-700">
+                <svg class="w-5 h-5 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                Rappels automatiques intelligents
+              </li>
+              <li class="flex items-center gap-3 text-sm text-slate-700">
+                <svg class="w-5 h-5 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                Tableau de bord en temps réel
+              </li>
+              <li class="flex items-center gap-3 text-sm text-slate-700">
+                <svg class="w-5 h-5 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                Coûts SMS détaillés par réservation
+              </li>
+            </ul>
+            <a href="#" class="block w-full py-3 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-brand-500/25">
+              14 jours gratuits — sans CB
+            </a>
+            <p class="text-xs text-slate-400 mt-3">Sans engagement · Résiliable à tout moment</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-200 bg-slate-50 py-12">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-2">
+          <svg viewBox="0 0 80 84" class="h-7 w-7"><defs><linearGradient id="fg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#34D399"/><stop offset="100%" stop-color="#059669"/></linearGradient></defs><path d="M 40 5 C 20.7 5 5 20.7 5 40 C 5 49.7 9 58.5 15.4 64.8 L 11.9 75.4 C 11.4 76.9 12.8 78.3 14.3 77.8 L 24.9 74.3 C 29.5 76.2 34.6 77.3 40 77.3 C 59.3 77.3 75 61.6 75 42.3 C 75 23 59.3 5 40 5 Z" fill="url(#fg)"/><path d="M 24 42 L 33 51 L 56 28" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="text-sm font-extrabold text-slate-900">Zero<span class="font-normal text-slate-500">NoShow</span></span>
+        </div>
+        <p class="text-xs text-slate-400">© 2026 ZeroNoShow · Les clients au rendez-vous</p>
+        <div class="flex gap-6 text-xs font-medium text-slate-500">
+          <a href="#" class="hover:text-slate-700">Mentions légales</a>
+          <a href="#" class="hover:text-slate-700">CGU</a>
+          <a href="#" class="hover:text-slate-700">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
