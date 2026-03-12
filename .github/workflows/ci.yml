@@ -1,0 +1,141 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - apex/**
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: zeronoshow_test
+          POSTGRES_USER: zeronoshow
+          POSTGRES_PASSWORD: secret
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U zeronoshow -d zeronoshow_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    defaults:
+      run:
+        working-directory: backend
+
+    env:
+      APP_ENV: testing
+      APP_URL: http://localhost
+      APP_TIMEZONE: UTC
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: zeronoshow_test
+      DB_USERNAME: zeronoshow
+      DB_PASSWORD: secret
+      QUEUE_CONNECTION: redis
+      CACHE_STORE: redis
+      REDIS_CLIENT: phpredis
+      REDIS_HOST: 127.0.0.1
+      REDIS_PORT: 6379
+      MAIL_MAILER: array
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_pgsql, mbstring, intl, pcov, redis, gd, zip, bcmath, pcntl
+          coverage: pcov
+
+      - name: Copy environment
+        run: cp .env.example .env
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Generate application key
+        run: php artisan key:generate
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Wait for PostgreSQL
+        run: until pg_isready -h 127.0.0.1 -p 5432 -U zeronoshow -d zeronoshow_test; do sleep 1; done
+
+      - name: Lint
+        run: ./vendor/bin/pint --test
+
+      - name: Static analysis
+        run: |
+          if [ -f vendor/bin/phpstan ] && [ -f phpstan.neon ]; then
+            ./vendor/bin/phpstan analyse -c phpstan.neon
+          else
+            echo "phpstan not configured yet, skipping"
+          fi
+
+      - name: Run unit tests
+        run: |
+          if find tests/Unit -name '*.php' -print -quit | grep -q .; then
+            php artisan test tests/Unit
+          else
+            echo "No unit tests found"
+          fi
+
+      - name: Run feature tests
+        run: |
+          if find tests/Feature -name '*.php' -print -quit | grep -q .; then
+            php artisan test tests/Feature --stop-on-failure
+          else
+            echo "No feature tests found"
+          fi
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Check formatting
+        run: pnpm exec prettier --check .
+
+      - name: Run Vitest
+        run: pnpm exec vitest run --coverage
