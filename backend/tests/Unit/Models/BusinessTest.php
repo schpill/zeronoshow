@@ -3,10 +3,13 @@
 namespace Tests\Unit\Models;
 
 use App\Models\Business;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class BusinessTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_it_detects_an_active_subscription(): void
     {
         $business = new Business([
@@ -45,5 +48,20 @@ class BusinessTest extends TestCase
         ]);
 
         $this->assertFalse($business->isOnActivePlan());
+    }
+
+    public function test_it_applies_a_database_default_trial_end_date(): void
+    {
+        $business = Business::query()->create([
+            'name' => 'Le Bistrot',
+            'email' => 'owner@example.com',
+            'password' => bcrypt('password123'),
+            'phone' => '+33612345678',
+            'timezone' => 'Europe/Paris',
+            'subscription_status' => 'trial',
+        ]);
+
+        $this->assertNotNull($business->fresh()->trial_ends_at);
+        $this->assertTrue($business->fresh()->trial_ends_at->isFuture());
     }
 }

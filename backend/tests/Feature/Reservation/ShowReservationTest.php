@@ -34,4 +34,25 @@ class ShowReservationTest extends TestCase
             ->assertJsonPath('customer.phone', $reservation->customer->phone)
             ->assertJsonCount(1, 'sms_logs');
     }
+
+    public function test_it_returns_a_null_score_tier_when_the_customer_has_no_history(): void
+    {
+        $business = Business::factory()->create();
+        $reservation = Reservation::factory()->create([
+            'business_id' => $business->id,
+        ]);
+
+        $reservation->customer()->update([
+            'reliability_score' => null,
+        ]);
+
+        Sanctum::actingAs($business);
+
+        $response = $this->getJson("/api/v1/reservations/{$reservation->id}");
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('customer.reliability_score', null)
+            ->assertJsonPath('customer.score_tier', null);
+    }
 }
