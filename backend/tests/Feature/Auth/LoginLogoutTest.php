@@ -18,7 +18,7 @@ class LoginLogoutTest extends TestCase
             'password' => Hash::make('password123'),
         ]);
 
-        $response = $this->postJson('/api/v1/auth/login', [
+        $response = $this->withServerVariables(['REMOTE_ADDR' => '192.0.2.11'])->postJson('/api/v1/auth/login', [
             'email' => $business->email,
             'password' => 'password123',
         ]);
