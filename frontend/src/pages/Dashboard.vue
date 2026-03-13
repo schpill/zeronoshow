@@ -4,18 +4,21 @@ import { computed, ref, watch } from 'vue'
 
 import AppLayout from '@/layouts/AppLayout.vue'
 import DateNavigator from '@/components/DateNavigator.vue'
+import ErrorMessage from '@/components/ErrorMessage.vue'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import ReservationForm from '@/components/ReservationForm.vue'
 import ReservationList from '@/components/ReservationList.vue'
 import ReservationRow from '@/components/ReservationRow.vue'
 import StatsBar from '@/components/StatsBar.vue'
 import { usePolling } from '@/composables/usePolling'
 import { useReservations } from '@/composables/useReservations'
+import { useToast } from '@/composables/useToast'
 import type { DashboardStats, ReservationRecord } from '@/types/reservations'
 
-const createdMessage = ref<string | null>(null)
 const selectedDate = ref(new Date().toISOString().slice(0, 10))
 const viewMode = ref<'day' | 'week'>('day')
 const reservations = ref<ReservationRecord[]>([])
+const pageError = ref<string | null>(null)
 const stats = ref<DashboardStats>({
   confirmed: 0,
   pending_verification: 0,
@@ -28,15 +31,22 @@ const stats = ref<DashboardStats>({
 const smsCostThisMonth = ref(0)
 const weeklyNoShowRate = ref<number | null>(null)
 const { fetchDashboard, loading } = useReservations()
+const toast = useToast()
 
 async function refreshReservations() {
-  const date = selectedDate.value
-  const week = viewMode.value === 'week' ? toIsoWeek(date) : undefined
-  const response = await fetchDashboard({ date, week })
-  reservations.value = response.reservations
-  stats.value = response.stats
-  smsCostThisMonth.value = response.sms_cost_this_month
-  weeklyNoShowRate.value = response.weekly_no_show_rate
+  pageError.value = null
+
+  try {
+    const date = selectedDate.value
+    const week = viewMode.value === 'week' ? toIsoWeek(date) : undefined
+    const response = await fetchDashboard({ date, week })
+    reservations.value = response.reservations
+    stats.value = response.stats
+    smsCostThisMonth.value = response.sms_cost_this_month
+    weeklyNoShowRate.value = response.weekly_no_show_rate
+  } catch (error) {
+    pageError.value = error instanceof Error ? error.message : 'Impossible de charger le dashboard.'
+  }
 }
 
 usePolling(refreshReservations, 30_000)
@@ -46,7 +56,7 @@ watch(selectedDate, () => {
 })
 
 function handleCreated(reservation: ReservationRecord) {
-  createdMessage.value = 'Réservation créée avec succès.'
+  toast.success('Réservation créée avec succès.')
   reservations.value = [...reservations.value, reservation]
   stats.value = {
     ...stats.value,
@@ -98,6 +108,21 @@ const groupedReservations = computed(() => {
 
 <template>
   <AppLayout>
+    <div
+      v-if="loading.fetch.value && reservations.length === 0 && !pageError"
+      class="flex min-h-[240px] items-center justify-center"
+    >
+      <LoadingSpinner size="lg" label="Chargement du dashboard" />
+    </div>
+
+    <ErrorMessage
+      v-else-if="pageError"
+      title="Impossible de charger le dashboard"
+      :message="pageError"
+      @retry="refreshReservations"
+    />
+
+    <template v-else>
     <section
       class="mb-6 grid gap-4 rounded-[32px] border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900"
     >
@@ -144,13 +169,6 @@ const groupedReservations = computed(() => {
 
     <StatsBar :stats="stats" />
 
-    <p
-      v-if="createdMessage"
-      class="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-900/20 dark:text-emerald-300"
-    >
-      {{ createdMessage }}
-    </p>
-
     <div class="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
       <ReservationForm @created="handleCreated" />
       <ReservationList
@@ -186,5 +204,6 @@ const groupedReservations = computed(() => {
         </div>
       </section>
     </div>
+    </template>
   </AppLayout>
 </template>

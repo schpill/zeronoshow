@@ -24,6 +24,7 @@ class ReservationController extends Controller
         $business = $request->user();
         $scheduledAt = Carbon::parse($request->string('scheduled_at')->toString())->utc();
         $phoneVerified = (bool) $request->boolean('phone_verified');
+        $minutesUntilReservation = max(0, now()->utc()->diffInMinutes($scheduledAt, false));
 
         $customer = Customer::query()->firstOrCreate(
             ['phone' => $request->string('phone')->toString()],
@@ -41,14 +42,28 @@ class ReservationController extends Controller
         $token = null;
         $expiresAt = null;
         $status = 'pending_verification';
+        $warning = null;
+        $verificationBody = null;
 
         if ($phoneVerified) {
             $token = (string) Str::uuid();
             $expiresAt = $scheduledAt->copy()->subMinutes(15);
             $status = 'pending_reminder';
+        } elseif ($minutesUntilReservation < 30) {
+            $warning = 'Appointment too soon for SMS confirmation';
         } elseif ($scheduledAt->greaterThan(now()->utc()->addMinutes(30))) {
             $token = (string) Str::uuid();
-            $expiresAt = now()->utc()->addHours(24)->min($scheduledAt->copy()->subHours(2));
+            $expiresAt = $scheduledAt->copy()->subMinutes(15);
+
+            if ($minutesUntilReservation < 120) {
+                $verificationBody = sprintf(
+                    'Votre RDV est dans moins de 2h chez %s. Confirmez: %s',
+                    $business->name,
+                    route('confirmation.show', $token),
+                );
+            } else {
+                $expiresAt = now()->utc()->addHours(24)->min($scheduledAt->copy()->subHours(2));
+            }
         }
 
         $reservation = Reservation::query()->create([
@@ -66,7 +81,7 @@ class ReservationController extends Controller
         ])->load('customer');
 
         if (! $phoneVerified && $token !== null) {
-            SendVerificationSms::dispatch($reservation->id);
+            SendVerificationSms::dispatch($reservation->id, $verificationBody);
         }
 
         return response()->json([
@@ -76,6 +91,7 @@ class ReservationController extends Controller
                 'score_tier' => $customer->getScoreTier(),
                 'opted_out' => $customer->opted_out,
             ],
+            'warning' => $warning,
         ], 201);
     }
 

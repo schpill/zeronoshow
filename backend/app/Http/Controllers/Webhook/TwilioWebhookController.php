@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\SmsLog;
 use App\Services\Contracts\SmsServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class TwilioWebhookController extends Controller
@@ -14,6 +15,12 @@ class TwilioWebhookController extends Controller
     public function handle(Request $request, SmsServiceInterface $sms): Response
     {
         if (! $sms->validateWebhookSignature($request)) {
+            Log::warning('Rejected Twilio webhook with invalid signature.', [
+                'ip' => $request->ip(),
+                'path' => $request->path(),
+            ]);
+            report(new \RuntimeException('Invalid Twilio webhook signature.'));
+
             return response('', 403);
         }
 

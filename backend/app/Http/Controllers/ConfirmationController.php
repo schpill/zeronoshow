@@ -12,7 +12,7 @@ class ConfirmationController extends Controller
 {
     public function show(string $token): Response
     {
-        $reservation = Reservation::query()->with('business')->where('confirmation_token', $token)->first();
+        $reservation = $this->findReservation($token, withBusiness: true);
 
         if (! $reservation) {
             return response()->view('confirmation.result', [
@@ -32,7 +32,7 @@ class ConfirmationController extends Controller
             return response()->view('confirmation.result', [
                 'title' => 'Déjà traité',
                 'message' => 'Vous avez déjà répondu à cette réservation.',
-            ], 410);
+            ]);
         }
 
         return response()->view('confirmation.show', [
@@ -56,7 +56,7 @@ class ConfirmationController extends Controller
 
     private function processAction(string $action, string $token): Response
     {
-        $reservation = Reservation::query()->where('confirmation_token', $token)->first();
+        $reservation = $this->findReservation($token);
 
         if (! $reservation) {
             return response()->view('confirmation.result', [
@@ -72,12 +72,41 @@ class ConfirmationController extends Controller
             ], 410);
         }
 
+        if ($reservation->status === 'confirmed') {
+            return $action === 'confirm'
+                ? response()->view('confirmation.result', [
+                    'title' => 'Réservation déjà confirmée',
+                    'message' => 'Vous avez déjà confirmé ce rendez-vous.',
+                ])
+                : response()->view('confirmation.result', [
+                    'title' => 'Déjà traité',
+                    'message' => 'Cette réservation ne peut plus être modifiée.',
+                ], 410);
+        }
+
+        if ($reservation->status === 'cancelled_by_client') {
+            return $action === 'cancel'
+                ? response()->view('confirmation.result', [
+                    'title' => 'Réservation déjà annulée',
+                    'message' => 'Vous avez déjà annulé ce rendez-vous.',
+                ])
+                : response()->view('confirmation.result', [
+                    'title' => 'Déjà traité',
+                    'message' => 'Cette réservation ne peut plus être modifiée.',
+                ], 410);
+        }
+
+        if (in_array($reservation->status, ['show', 'no_show', 'cancelled_no_confirmation'], true)) {
+            return response()->view('confirmation.result', [
+                'title' => 'Déjà traité',
+                'message' => 'Cette réservation ne peut plus être modifiée.',
+            ], 410);
+        }
+
         DB::transaction(function () use ($reservation, $action): void {
             $reservation->update([
                 'status' => $action === 'confirm' ? 'confirmed' : 'cancelled_by_client',
                 'status_changed_at' => now(),
-                'confirmation_token' => null,
-                'token_expires_at' => null,
             ]);
         });
 
@@ -89,5 +118,18 @@ class ConfirmationController extends Controller
                 ? 'Merci, votre présence est confirmée.'
                 : 'Votre réservation a bien été annulée.',
         ]);
+    }
+
+    private function findReservation(string $token, bool $withBusiness = false): ?Reservation
+    {
+        $query = Reservation::query();
+
+        if ($withBusiness) {
+            $query->with('business');
+        }
+
+        return $query
+            ->where('confirmation_token', $token)
+            ->first();
     }
 }

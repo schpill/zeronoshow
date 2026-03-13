@@ -35,4 +35,25 @@ class LoginLogoutTest extends TestCase
 
         $response->assertNoContent();
     }
+
+    public function test_login_is_rate_limited_after_ten_attempts_per_ip(): void
+    {
+        $business = Business::factory()->create([
+            'password' => Hash::make('password123'),
+        ]);
+
+        for ($attempt = 0; $attempt < 10; $attempt++) {
+            $this->postJson('/api/v1/auth/login', [
+                'email' => $business->email,
+                'password' => 'wrong-password',
+            ])->assertStatus(401);
+        }
+
+        $this->postJson('/api/v1/auth/login', [
+            'email' => $business->email,
+            'password' => 'wrong-password',
+        ])
+            ->assertStatus(429)
+            ->assertHeader('Retry-After');
+    }
 }

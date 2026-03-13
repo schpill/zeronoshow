@@ -45,8 +45,17 @@ class TwilioSmsService implements SmsServiceInterface
 
         return $validator->validate(
             (string) $request->header('X-Twilio-Signature'),
-            $request->fullUrl(),
+            $this->buildWebhookUrl($request),
             $request->post(),
         );
+    }
+
+    private function buildWebhookUrl(Request $request): string
+    {
+        $baseUrl = rtrim((string) config('app.url'), '/');
+        $path = '/'.ltrim($request->path(), '/');
+        $query = $request->getQueryString();
+
+        return $query ? "{$baseUrl}{$path}?{$query}" : "{$baseUrl}{$path}";
     }
 }

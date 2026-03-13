@@ -48,4 +48,29 @@ class RegisterTest extends TestCase
 
         $response->assertStatus(422)->assertJsonValidationErrors(['email']);
     }
+
+    public function test_registration_is_rate_limited_after_five_attempts_per_ip(): void
+    {
+        for ($attempt = 0; $attempt < 5; $attempt++) {
+            $this->postJson('/api/v1/auth/register', [
+                'name' => 'Gerald',
+                'business_name' => 'Le Bistrot',
+                'email' => sprintf('owner-%d@gmail.com', $attempt),
+                'phone' => '+33612345678',
+                'password' => 'short',
+                'password_confirmation' => 'nope',
+            ])->assertStatus(422);
+        }
+
+        $this->postJson('/api/v1/auth/register', [
+            'name' => 'Gerald',
+            'business_name' => 'Le Bistrot',
+            'email' => 'owner-final@gmail.com',
+            'phone' => '+33612345678',
+            'password' => 'short',
+            'password_confirmation' => 'nope',
+        ])
+            ->assertStatus(429)
+            ->assertHeader('Retry-After');
+    }
 }

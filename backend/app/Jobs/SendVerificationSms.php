@@ -27,7 +27,10 @@ class SendVerificationSms implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public string $reservationId) {}
+    public function __construct(
+        public string $reservationId,
+        public ?string $customBody = null,
+    ) {}
 
     /**
      * Execute the job.
@@ -49,7 +52,7 @@ class SendVerificationSms implements ShouldQueue
         $confirmUrl = route('confirmation.show', $reservation->confirmation_token);
         $cancelUrl = route('confirmation.cancel', $reservation->confirmation_token);
 
-        $body = sprintf(
+        $body = $this->customBody ?? sprintf(
             'Bonjour %s, confirmez votre RDV le %s à %s. Confirmez : %s | Annulez : %s',
             $reservation->customer_name,
             $reservation->scheduled_at->timezone($reservation->business->timezone)->format('d/m/Y'),

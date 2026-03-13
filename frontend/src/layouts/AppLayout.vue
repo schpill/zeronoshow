@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import NavBar from '@/components/NavBar.vue'
+import ToastContainer from '@/components/ToastContainer.vue'
 import TrialBanner from '@/components/TrialBanner.vue'
 import { useAuthStore } from '@/stores/auth'
 
@@ -9,6 +10,7 @@ const auth = useAuthStore()
 <template>
   <div class="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50">
     <NavBar />
+    <ToastContainer />
 
     <div class="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
       <TrialBanner

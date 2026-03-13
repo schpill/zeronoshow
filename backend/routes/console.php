@@ -1,5 +1,7 @@
 <?php
 
+use App\Console\Commands\PurgeSmsLogs;
+use App\Console\Commands\RunSmokeTests;
 use App\Jobs\SendReminderSms;
 use App\Mail\TrialExpiryWarning;
 use App\Models\Business;
@@ -91,10 +93,6 @@ Artisan::command('reservations:auto-cancel', function () {
     $this->info("Cancelled {$expiredTokens} token expired reservations and {$expiredPendingReminders} pending reminder reservations.");
 })->purpose('Auto-cancel expired unconfirmed reservations');
 
-Artisan::command('sms-logs:purge', function () {
-    $this->info('sms-logs:purge stub - full implementation planned for Phase 4.');
-})->purpose('Stub SMS log purge command for scheduler wiring');
-
 $sendTrialExpiryWarnings = function () {
     $windowStart = now()->addHours(47);
     $windowEnd = now()->addHours(49);
@@ -165,4 +163,5 @@ Schedule::command('reminders:process')->everyMinute()->withoutOverlapping(10);
 Schedule::command('reservations:auto-cancel')->everyMinute()->withoutOverlapping(10);
 Schedule::command('trial:expiry-emails')->hourly()->withoutOverlapping(10);
 Schedule::command('billing:sync-sms-cost')->monthlyOn(1, '06:00')->withoutOverlapping(60);
-Schedule::command('sms-logs:purge')->dailyAt('03:00');
+Schedule::command(PurgeSmsLogs::class)->dailyAt('03:30');
+Schedule::command(RunSmokeTests::class)->dailyAt('04:00')->environments(['production']);

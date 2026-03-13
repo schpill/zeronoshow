@@ -1,7 +1,16 @@
 import axios from 'axios'
+import * as Sentry from '@sentry/vue'
+
+import {
+  buildRateLimitMessage,
+  getRetryAfterSeconds,
+  shouldRetryRateLimitedRequest,
+} from '@/api/errorHandling'
+import { useToast } from '@/composables/useToast'
 
 export interface ApiError {
   status: number
+  headers?: Record<string, unknown>
   data: {
     message?: string
     errors?: Record<string, string[]>
@@ -29,8 +38,11 @@ instance.interceptors.request.use((config) => {
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
+    const toast = useToast()
     const status = error.response?.status as number | undefined
     const data = error.response?.data as ApiError['data'] | undefined
+    const headers = (error.response?.headers ?? {}) as Record<string, unknown>
+    const requestConfig = (error.config ?? {}) as { method?: string; __rateLimitRetried?: boolean }
 
     if (status === 401) {
       localStorage.removeItem('znz_token')
@@ -41,8 +53,37 @@ instance.interceptors.response.use(
       window.location.assign('/subscription')
     }
 
+    if (status === 429) {
+      const retryAfterSeconds = getRetryAfterSeconds(headers)
+      toast.warning(buildRateLimitMessage(retryAfterSeconds))
+
+      if (
+        shouldRetryRateLimitedRequest(
+          requestConfig.method,
+          status,
+          Boolean(requestConfig.__rateLimitRetried),
+        )
+      ) {
+        requestConfig.__rateLimitRetried = true
+
+        await new Promise((resolve) => {
+          window.setTimeout(resolve, (retryAfterSeconds ?? 1) * 1000)
+        })
+
+        return instance.request(requestConfig)
+      }
+    }
+
+    if (status === 503 || !error.response) {
+      toast.error('Service temporairement indisponible. Vos données sont sauvegardées.', {
+        duration: 0,
+      })
+      Sentry.captureException(error)
+    }
+
     throw {
       status: status ?? 500,
+      headers,
       data: data ?? {},
     } satisfies ApiError
   },

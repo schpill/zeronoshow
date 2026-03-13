@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\SmsLog;
 use App\Services\Contracts\SmsServiceInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
 use Mockery;
 use Tests\TestCase;
 
@@ -104,5 +105,20 @@ class TwilioWebhookTest extends TestCase
             'MessageSid' => 'SM999',
             'MessageStatus' => 'delivered',
         ])->assertOk();
+    }
+
+    public function test_it_logs_a_warning_when_the_twilio_signature_is_invalid(): void
+    {
+        Log::spy();
+
+        $service = Mockery::mock(SmsServiceInterface::class);
+        $service->shouldReceive('validateWebhookSignature')->once()->andReturnFalse();
+        app()->instance(SmsServiceInterface::class, $service);
+
+        $this->post('/api/v1/webhooks/twilio', [
+            'MessageSid' => 'SM-invalid',
+        ])->assertForbidden();
+
+        Log::shouldHaveReceived('warning')->once();
     }
 }

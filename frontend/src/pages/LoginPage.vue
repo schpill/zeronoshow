@@ -2,6 +2,7 @@
 import { reactive, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
@@ -14,10 +15,12 @@ const form = reactive({
 
 const fieldErrors = ref<Record<string, string[]>>({})
 const generalError = ref<string | null>(null)
+const submitting = ref(false)
 
 async function handleSubmit() {
   fieldErrors.value = {}
   generalError.value = null
+  submitting.value = true
 
   try {
     await auth.login(form.email, form.password)
@@ -35,6 +38,8 @@ async function handleSubmit() {
         fieldErrors.value = Reflect.get(data, 'errors') as Record<string, string[]>
       }
     }
+  } finally {
+    submitting.value = false
   }
 }
 </script>
@@ -78,9 +83,11 @@ async function handleSubmit() {
 
         <button
           type="submit"
+          :disabled="submitting"
           class="inline-flex w-full items-center justify-center rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600"
         >
-          Se connecter
+          <LoadingSpinner v-if="submitting" size="sm" label="Connexion en cours" />
+          <span :class="{ 'ml-2': submitting }">Se connecter</span>
         </button>
       </form>
 

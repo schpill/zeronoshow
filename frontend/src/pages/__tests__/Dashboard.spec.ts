@@ -6,6 +6,7 @@ import Dashboard from '@/pages/Dashboard.vue'
 
 const fetchDashboard = vi.fn()
 const updateStatus = vi.fn()
+const toastSuccess = vi.fn()
 const loadingFetch = ref(false)
 const loadingUpdateStatus = ref(false)
 
@@ -21,6 +22,16 @@ vi.mock('@/composables/usePolling', () => ({
   usePolling: (callback: () => Promise<void>) => {
     void callback()
   },
+}))
+
+vi.mock('@/composables/useToast', () => ({
+  useToast: () => ({
+    success: toastSuccess,
+    error: vi.fn(),
+    warning: vi.fn(),
+    dismiss: vi.fn(),
+    toasts: ref([]),
+  }),
 }))
 
 function createDashboardResponse() {
@@ -87,6 +98,13 @@ function mountDashboard() {
           template:
             '<div data-test="reservation-list">{{ loading ? `loading` : reservations.length === 0 ? `empty` : reservations.map((reservation) => reservation.customer_name).join(`,`) }}</div>',
         },
+        ErrorMessage: {
+          props: ['message'],
+          template: '<div data-test="dashboard-error">{{ message }}</div>',
+        },
+        LoadingSpinner: {
+          template: '<div data-test="dashboard-spinner">loading</div>',
+        },
         ReservationRow: {
           props: ['reservation'],
           template:
@@ -101,6 +119,7 @@ describe('Dashboard', () => {
   beforeEach(() => {
     fetchDashboard.mockReset()
     updateStatus.mockReset()
+    toastSuccess.mockReset()
     loadingFetch.value = false
     loadingUpdateStatus.value = false
   })
@@ -165,9 +184,20 @@ describe('Dashboard', () => {
     await wrapper.get('[data-test="create-reservation"]').trigger('click')
     await nextTick()
 
-    expect(wrapper.text()).toContain('Réservation créée avec succès.')
+    expect(toastSuccess).toHaveBeenCalledWith('Réservation créée avec succès.')
     expect(wrapper.get('[data-test="stats-bar"]').text()).toContain('3')
     expect(wrapper.get('[data-test="reservation-list"]').text()).toContain('Nina')
+  })
+
+  it('shows a retryable error state when the dashboard request fails', async () => {
+    fetchDashboard.mockRejectedValue(new Error('API down'))
+
+    const wrapper = mountDashboard()
+
+    await Promise.resolve()
+    await nextTick()
+
+    expect(wrapper.get('[data-test="dashboard-error"]').text()).toContain('API down')
   })
 
   it('changes the selected date and refetches when the navigator emits a new day', async () => {

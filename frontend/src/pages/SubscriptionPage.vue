@@ -3,21 +3,35 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import AppLayout from '@/layouts/AppLayout.vue'
+import ErrorMessage from '@/components/ErrorMessage.vue'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { useSubscription } from '@/composables/useSubscription'
+import { useToast } from '@/composables/useToast'
 
 const route = useRoute()
-const { subscription, fetchSubscription, createCheckoutSession } = useSubscription()
-const statusMessage = ref<string | null>(null)
+const { subscription, loading, fetchSubscription, createCheckoutSession } = useSubscription()
+const pageError = ref<string | null>(null)
+const toast = useToast()
+
+async function loadSubscription() {
+  pageError.value = null
+
+  try {
+    await fetchSubscription()
+  } catch (error) {
+    pageError.value = error instanceof Error ? error.message : 'Impossible de charger l abonnement.'
+  }
+}
 
 onMounted(async () => {
-  await fetchSubscription()
+  await loadSubscription()
 
   if (route.query.status === 'success') {
-    statusMessage.value = 'Abonnement activé.'
+    toast.success('Abonnement activé.')
   }
 
   if (route.query.status === 'cancelled') {
-    statusMessage.value = 'Le paiement a été annulé.'
+    toast.warning('Le paiement a été annulé.')
   }
 })
 
@@ -31,14 +45,23 @@ async function handleCheckout() {
 
 <template>
   <AppLayout>
+    <div v-if="loading && !subscription && !pageError" class="flex min-h-[240px] items-center justify-center">
+      <LoadingSpinner size="lg" label="Chargement de l abonnement" />
+    </div>
+
+    <ErrorMessage
+      v-else-if="pageError"
+      title="Impossible de charger l abonnement"
+      :message="pageError"
+      @retry="loadSubscription"
+    />
+
     <section
+      v-else
       class="mx-auto max-w-3xl rounded-[32px] border border-slate-200 bg-white p-8 dark:border-slate-800 dark:bg-slate-900"
     >
       <p class="text-overline">Abonnement</p>
       <h1 class="text-heading-2 mt-2 dark:text-slate-50">Pilotage de la facturation</h1>
-      <p v-if="statusMessage" class="mt-4 text-body-sm text-emerald-700 dark:text-emerald-300">
-        {{ statusMessage }}
-      </p>
       <div class="mt-6 grid gap-4 md:grid-cols-3">
         <article
           class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950"

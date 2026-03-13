@@ -199,4 +199,82 @@ class StoreReservationTest extends TestCase
         $response->assertStatus(402);
         Queue::assertNothingPushed();
     }
+
+    public function test_it_sends_an_immediate_confirmation_sms_when_the_appointment_is_less_than_two_hours_away(): void
+    {
+        Queue::fake();
+        $business = Business::factory()->create();
+        Sanctum::actingAs($business);
+
+        $response = $this->postJson('/api/v1/reservations', [
+            'customer_name' => 'Marc Dubois',
+            'phone' => '+33612345678',
+            'scheduled_at' => Carbon::now()->addMinutes(90)->toIso8601String(),
+            'guests' => 2,
+            'phone_verified' => false,
+        ]);
+
+        $response
+            ->assertCreated()
+            ->assertJsonPath('reservation.status', 'pending_verification');
+
+        Queue::assertPushed(SendVerificationSms::class);
+        $this->assertNotNull($response->json('reservation.confirmation_token'));
+        $this->assertNull($response->json('warning'));
+    }
+
+    public function test_it_records_an_appointment_without_sms_when_it_is_less_than_thirty_minutes_away(): void
+    {
+        Queue::fake();
+        $business = Business::factory()->create();
+        Sanctum::actingAs($business);
+
+        $response = $this->postJson('/api/v1/reservations', [
+            'customer_name' => 'Marc Dubois',
+            'phone' => '+33612345678',
+            'scheduled_at' => Carbon::now()->addMinutes(20)->toIso8601String(),
+            'guests' => 2,
+            'phone_verified' => false,
+        ]);
+
+        $response
+            ->assertCreated()
+            ->assertJsonPath('reservation.status', 'pending_verification')
+            ->assertJsonPath('warning', 'Appointment too soon for SMS confirmation')
+            ->assertJsonPath('reservation.confirmation_token', null);
+
+        Queue::assertNothingPushed();
+        $this->assertDatabaseHas('reservations', [
+            'business_id' => $business->id,
+            'confirmation_token' => null,
+            'status' => 'pending_verification',
+        ]);
+    }
+
+    public function test_reservation_creation_is_rate_limited_per_business(): void
+    {
+        Queue::fake();
+        $business = Business::factory()->create();
+        Sanctum::actingAs($business);
+
+        for ($attempt = 0; $attempt < 60; $attempt++) {
+            $this->postJson('/api/v1/reservations', [
+                'customer_name' => sprintf('Marc %d', $attempt),
+                'phone' => sprintf('+3361234%04d', $attempt),
+                'scheduled_at' => Carbon::now()->addDay()->toIso8601String(),
+                'guests' => 2,
+                'phone_verified' => false,
+            ])->assertCreated();
+        }
+
+        $this->postJson('/api/v1/reservations', [
+            'customer_name' => 'Marc Final',
+            'phone' => '+33699999999',
+            'scheduled_at' => Carbon::now()->addDay()->toIso8601String(),
+            'guests' => 2,
+            'phone_verified' => false,
+        ])
+            ->assertStatus(429)
+            ->assertHeader('Retry-After');
+    }
 }
