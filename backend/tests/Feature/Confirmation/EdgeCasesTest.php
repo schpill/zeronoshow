@@ -4,11 +4,13 @@ namespace Tests\Feature\Confirmation;
 
 use App\Models\Reservation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
 
 class EdgeCasesTest extends TestCase
 {
     use RefreshDatabase;
+    use WithoutMiddleware;
 
     public function test_duplicate_confirmation_returns_an_idempotent_message_without_invalidating_the_token(): void
     {
