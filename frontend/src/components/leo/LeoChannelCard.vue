@@ -24,7 +24,8 @@ const confirmDelete = ref(false)
         <p class="text-overline">Canal actif</p>
         <h2 class="mt-2 text-heading-3">{{ props.channel.bot_name }}</h2>
         <p class="mt-2 text-body-sm">
-          Identifiant masqué: <span class="font-mono">{{ props.channel.external_identifier_masked }}</span>
+          Identifiant masqué:
+          <span class="font-mono">{{ props.channel.external_identifier_masked }}</span>
         </p>
       </div>
       <LeoChannelTypeBadge :type="props.channel.channel" />
@@ -59,9 +60,7 @@ const confirmDelete = ref(false)
       class="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-900"
     >
       <p class="font-semibold">Cette action supprimera votre canal Léo actuel.</p>
-      <p class="mt-2">
-        Vous devrez en créer un nouveau. L’historique des messages sera conservé.
-      </p>
+      <p class="mt-2">Vous devrez en créer un nouveau. L’historique des messages sera conservé.</p>
       <div class="mt-4 flex items-center gap-3">
         <button
           type="button"

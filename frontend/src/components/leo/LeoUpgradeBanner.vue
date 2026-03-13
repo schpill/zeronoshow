@@ -15,8 +15,8 @@ defineEmits<{
     <p class="text-overline text-brand-700">Léo add-on</p>
     <h2 class="mt-2 text-heading-3">Activez Léo</h2>
     <p class="mt-3 max-w-2xl text-body-sm">
-      Votre assistant Telegram à 9€/mois pour suivre les réservations du jour, les
-      annulations et les clients en attente directement depuis votre messagerie.
+      Votre assistant Telegram à 9€/mois pour suivre les réservations du jour, les annulations et
+      les clients en attente directement depuis votre messagerie.
     </p>
     <button
       type="button"

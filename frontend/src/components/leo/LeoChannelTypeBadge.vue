@@ -46,7 +46,9 @@ const badge = computed(() => {
     :class="badge.classes"
   >
     <span>{{ badge.label }}</span>
-    <span class="rounded-full bg-white/70 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide">
+    <span
+      class="rounded-full bg-white/70 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"
+    >
       {{ badge.meta }}
     </span>
   </span>

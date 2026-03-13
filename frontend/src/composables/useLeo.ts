@@ -119,7 +119,10 @@ export function useLeo() {
 
     try {
       const response = await activateLeoAddon()
-      addonStatus.value = { active: response.activated, stripe_item_id: addonStatus.value.stripe_item_id }
+      addonStatus.value = {
+        active: response.activated,
+        stripe_item_id: addonStatus.value.stripe_item_id,
+      }
       return response
     } catch (err) {
       error.value = normalizeError(err)

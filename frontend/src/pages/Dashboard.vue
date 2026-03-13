@@ -185,7 +185,10 @@ const groupedReservations = computed(() => {
                 <p class="text-overline">Activité Léo</p>
                 <h2 class="text-heading-4 dark:text-slate-50">3 derniers messages</h2>
               </div>
-              <RouterLink to="/leo" class="text-sm font-semibold text-emerald-700 dark:text-emerald-400">
+              <RouterLink
+                to="/leo"
+                class="text-sm font-semibold text-emerald-700 dark:text-emerald-400"
+              >
                 Voir Léo →
               </RouterLink>
             </div>

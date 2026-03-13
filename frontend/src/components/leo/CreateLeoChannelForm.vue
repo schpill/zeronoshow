@@ -120,7 +120,8 @@ function submit() {
     </details>
 
     <p class="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-      Un seul canal possible par établissement. Pour changer de canal, supprimez l’actuel et créez-en un nouveau.
+      Un seul canal possible par établissement. Pour changer de canal, supprimez l’actuel et
+      créez-en un nouveau.
     </p>
 
     <p v-if="error" class="rounded-2xl bg-red-100 px-4 py-3 text-sm text-red-800">

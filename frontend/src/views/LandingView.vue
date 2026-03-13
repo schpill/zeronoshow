@@ -37,7 +37,10 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <a href="/login" class="hidden text-sm font-semibold text-slate-600 hover:text-slate-900 sm:inline">
+          <a
+            href="/login"
+            class="hidden text-sm font-semibold text-slate-600 hover:text-slate-900 sm:inline"
+          >
             Connexion
           </a>
           <a
@@ -54,22 +57,26 @@
       <div class="mx-auto max-w-6xl px-4 sm:px-6">
         <div class="grid items-center gap-16 lg:grid-cols-2">
           <div>
-            <div class="mb-6 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1.5">
+            <div
+              class="mb-6 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1.5"
+            >
               <span class="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
               <span class="text-xs font-semibold uppercase tracking-wide text-emerald-800">
                 Zéro frais cachés · SMS à la carte
               </span>
             </div>
-            <h1 class="mb-6 text-4xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl">
+            <h1
+              class="mb-6 text-4xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl"
+            >
               Les clients
               <br />
               <span class="gradient-text">au rendez-vous.</span>
             </h1>
             <p class="mb-8 max-w-md text-lg leading-relaxed text-slate-600">
-              ZeroNoShow envoie automatiquement des SMS de confirmation à vos clients et détecte
-              les défaillances grâce au
-              <strong class="text-slate-800">score de fiabilité</strong>.
-              Sans caution. Sans friction.
+              ZeroNoShow envoie automatiquement des SMS de confirmation à vos clients et détecte les
+              défaillances grâce au
+              <strong class="text-slate-800">score de fiabilité</strong>. Sans caution. Sans
+              friction.
             </p>
             <div class="mb-10 flex flex-wrap gap-3">
               <a
@@ -114,7 +121,9 @@
           <div class="relative flex justify-center">
             <div class="relative w-72 rounded-[40px] bg-slate-900 p-3 shadow-2xl">
               <div class="overflow-hidden rounded-[32px] bg-white">
-                <div class="flex justify-between bg-slate-50 px-5 pt-3 pb-2 text-[11px] font-medium text-slate-500">
+                <div
+                  class="flex justify-between bg-slate-50 px-5 pt-3 pb-2 text-[11px] font-medium text-slate-500"
+                >
                   <span>9:41</span>
                   <span>Messages</span>
                   <span>●●●</span>
@@ -185,8 +194,7 @@
                     <div class="sms-bubble border border-slate-200 bg-white px-3 py-2.5 shadow-sm">
                       <p class="text-xs leading-relaxed text-slate-700">
                         ⚠️ Rappel : votre RDV est dans
-                        <strong>30 min</strong>.
-                        Confirmez ou annulez.
+                        <strong>30 min</strong>. Confirmez ou annulez.
                       </p>
                       <p class="mt-1.5 text-[10px] font-medium text-red-500">
                         Score fiabilité : À risque 58%
@@ -225,16 +233,16 @@
     </section>
 
     <section class="border-y border-slate-200 bg-white">
-      <div class="mx-auto grid max-w-6xl gap-6 px-4 py-10 sm:grid-cols-3 sm:divide-x sm:divide-slate-200 sm:px-6">
+      <div
+        class="mx-auto grid max-w-6xl gap-6 px-4 py-10 sm:grid-cols-3 sm:divide-x sm:divide-slate-200 sm:px-6"
+      >
         <div class="px-4 text-center">
           <p class="mb-1 text-4xl font-extrabold text-slate-900">−68%</p>
           <p class="text-sm font-medium text-slate-500">de no-shows en moyenne</p>
         </div>
         <div class="px-4 text-center">
           <p class="mb-1 text-4xl font-extrabold text-emerald-500">3–4</p>
-          <p class="text-sm font-medium text-slate-500">
-            no-shows évités = abonnement rentabilisé
-          </p>
+          <p class="text-sm font-medium text-slate-500">no-shows évités = abonnement rentabilisé</p>
         </div>
         <div class="px-4 text-center">
           <p class="mb-1 text-4xl font-extrabold text-slate-900">&lt; 5 min</p>
@@ -251,8 +259,8 @@
           </p>
           <h2 class="text-3xl font-bold text-slate-900">Comment ça marche</h2>
           <p class="mx-auto mt-3 max-w-md text-slate-500">
-            Branchez ZeroNoShow sur vos réservations existantes. Aucune migration. Aucun
-            changement de workflow.
+            Branchez ZeroNoShow sur vos réservations existantes. Aucune migration. Aucun changement
+            de workflow.
           </p>
         </div>
 
@@ -273,8 +281,18 @@
             </p>
             <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3">
               <div class="flex items-center gap-2 text-xs text-slate-600">
-                <svg class="h-4 w-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                <svg
+                  class="h-4 w-4 text-emerald-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
                 Numéro confirmé par téléphone → SMS ignoré
               </div>
@@ -329,7 +347,9 @@
             <div class="mt-4 space-y-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
               <div class="flex items-center justify-between text-xs">
                 <span class="text-slate-600">Marc Dubois · 20h00</span>
-                <span class="rounded-full bg-emerald-100 px-2 py-0.5 font-semibold text-emerald-800">
+                <span
+                  class="rounded-full bg-emerald-100 px-2 py-0.5 font-semibold text-emerald-800"
+                >
                   Confirmé
                 </span>
               </div>
@@ -362,9 +382,21 @@
             </p>
             <div class="space-y-3">
               <div class="flex items-start gap-3">
-                <div class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500">
-                  <svg class="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                <div
+                  class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500"
+                >
+                  <svg
+                    class="h-3 w-3 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="3"
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                 </div>
                 <p class="text-sm text-slate-300">
@@ -372,9 +404,21 @@
                 </p>
               </div>
               <div class="flex items-start gap-3">
-                <div class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500">
-                  <svg class="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                <div
+                  class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500"
+                >
+                  <svg
+                    class="h-3 w-3 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="3"
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                 </div>
                 <p class="text-sm text-slate-300">
@@ -383,9 +427,21 @@
                 </p>
               </div>
               <div class="flex items-start gap-3">
-                <div class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500">
-                  <svg class="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                <div
+                  class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-500"
+                >
+                  <svg
+                    class="h-3 w-3 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="3"
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                 </div>
                 <p class="text-sm text-slate-300">
@@ -405,12 +461,16 @@
                 <span class="text-2xl font-extrabold text-white">
                   94<span class="text-lg text-emerald-400">%</span>
                 </span>
-                <span class="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-300">
+                <span
+                  class="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-300"
+                >
                   Fiable
                 </span>
               </div>
               <div class="h-2 w-full rounded-full bg-slate-700">
-                <div class="h-2 w-[94%] rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600" />
+                <div
+                  class="h-2 w-[94%] rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600"
+                />
               </div>
               <div class="mt-2 flex justify-between text-[10px] text-slate-500">
                 <span>17 réservations · 16 présences</span>
@@ -446,7 +506,9 @@
           <p class="mb-3 text-[11px] font-semibold uppercase tracking-widest text-emerald-600">
             Tarification simple
           </p>
-          <h2 class="text-3xl font-bold text-slate-900">Un abonnement clair, rentable dès les premiers services</h2>
+          <h2 class="text-3xl font-bold text-slate-900">
+            Un abonnement clair, rentable dès les premiers services
+          </h2>
           <p class="mt-3 text-slate-500">
             Pas de commission sur les réservations. Pas de frais cachés. Vous ne payez que votre
             plan et les SMS réellement envoyés.
@@ -454,10 +516,14 @@
         </div>
 
         <div class="mt-12 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <article class="rounded-[32px] border border-emerald-500 bg-white p-8 shadow-xl shadow-emerald-500/10">
+          <article
+            class="rounded-[32px] border border-emerald-500 bg-white p-8 shadow-xl shadow-emerald-500/10"
+          >
             <div class="flex flex-wrap items-start justify-between gap-4">
               <div>
-                <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">Plan principal</p>
+                <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                  Plan principal
+                </p>
                 <h3 class="mt-2 text-2xl font-bold text-slate-900">ZeroNoShow</h3>
                 <p class="mt-3 max-w-xl text-slate-500">
                   Confirmation SMS automatique, score de fiabilité, rappels intelligents et
@@ -465,16 +531,26 @@
                 </p>
               </div>
               <div class="text-right">
-                <p class="text-4xl font-extrabold text-slate-900">19€<span class="text-lg font-semibold text-slate-500">/mois</span></p>
+                <p class="text-4xl font-extrabold text-slate-900">
+                  19€<span class="text-lg font-semibold text-slate-500">/mois</span>
+                </p>
                 <p class="mt-2 text-sm text-slate-500">SMS facturés à l’usage</p>
               </div>
             </div>
 
             <div class="mt-8 grid gap-3 sm:grid-cols-2">
-              <div class="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">Confirmation automatique des réservations</div>
-              <div class="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">Rappels ciblés selon le score client</div>
-              <div class="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">Score de fiabilité partagé</div>
-              <div class="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">Dashboard jour / semaine</div>
+              <div class="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                Confirmation automatique des réservations
+              </div>
+              <div class="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                Rappels ciblés selon le score client
+              </div>
+              <div class="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                Score de fiabilité partagé
+              </div>
+              <div class="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                Dashboard jour / semaine
+              </div>
             </div>
 
             <div class="mt-8 flex flex-wrap gap-3">
@@ -496,8 +572,12 @@
           <article class="rounded-[32px] border border-slate-200 bg-emerald-50 p-8">
             <div class="flex items-center justify-between gap-3">
               <div>
-                <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">Add-on optionnel</p>
-                <h3 class="mt-2 text-2xl font-bold text-slate-900">Léo — Votre assistant Telegram</h3>
+                <p class="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                  Add-on optionnel
+                </p>
+                <h3 class="mt-2 text-2xl font-bold text-slate-900">
+                  Léo — Votre assistant Telegram
+                </h3>
               </div>
               <span class="rounded-full bg-white px-3 py-1 text-xs font-semibold text-emerald-800">
                 9€/mois
@@ -508,13 +588,19 @@
               le dashboard.
             </p>
             <div class="mt-6 space-y-3">
-              <div class="rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm text-slate-700">
+              <div
+                class="rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm text-slate-700"
+              >
                 Résumé du jour en conversation naturelle
               </div>
-              <div class="rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm text-slate-700">
+              <div
+                class="rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm text-slate-700"
+              >
                 Liste des clients en attente et des prochains services
               </div>
-              <div class="rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm text-slate-700">
+              <div
+                class="rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm text-slate-700"
+              >
                 Notifications d’annulation et de no-show
               </div>
             </div>
@@ -528,7 +614,9 @@
     </section>
 
     <footer class="border-t border-slate-200 bg-slate-50">
-      <div class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+      <div
+        class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-6"
+      >
         <div>
           <p class="text-lg font-extrabold text-slate-900">
             Zero<span class="font-normal text-slate-500">NoShow</span>
