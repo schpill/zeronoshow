@@ -16,15 +16,15 @@ describe('StatusBadge', () => {
   ] as [ReservationStatus, string, string][])(
     'renders the right label and class for %s',
     (status, label, expectedClass) => {
-    const wrapper = mount(StatusBadge, {
-      props: {
-        status,
-      },
-    })
+      const wrapper = mount(StatusBadge, {
+        props: {
+          status,
+        },
+      })
 
-    expect(wrapper.text()).toContain(label)
-    expect(wrapper.attributes('aria-label')).toContain(label)
-    expect(wrapper.classes()).toContain(expectedClass)
+      expect(wrapper.text()).toContain(label)
+      expect(wrapper.attributes('aria-label')).toContain(label)
+      expect(wrapper.classes()).toContain(expectedClass)
     },
   )
 })

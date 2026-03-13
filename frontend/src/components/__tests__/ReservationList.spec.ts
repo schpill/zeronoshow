@@ -80,7 +80,9 @@ describe('ReservationList', () => {
       },
     })
 
-    await wrapper.getComponent({ name: 'ReservationRow' }).vm.$emit('updated', makeReservation('a', '2026-03-13T18:00:00.000Z'))
+    await wrapper
+      .getComponent({ name: 'ReservationRow' })
+      .vm.$emit('updated', makeReservation('a', '2026-03-13T18:00:00.000Z'))
 
     const emitted = wrapper.emitted('updated')
     expect(Array.isArray(emitted)).toBe(true)

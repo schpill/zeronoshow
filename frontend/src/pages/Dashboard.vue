@@ -25,8 +25,9 @@ usePolling(refreshReservations, 30_000)
 const summary = computed(() => ({
   total: reservations.value.length,
   confirmed: reservations.value.filter((reservation) => reservation.status === 'confirmed').length,
-  pending: reservations.value.filter((reservation) =>
-    reservation.status === 'pending_verification' || reservation.status === 'pending_reminder',
+  pending: reservations.value.filter(
+    (reservation) =>
+      reservation.status === 'pending_verification' || reservation.status === 'pending_reminder',
   ).length,
 }))
 
