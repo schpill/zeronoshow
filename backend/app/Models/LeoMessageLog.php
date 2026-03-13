@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\LeoMessageDirection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +12,8 @@ class LeoMessageLog extends Model
 {
     use HasFactory;
     use HasUuids;
+
+    public const UPDATED_AT = null;
 
     public $timestamps = false;
 
@@ -29,7 +32,13 @@ class LeoMessageLog extends Model
 
     protected $casts = [
         'created_at' => 'datetime',
+        'direction' => LeoMessageDirection::class,
     ];
+
+    protected static function booted(): void
+    {
+        static::updating(static fn (): bool => false);
+    }
 
     public function channel(): BelongsTo
     {

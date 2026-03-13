@@ -100,6 +100,53 @@ class StripeWebhookLeoAddonTest extends TestCase
         ]);
     }
 
+    public function test_it_deactivates_leo_addon_state_when_subscription_is_deleted(): void
+    {
+        config()->set('services.stripe.webhook_secret', 'whsec_test');
+
+        $business = Business::factory()->create([
+            'stripe_customer_id' => 'cus_leo',
+            'stripe_subscription_id' => 'sub_leo',
+            'leo_addon_active' => true,
+            'leo_addon_stripe_item_id' => 'si_leo',
+        ]);
+
+        DB::table('leo_channels')->insert([
+            'id' => (string) Str::uuid(),
+            'business_id' => $business->id,
+            'channel' => 'telegram',
+            'external_identifier' => '123456789',
+            'bot_name' => 'Léo',
+            'is_active' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $payload = json_encode([
+            'type' => 'customer.subscription.deleted',
+            'data' => [
+                'object' => [
+                    'id' => 'sub_leo',
+                    'customer' => 'cus_leo',
+                ],
+            ],
+        ], JSON_THROW_ON_ERROR);
+
+        $this->callWebhook($payload)->assertOk();
+
+        $this->assertDatabaseHas('businesses', [
+            'id' => $business->id,
+            'leo_addon_active' => false,
+            'leo_addon_stripe_item_id' => null,
+            'subscription_status' => 'cancelled',
+        ]);
+
+        $this->assertDatabaseHas('leo_channels', [
+            'business_id' => $business->id,
+            'is_active' => false,
+        ]);
+    }
+
     private function callWebhook(string $payload)
     {
         return $this->call(

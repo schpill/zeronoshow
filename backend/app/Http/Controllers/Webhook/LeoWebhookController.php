@@ -45,6 +45,28 @@ class LeoWebhookController extends Controller
             }
 
             if ($resolution['status'] === 'multiple') {
+                $pendingSelection = $this->sessionService->findPendingSelection($resolution['channels'], $inbound->senderId);
+
+                if (! $pendingSelection) {
+                    $anchorChannel = $resolution['channels']->first();
+
+                    if ($anchorChannel) {
+                        $this->sessionService->set(
+                            $anchorChannel->id,
+                            $inbound->senderId,
+                            null,
+                            pendingSelection: true,
+                        );
+                    }
+
+                    $this->telegramChannel->sendMessage(
+                        $inbound->senderId,
+                        $this->selectionService->buildSelectionPrompt($resolution['channels']),
+                    );
+
+                    return response()->json(['received' => true]);
+                }
+
                 $selected = $this->selectionService->parseSelection($inbound->messageText, $resolution['channels']);
 
                 if (! $selected) {
@@ -56,6 +78,7 @@ class LeoWebhookController extends Controller
                     return response()->json(['received' => true]);
                 }
 
+                $this->sessionService->clearPendingSelections($resolution['channels'], $inbound->senderId);
                 $this->sessionService->set($selected->id, $inbound->senderId, $selected->business_id);
                 $channel = $selected;
             } else {

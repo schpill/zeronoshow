@@ -3,7 +3,9 @@
 namespace App\Services\Leo;
 
 use App\Models\Business;
+use App\Models\LeoChannel;
 use App\Models\LeoSession;
+use Illuminate\Support\Collection;
 
 class LeoSessionService
 {
@@ -22,8 +24,13 @@ class LeoSessionService
         return $business;
     }
 
-    public function set(string $channelId, string $senderId, ?string $businessId, int $ttlSeconds = 300): void
-    {
+    public function set(
+        string $channelId,
+        string $senderId,
+        ?string $businessId,
+        int $ttlSeconds = 300,
+        bool $pendingSelection = false,
+    ): void {
         LeoSession::query()->updateOrCreate(
             [
                 'channel_id' => $channelId,
@@ -31,9 +38,47 @@ class LeoSessionService
             ],
             [
                 'active_business_id' => $businessId,
+                'pending_selection' => $pendingSelection,
                 'expires_at' => now()->addSeconds($ttlSeconds),
             ],
         );
+    }
+
+    /**
+     * @param  Collection<int, LeoChannel>  $channels
+     */
+    public function findPendingSelection(Collection $channels, string $senderId): ?LeoSession
+    {
+        $channelIds = $channels->pluck('id');
+
+        if ($channelIds->isEmpty()) {
+            return null;
+        }
+
+        return LeoSession::query()
+            ->whereIn('channel_id', $channelIds)
+            ->forSender($senderId)
+            ->valid()
+            ->where('pending_selection', true)
+            ->first();
+    }
+
+    /**
+     * @param  Collection<int, LeoChannel>  $channels
+     */
+    public function clearPendingSelections(Collection $channels, string $senderId): void
+    {
+        $channelIds = $channels->pluck('id');
+
+        if ($channelIds->isEmpty()) {
+            return;
+        }
+
+        LeoSession::query()
+            ->whereIn('channel_id', $channelIds)
+            ->forSender($senderId)
+            ->where('pending_selection', true)
+            ->delete();
     }
 
     public function clear(string $channelId, string $senderId): void

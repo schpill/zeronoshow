@@ -22,7 +22,7 @@
 | P5-BE-008  | Migration: create_leo_message_logs_table                                     | done   | Codex |
 | P5-BE-009  | Create LeoChannel model (HasUuids, casts, scopes)                            | done   | Codex |
 | P5-BE-010  | Create LeoSession model (HasUuids, scopes forSender + valid)                 | done   | Codex |
-| P5-BE-011  | Create LeoMessageLog model (HasUuids, insert-only)                           | todo   | —     |
+| P5-BE-011  | Create LeoMessageLog model (HasUuids, insert-only)                           | done   | Codex |
 | P5-BE-012  | Create LeoSessionService (resolve, set, clear)                               | done   | Codex |
 | P5-BE-013  | Create LeoBusinessResolver (NONE/SINGLE/MULTIPLE resolution)                 | done   | Codex |
 | P5-BE-014  | Create GetTodayStatsTool (counts by status, score avg)                       | done   | Codex |
@@ -37,19 +37,19 @@
 
 | ID         | Task                                                                         | Status | Owner |
 |------------|------------------------------------------------------------------------------|--------|-------|
-| P5-FE-001  | Create src/api/leo.ts (typed API client, LeoChannel interface)               | todo   | —     |
-| P5-FE-002  | Create useLeoChannels composable (fetch, create, update, delete)             | todo   | —     |
-| P5-FE-003  | Create LeoChannelCard.vue (toggle, rename, delete with confirm)              | todo   | —     |
-| P5-FE-004  | Create CreateLeoChannelForm.vue (validation, channel type select)            | todo   | —     |
-| P5-FE-005  | Create LeoView.vue (/leo route, empty state, modal form)                     | todo   | —     |
-| P5-FE-006  | Add /leo route to router (requiresAuth, sidebar nav link)                    | todo   | —     |
+| P5-FE-001  | Create src/api/leo.ts (typed API client, LeoChannel interface)               | done   | Codex |
+| P5-FE-002  | Create useLeoChannels composable (fetch, create, update, delete)             | done   | Codex |
+| P5-FE-003  | Create LeoChannelCard.vue (toggle, rename, delete with confirm)              | done   | Codex |
+| P5-FE-004  | Create CreateLeoChannelForm.vue (validation, channel type select)            | done   | Codex |
+| P5-FE-005  | Create LeoView.vue (/leo route, empty state, modal form)                     | done   | Codex |
+| P5-FE-006  | Add /leo route to router (requiresAuth, sidebar nav link)                    | done   | Codex |
 
 ### DevOps
 
 | ID         | Task                                                                         | Status | Owner |
 |------------|------------------------------------------------------------------------------|--------|-------|
 | P5-DO-001  | Add TELEGRAM_BOT_TOKEN, TELEGRAM_WEBHOOK_SECRET, GEMINI_API_KEY to env      | done   | Codex |
-| P5-DO-002  | Configure Gemini REST API via Laravel Http client (no extra package needed)  | todo   | —     |
+| P5-DO-002  | Configure Gemini REST API via Laravel Http client (no extra package needed)  | done   | Codex |
 | P5-DO-003  | Add POST /webhooks/leo/telegram route (no auth, IP allowlist middleware)     | done   | Codex |
 
 ---
@@ -61,10 +61,10 @@
 | ID         | Task                                                                         | Status | Owner |
 |------------|------------------------------------------------------------------------------|--------|-------|
 | P5-BE-030  | Create SendLeoNotificationJob (cancellation + no_show, throttle check)       | done   | Codex |
-| P5-BE-031  | Update ReservationObserver to dispatch SendLeoNotificationJob                | todo   | —     |
+| P5-BE-031  | Update ReservationObserver to dispatch SendLeoNotificationJob                | done   | Codex |
 | P5-BE-032  | Create LeoMultiBusinessSelectionService (prompt + parse selection)           | done   | Codex |
-| P5-BE-033  | Update LeoWebhookController for multi-business selection flow                | todo   | —     |
-| P5-BE-034  | Update LeoGeminiService to personalise system prompt with bot/establishment  | todo   | —     |
+| P5-BE-033  | Update LeoWebhookController for multi-business selection flow                | done   | Codex |
+| P5-BE-034  | Update LeoGeminiService to personalise system prompt with bot/establishment  | done   | Codex |
 | P5-BE-035  | Create LeoAddonActiveMiddleware (402 when addon inactive)                    | done   | Codex |
 | P5-BE-036  | Create LeoChannelController (one channel/business, 409 on duplicate, CRUD)  | done   | Codex |
 | P5-BE-037  | Create StoreLeoChannelRequest (validation, French errors, 409 on duplicate)  | done   | Codex |
@@ -72,10 +72,10 @@
 | P5-BE-039  | Create LeoChannelResource (external_identifier masked, no tokens)            | done   | Codex |
 | P5-BE-040  | Create PurgeLeoMessageLogs command (leo-logs:purge, monthly scheduler)       | done   | Codex |
 | P5-BE-041  | Create LeoThrottleService (20 msg/hour Redis counter, anti-loop guard)       | done   | Codex |
-| P5-BE-042  | Update SendLeoNotificationJob to check LeoThrottleService before sending     | todo   | —     |
+| P5-BE-042  | Update SendLeoNotificationJob to check LeoThrottleService before sending     | done   | Codex |
 | P5-BE-043  | Create LeoAddonSeeder (Stripe product + 9€/month price, idempotent)          | done   | Codex |
 | P5-BE-044  | Create LeoAddonController (activate via SubscriptionItem, deactivate, status)| done   | Codex |
-| P5-BE-045  | Update StripeWebhookController for Leo add-on failsafe sync                  | todo   | —     |
+| P5-BE-045  | Update StripeWebhookController for Leo add-on failsafe sync                  | done   | Codex |
 | P5-BE-046  | Create leo:setup-telegram-webhook Artisan command (deleteWebhook + setWebhook)| done  | Codex |
 
 ### Frontend
@@ -97,10 +97,10 @@
 
 | ID         | Task                                                                         | Status | Owner |
 |------------|------------------------------------------------------------------------------|--------|-------|
-| P5-DO-020  | Add SendLeoNotificationJob to queue worker config                            | todo   | —     |
+| P5-DO-020  | Add SendLeoNotificationJob to queue worker config                            | done   | Codex |
 | P5-DO-021  | Add Leo API route group to routes/api.php                                    | done   | Codex |
 | P5-DO-022  | Document Telegram bot creation steps (BotFather flow) in Audit Notes         | done   | Codex |
-| P5-DO-023  | Update GitHub Actions CI with fake TELEGRAM_BOT_TOKEN + GEMINI_API_KEY      | todo   | —     |
+| P5-DO-023  | Update GitHub Actions CI with fake TELEGRAM_BOT_TOKEN + GEMINI_API_KEY      | done   | Codex |
 
 ---
 

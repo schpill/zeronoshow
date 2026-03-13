@@ -114,7 +114,7 @@ class DashboardController extends Controller
             ->get()
             ->map(fn (LeoMessageLog $log): array => [
                 'id' => $log->id,
-                'direction' => $log->direction,
+                'direction' => $log->direction->value,
                 'intent' => $log->intent,
                 'response_preview' => $log->response_preview,
                 'created_at' => optional($log->created_at)->toIso8601String(),

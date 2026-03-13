@@ -26,7 +26,9 @@ class SendLeoNotificationJob implements ShouldQueue
     public function __construct(
         public string $reservationId,
         public string $event,
-    ) {}
+    ) {
+        $this->onQueue('default');
+    }
 
     public function handle(LeoThrottleService $throttleService): void
     {

@@ -17,11 +17,13 @@ class LeoSession extends Model
         'channel_id',
         'sender_identifier',
         'active_business_id',
+        'pending_selection',
         'expires_at',
     ];
 
     protected $casts = [
         'expires_at' => 'datetime',
+        'pending_selection' => 'boolean',
     ];
 
     public function channel(): BelongsTo

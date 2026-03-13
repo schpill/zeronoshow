@@ -23,12 +23,7 @@ class LeoGeminiService
             return $this->localFallback($businessId, $business->name, $botName, $userMessage);
         }
 
-        $prompt = sprintf(
-            "Tu es %s, l'assistant réservation de %s. Réponds en français de façon concise. Message: %s",
-            $botName,
-            $business->name,
-            $userMessage,
-        );
+        $prompt = $this->buildPrompt($botName, $business->name, $userMessage);
 
         $response = Http::post(
             sprintf(
@@ -50,6 +45,22 @@ class LeoGeminiService
         }
 
         return (string) data_get($response->json(), 'candidates.0.content.parts.0.text', $this->localFallback($businessId, $business->name, $botName, $userMessage));
+    }
+
+    private function buildPrompt(string $botName, string $businessName, string $userMessage): string
+    {
+        $systemPrompt = str_replace(
+            'Léo',
+            $botName,
+            'Tu es Léo, un assistant de réservation. Réponds en français de façon concise et utile.'
+        );
+
+        return sprintf(
+            '%s Tu gères les réservations pour %s. Message utilisateur: %s',
+            $systemPrompt,
+            $businessName,
+            $userMessage,
+        );
     }
 
     private function localFallback(string $businessId, string $businessName, string $botName, string $userMessage): string
