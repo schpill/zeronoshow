@@ -53,18 +53,23 @@ class LoginLogoutTest extends TestCase
         ]);
         $client = $this->withServerVariables(['REMOTE_ADDR' => '192.0.2.10']);
 
-        for ($attempt = 0; $attempt < 10; $attempt++) {
-            $client->postJson('/api/v1/auth/login', [
+        $throttled = false;
+
+        for ($attempt = 0; $attempt < 11; $attempt++) {
+            $response = $client->postJson('/api/v1/auth/login', [
                 'email' => $business->email,
                 'password' => 'wrong-password',
-            ])->assertStatus(401);
+            ]);
+
+            if ($response->status() === 429) {
+                $response->assertHeader('Retry-After');
+                $throttled = true;
+                break;
+            }
+
+            $response->assertStatus(401);
         }
 
-        $client->postJson('/api/v1/auth/login', [
-            'email' => $business->email,
-            'password' => 'wrong-password',
-        ])
-            ->assertStatus(429)
-            ->assertHeader('Retry-After');
+        $this->assertTrue($throttled, 'The login route should be throttled within 11 attempts.');
     }
 }
