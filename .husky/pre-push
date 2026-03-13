@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env sh
+set -eu
 
 echo ""
 echo "╔══════════════════════════════════════════╗"
@@ -31,11 +31,13 @@ docker compose exec -T \
   api ./vendor/bin/pest --stop-on-failure
 
 echo "▶ [4/5] Frontend — Prettier + ESLint (check only)"
-(cd frontend && pnpm exec prettier --check .)
-(cd frontend && pnpm exec eslint . --cache)
+cd frontend
+pnpm exec prettier --check .
+pnpm exec eslint . --cache
 
 echo "▶ [5/5] Frontend — Vitest (tests)"
-(cd frontend && pnpm exec vitest run)
+pnpm exec vitest run
+cd ..
 
 echo ""
 echo "✓ Tous les checks sont passés — push autorisé."
