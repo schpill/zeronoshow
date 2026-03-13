@@ -51,8 +51,10 @@ class RegisterTest extends TestCase
 
     public function test_registration_is_rate_limited_after_five_attempts_per_ip(): void
     {
+        $client = $this->withServerVariables(['REMOTE_ADDR' => '192.0.2.20']);
+
         for ($attempt = 0; $attempt < 5; $attempt++) {
-            $this->postJson('/api/v1/auth/register', [
+            $client->postJson('/api/v1/auth/register', [
                 'name' => 'Gerald',
                 'business_name' => 'Le Bistrot',
                 'email' => sprintf('owner-%d@gmail.com', $attempt),
@@ -62,7 +64,7 @@ class RegisterTest extends TestCase
             ])->assertStatus(422);
         }
 
-        $this->postJson('/api/v1/auth/register', [
+        $client->postJson('/api/v1/auth/register', [
             'name' => 'Gerald',
             'business_name' => 'Le Bistrot',
             'email' => 'owner-final@gmail.com',
