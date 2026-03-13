@@ -26,6 +26,7 @@ class SendReminderSms implements ShouldQueue
     public function __construct(
         public string $reservationId,
         public string $reminderType,
+        public bool $preclaimed = false,
     ) {}
 
     public function handle(SmsServiceInterface $sms): void
@@ -46,11 +47,11 @@ class SendReminderSms implements ShouldQueue
             return;
         }
 
-        if ($this->reminderType === '2h' && $reservation->reminder_2h_sent) {
+        if ($this->reminderType === '2h' && $reservation->reminder_2h_sent && ! $this->preclaimed) {
             return;
         }
 
-        if ($this->reminderType === '30m' && $reservation->reminder_30m_sent) {
+        if ($this->reminderType === '30m' && $reservation->reminder_30m_sent && ! $this->preclaimed) {
             return;
         }
 

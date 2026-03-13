@@ -108,4 +108,26 @@ class ProcessScheduledRemindersTest extends TestCase
 
         Queue::assertNothingPushed();
     }
+
+    public function test_it_does_not_dispatch_the_same_reminder_twice_when_run_twice_before_jobs_execute(): void
+    {
+        Queue::fake();
+        $customer = Customer::factory()->create([
+            'score_tier' => 'average',
+        ]);
+        $reservation = Reservation::factory()->create([
+            'customer_id' => $customer->id,
+            'status' => 'pending_reminder',
+            'scheduled_at' => now()->addHours(2),
+        ]);
+
+        $this->artisan('reminders:process')->assertExitCode(0);
+        $this->artisan('reminders:process')->assertExitCode(0);
+
+        Queue::assertPushed(SendReminderSms::class, 1);
+        $this->assertDatabaseHas('reservations', [
+            'id' => $reservation->id,
+            'reminder_2h_sent' => true,
+        ]);
+    }
 }

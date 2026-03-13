@@ -23,7 +23,11 @@ Artisan::command('reminders:process', function () {
             ->filter(fn (Reservation $reservation): bool => $reservation->customer->getScoreTier() !== 'reliable');
 
         foreach ($reservations as $reservation) {
-            SendReminderSms::dispatch($reservation->id, '2h');
+            $reservation->forceFill([
+                'reminder_2h_sent' => true,
+            ])->save();
+
+            SendReminderSms::dispatch($reservation->id, '2h', true);
         }
 
         return $reservations->count();
@@ -40,7 +44,11 @@ Artisan::command('reminders:process', function () {
             ->filter(fn (Reservation $reservation): bool => $reservation->customer->getScoreTier() === 'at_risk');
 
         foreach ($reservations as $reservation) {
-            SendReminderSms::dispatch($reservation->id, '30m');
+            $reservation->forceFill([
+                'reminder_30m_sent' => true,
+            ])->save();
+
+            SendReminderSms::dispatch($reservation->id, '30m', true);
         }
 
         return $reservations->count();

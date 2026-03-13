@@ -23,9 +23,11 @@ async function refreshReservations() {
 usePolling(refreshReservations, 30_000)
 
 const summary = computed(() => ({
-  total: stats.value?.total ?? reservations.value.length,
-  confirmed: stats.value?.confirmed ?? reservations.value.filter((reservation) => reservation.status === 'confirmed').length,
-  pending: (stats.value?.pending_verification ?? 0) + (stats.value?.pending_reminder ?? 0),
+  total: reservations.value.length,
+  confirmed: reservations.value.filter((reservation) => reservation.status === 'confirmed').length,
+  pending: reservations.value.filter((reservation) =>
+    reservation.status === 'pending_verification' || reservation.status === 'pending_reminder',
+  ).length,
 }))
 
 function handleCreated(reservation: ReservationRecord) {

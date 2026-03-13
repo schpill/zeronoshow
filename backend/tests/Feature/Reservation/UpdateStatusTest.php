@@ -26,7 +26,7 @@ class UpdateStatusTest extends TestCase
         $reservation = Reservation::factory()->create([
             'business_id' => $business->id,
             'customer_id' => $customer->id,
-            'status' => 'confirmed',
+            'status' => 'pending_reminder',
         ]);
         Sanctum::actingAs($business);
 

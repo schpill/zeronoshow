@@ -22,24 +22,36 @@ class ReservationObserver
             return;
         }
 
+        $previousStatus = $reservation->getOriginal('status');
         $status = $reservation->status;
+        $showDelta = $this->counterContribution($status, 'show') - $this->counterContribution($previousStatus, 'show');
+        $noShowDelta = $this->counterContribution($status, 'no_show') - $this->counterContribution($previousStatus, 'no_show');
 
-        if (! in_array($status, self::TERMINAL_STATUSES, true)) {
+        if (
+            ! in_array($status, self::TERMINAL_STATUSES, true)
+            && ! in_array($previousStatus, self::TERMINAL_STATUSES, true)
+        ) {
             return;
         }
 
-        if ($status === 'no_show') {
+        if ($showDelta !== 0 || $noShowDelta !== 0) {
             DB::table('customers')
                 ->where('id', $reservation->customer_id)
-                ->increment('no_shows_count');
-        }
-
-        if (in_array($status, ['show', 'confirmed'], true)) {
-            DB::table('customers')
-                ->where('id', $reservation->customer_id)
-                ->increment('shows_count');
+                ->update([
+                    'shows_count' => DB::raw(sprintf('MAX(shows_count + (%d), 0)', $showDelta)),
+                    'no_shows_count' => DB::raw(sprintf('MAX(no_shows_count + (%d), 0)', $noShowDelta)),
+                ]);
         }
 
         RecalculateReliabilityScore::dispatch($reservation->customer_id);
+    }
+
+    private function counterContribution(string $status, string $counter): int
+    {
+        return match ($counter) {
+            'show' => in_array($status, ['show', 'confirmed'], true) ? 1 : 0,
+            'no_show' => $status === 'no_show' ? 1 : 0,
+            default => 0,
+        };
     }
 }

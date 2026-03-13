@@ -43,7 +43,7 @@ class ReservationObserverTest extends TestCase
         $customer = Customer::factory()->create();
         $reservation = Reservation::factory()->create([
             'customer_id' => $customer->id,
-            'status' => 'confirmed',
+            'status' => 'pending_reminder',
         ]);
 
         $reservation->update([
@@ -99,6 +99,31 @@ class ReservationObserverTest extends TestCase
         $customer->refresh();
 
         $this->assertSame(0, $customer->shows_count);
+        $this->assertSame(0, $customer->no_shows_count);
+    }
+
+    public function test_it_reverses_the_previous_terminal_counters_when_status_is_corrected(): void
+    {
+        Queue::fake();
+        $customer = Customer::factory()->create([
+            'shows_count' => 0,
+            'no_shows_count' => 1,
+        ]);
+        $reservation = Reservation::factory()->create([
+            'customer_id' => $customer->id,
+            'status' => 'no_show',
+        ]);
+
+        $reservation->update([
+            'status' => 'show',
+            'status_changed_at' => now(),
+        ]);
+
+        Queue::assertPushed(RecalculateReliabilityScore::class);
+
+        $customer->refresh();
+
+        $this->assertSame(1, $customer->shows_count);
         $this->assertSame(0, $customer->no_shows_count);
     }
 }

@@ -38,13 +38,16 @@ class ReservationController extends Controller
 
         $customer->increment('reservations_count');
 
-        $token = (string) Str::uuid();
-        $expiresAt = $scheduledAt->copy()->subMinutes(15);
+        $token = null;
+        $expiresAt = null;
         $status = 'pending_verification';
 
         if ($phoneVerified) {
+            $token = (string) Str::uuid();
+            $expiresAt = $scheduledAt->copy()->subMinutes(15);
             $status = 'pending_reminder';
         } elseif ($scheduledAt->greaterThan(now()->utc()->addMinutes(30))) {
+            $token = (string) Str::uuid();
             $expiresAt = now()->utc()->addHours(24)->min($scheduledAt->copy()->subHours(2));
         }
 
@@ -62,7 +65,7 @@ class ReservationController extends Controller
             'status_changed_at' => now()->utc(),
         ])->load('customer');
 
-        if (! $phoneVerified) {
+        if (! $phoneVerified && $token !== null) {
             SendVerificationSms::dispatch($reservation->id);
         }
 

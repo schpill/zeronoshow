@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Customer;
 use App\Models\Reservation;
 use App\Services\ReliabilityScoreService;
+use Carbon\Carbon;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -41,17 +42,22 @@ class RecalculateReliabilityScore implements ShouldQueue
 
         $customer = $service->recalculate($customer);
 
-        $businessIds = Reservation::query()
+        $reservations = Reservation::query()
+            ->with('business')
             ->where('customer_id', $customer->id)
-            ->distinct()
-            ->pluck('business_id');
+            ->get();
 
-        foreach ($businessIds as $businessId) {
+        foreach ($reservations as $reservation) {
+            $businessId = $reservation->business_id;
+            $timezone = $reservation->business?->timezone ?? 'UTC';
+            $scheduledAt = Carbon::parse($reservation->scheduled_at)->timezone($timezone);
+            $dateKey = $scheduledAt->toDateString();
+            $weekKey = sprintf('%d-W%02d', $scheduledAt->isoWeekYear, $scheduledAt->isoWeek);
+
+            Cache::forget("dashboard:{$businessId}:none:none");
+            Cache::forget("dashboard:{$businessId}:{$dateKey}:none");
+            Cache::forget("dashboard:{$businessId}:none:{$weekKey}");
             Cache::forget("dashboard:{$businessId}:today:list");
-        }
-
-        if ($businessIds->isNotEmpty() && config('cache.default') !== 'redis') {
-            Cache::flush();
         }
     }
 }
