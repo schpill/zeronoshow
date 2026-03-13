@@ -38,6 +38,7 @@ test:
 	$(MAKE) test-fe
 
 test-be:
+	$(DOCKER_COMPOSE) run --rm api php artisan config:clear
 	$(DOCKER_COMPOSE) run --rm api ./vendor/bin/pint --test
 	$(DOCKER_COMPOSE) run --rm api ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M
 	$(DOCKER_COMPOSE) run --rm api ./vendor/bin/pest --stop-on-failure
