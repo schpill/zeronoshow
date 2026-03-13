@@ -23,12 +23,12 @@ docker compose exec -T api ./vendor/bin/phpstan analyse -c phpstan.neon --memory
 echo "▶ [3/5] Backend — Pest (tests)"
 docker compose exec -T api ./vendor/bin/pest --stop-on-failure
 
-echo "▶ [4/5] Frontend — Prettier + ESLint"
-pnpm --dir frontend format:check
-pnpm --dir frontend lint
+echo "▶ [4/5] Frontend — Prettier + ESLint (check only)"
+(cd frontend && pnpm exec prettier --check .)
+(cd frontend && pnpm exec eslint . --cache)
 
 echo "▶ [5/5] Frontend — Vitest (tests)"
-pnpm --dir frontend vitest run
+(cd frontend && pnpm exec vitest run)
 
 echo ""
 echo "✓ Tous les checks sont passés — push autorisé."
