@@ -4,12 +4,13 @@ namespace Tests\Feature\Confirmation;
 
 use App\Models\Reservation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class ConfirmReservationTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, WithoutMiddleware;
 
     public function test_it_confirms_a_reservation_and_invalidates_the_token(): void
     {
