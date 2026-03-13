@@ -49,7 +49,7 @@ class RecalculateReliabilityScore implements ShouldQueue
 
         foreach ($reservations as $reservation) {
             $businessId = $reservation->business_id;
-            $timezone = $reservation->business?->timezone ?? 'UTC';
+            $timezone = $reservation->business->timezone;
             $scheduledAt = Carbon::parse($reservation->scheduled_at)->timezone($timezone);
             $dateKey = $scheduledAt->toDateString();
             $weekKey = sprintf('%d-W%02d', $scheduledAt->isoWeekYear, $scheduledAt->isoWeek);
