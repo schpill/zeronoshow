@@ -71,6 +71,49 @@ class StripeWebhookTest extends TestCase
         ]);
     }
 
+    public function test_it_activates_the_subscription_by_matching_customer_email_when_reference_and_customer_id_are_missing(): void
+    {
+        config()->set('services.stripe.webhook_secret', 'whsec_test');
+
+        $business = Business::factory()->create([
+            'subscription_status' => 'trial',
+            'stripe_customer_id' => null,
+        ]);
+
+        $payload = json_encode([
+            'type' => 'checkout.session.completed',
+            'data' => [
+                'object' => [
+                    'customer' => 'cus_test_fallback',
+                    'customer_email' => $business->email,
+                    'subscription' => 'sub_test_fallback',
+                ],
+            ],
+        ], JSON_THROW_ON_ERROR);
+
+        $response = $this->call(
+            'POST',
+            '/api/v1/webhooks/stripe',
+            [],
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_STRIPE_SIGNATURE' => $this->stripeSignature($payload, 'whsec_test'),
+            ],
+            $payload,
+        );
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('businesses', [
+            'id' => $business->id,
+            'subscription_status' => 'active',
+            'stripe_customer_id' => 'cus_test_fallback',
+            'stripe_subscription_id' => 'sub_test_fallback',
+        ]);
+    }
+
     public function test_it_marks_the_subscription_as_cancelled_when_subscription_is_deleted(): void
     {
         config()->set('services.stripe.webhook_secret', 'whsec_test');

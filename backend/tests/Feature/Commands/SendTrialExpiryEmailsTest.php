@@ -25,7 +25,7 @@ class SendTrialExpiryEmailsTest extends TestCase
             'trial_ends_at' => now()->addDays(5),
         ]);
 
-        $this->artisan('trial:send-expiry-warnings')
+        $this->artisan('trial:expiry-emails')
             ->assertExitCode(0);
 
         Mail::assertQueued(TrialExpiryWarning::class, fn (TrialExpiryWarning $mail) => $mail->hasTo($eligible->email));

@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 import AppLayout from '@/layouts/AppLayout.vue'
 import DateNavigator from '@/components/DateNavigator.vue'
@@ -40,6 +40,10 @@ async function refreshReservations() {
 }
 
 usePolling(refreshReservations, 30_000)
+
+watch(selectedDate, () => {
+  void refreshReservations()
+})
 
 function handleCreated(reservation: ReservationRecord) {
   createdMessage.value = 'Réservation créée avec succès.'

@@ -12,7 +12,14 @@ class SubscriptionController extends Controller
 {
     public function checkout(Request $request): JsonResponse
     {
-        $session = app(StripeService::class)->createCheckoutSession($request->user());
+        $business = $request->user();
+        $session = app(StripeService::class)->createCheckoutSession($business);
+
+        if (($session['customer_id'] ?? null) !== null && $business->stripe_customer_id !== $session['customer_id']) {
+            $business->forceFill([
+                'stripe_customer_id' => $session['customer_id'],
+            ])->save();
+        }
 
         return response()->json([
             'checkout_url' => $session['url'],

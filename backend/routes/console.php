@@ -156,9 +156,6 @@ $syncMonthlySmsCost = function () {
 };
 
 Artisan::command('trial:expiry-emails', $sendTrialExpiryWarnings)
-    ->purpose('Queue trial expiry warning emails for businesses expiring in 48 hours');
-
-Artisan::command('trial:send-expiry-warnings', $sendTrialExpiryWarnings)
     ->purpose('Send trial expiry warning emails');
 
 Artisan::command('billing:sync-sms-cost {--month=}', $syncMonthlySmsCost)
@@ -169,6 +166,6 @@ Artisan::command('billing:sync-sms-costs {--month=}', $syncMonthlySmsCost)
 
 Schedule::command('reminders:process')->everyMinute()->withoutOverlapping(10);
 Schedule::command('reservations:auto-cancel')->everyMinute()->withoutOverlapping(10);
-Schedule::command('trial:send-expiry-warnings')->hourly()->withoutOverlapping(10);
+Schedule::command('trial:expiry-emails')->hourly()->withoutOverlapping(10);
 Schedule::command('billing:sync-sms-cost')->monthlyOn(1, '06:00')->withoutOverlapping(60);
 Schedule::command('sms-logs:purge')->dailyAt('03:00');

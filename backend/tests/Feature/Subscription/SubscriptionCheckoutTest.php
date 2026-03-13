@@ -14,6 +14,12 @@ class SubscriptionCheckoutTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_it_requires_authentication_to_create_a_checkout_session(): void
+    {
+        $this->postJson('/api/v1/subscription/checkout')
+            ->assertUnauthorized();
+    }
+
     public function test_it_returns_the_subscription_snapshot(): void
     {
         $business = Business::factory()->create([
@@ -67,5 +73,35 @@ class SubscriptionCheckoutTest extends TestCase
         $response
             ->assertOk()
             ->assertJsonPath('checkout_url', 'https://checkout.stripe.test/session/cs_test_123');
+    }
+
+    public function test_it_persists_the_returned_stripe_customer_id_on_checkout_creation(): void
+    {
+        $business = Business::factory()->create([
+            'subscription_status' => 'trial',
+            'stripe_customer_id' => null,
+        ]);
+
+        $this->instance(StripeService::class, new class
+        {
+            public function createCheckoutSession(Business $business): array
+            {
+                return [
+                    'id' => 'cs_test_456',
+                    'url' => 'https://checkout.stripe.test/session/cs_test_456',
+                    'customer_id' => 'cus_test_456',
+                ];
+            }
+        });
+
+        Sanctum::actingAs($business);
+
+        $this->postJson('/api/v1/subscription/checkout')
+            ->assertOk();
+
+        $this->assertDatabaseHas('businesses', [
+            'id' => $business->id,
+            'stripe_customer_id' => 'cus_test_456',
+        ]);
     }
 }
