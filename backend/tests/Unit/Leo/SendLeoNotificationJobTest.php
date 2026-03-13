@@ -8,6 +8,8 @@ use App\Models\LeoMessageLog;
 use App\Models\Reservation;
 use App\Services\Leo\LeoThrottleService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class SendLeoNotificationJobTest extends TestCase
@@ -82,10 +84,21 @@ class SendLeoNotificationJobTest extends TestCase
 
     private function reservationWithChannel(): Reservation
     {
-        $business = Business::factory()->create([
+        $businessId = (string) Str::uuid();
+        DB::table('businesses')->insert([
+            'id' => $businessId,
+            'name' => 'Le Salon',
+            'email' => 'owner@example.com',
+            'password' => bcrypt('password123'),
+            'phone' => '+33612345678',
             'timezone' => 'Europe/Paris',
-            'leo_addon_active' => true,
+            'subscription_status' => 'trial',
+            'trial_ends_at' => now()->addDays(14),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
+
+        $business = Business::query()->findOrFail($businessId);
         $business->leoChannel()->create([
             'channel' => 'telegram',
             'external_identifier' => '123456789',
