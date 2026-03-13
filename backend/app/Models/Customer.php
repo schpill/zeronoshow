@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\ReliabilityScoreService;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -45,6 +46,6 @@ class Customer extends Model
             return $this->score_tier;
         }
 
-        return \App\Services\ReliabilityScoreService::getTierForScore($this->reliability_score);
+        return ReliabilityScoreService::getTierForScore($this->reliability_score);
     }
 }
