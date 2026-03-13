@@ -6,6 +6,7 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import DateNavigator from '@/components/DateNavigator.vue'
 import ReservationForm from '@/components/ReservationForm.vue'
 import ReservationList from '@/components/ReservationList.vue'
+import ReservationRow from '@/components/ReservationRow.vue'
 import StatsBar from '@/components/StatsBar.vue'
 import { usePolling } from '@/composables/usePolling'
 import { useReservations } from '@/composables/useReservations'
@@ -74,6 +75,21 @@ function toIsoWeek(date: string) {
 const summary = computed(
   () => `${smsCostThisMonth.value.toFixed(2)} € SMS · ${weeklyNoShowRate.value ?? 0}% no-show`,
 )
+
+const groupedReservations = computed(() => {
+  if (viewMode.value !== 'week') {
+    return []
+  }
+
+  const groups = new Map<string, ReservationRecord[]>()
+
+  reservations.value.forEach((reservation) => {
+    const key = new Date(reservation.scheduled_at).toISOString().slice(0, 10)
+    groups.set(key, [...(groups.get(key) ?? []), reservation])
+  })
+
+  return Array.from(groups.entries()).map(([date, items]) => ({ date, items }))
+})
 </script>
 
 <template>
@@ -134,10 +150,37 @@ const summary = computed(
     <div class="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
       <ReservationForm @created="handleCreated" />
       <ReservationList
+        v-if="viewMode === 'day'"
         :reservations="reservations"
         :loading="loading.fetch.value"
         @updated="handleUpdated"
       />
+      <section
+        v-else
+        class="grid gap-4 rounded-[32px] border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900"
+      >
+        <div
+          v-for="group in groupedReservations"
+          :key="group.date"
+          class="grid gap-3 rounded-2xl border border-slate-200 p-4 dark:border-slate-800"
+        >
+          <h2 class="text-heading-4 capitalize dark:text-slate-50">
+            {{
+              new Intl.DateTimeFormat('fr-FR', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+              }).format(new Date(`${group.date}T12:00:00`))
+            }}
+          </h2>
+          <ReservationRow
+            v-for="reservation in group.items"
+            :key="reservation.id"
+            :reservation="reservation"
+            @updated="handleUpdated"
+          />
+        </div>
+      </section>
     </div>
   </AppLayout>
 </template>

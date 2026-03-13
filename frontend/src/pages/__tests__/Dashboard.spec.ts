@@ -16,6 +16,17 @@ const fetchDashboard = vi.fn().mockResolvedValue({
       reminder_2h_sent: false,
       reminder_30m_sent: false,
     },
+    {
+      id: 'res-2',
+      customer_name: 'Lina',
+      status: 'no_show',
+      scheduled_at: '2026-03-14T19:00:00Z',
+      guests: 4,
+      notes: null,
+      phone_verified: true,
+      reminder_2h_sent: false,
+      reminder_30m_sent: false,
+    },
   ],
   stats: {
     confirmed: 1,
@@ -33,7 +44,8 @@ const fetchDashboard = vi.fn().mockResolvedValue({
 vi.mock('@/composables/useReservations', () => ({
   useReservations: () => ({
     fetchDashboard,
-    loading: { fetch: { value: false } },
+    loading: { fetch: { value: false }, updateStatus: { value: false } },
+    updateStatus: vi.fn(),
   }),
 }))
 
@@ -57,6 +69,10 @@ describe('Dashboard', () => {
             props: ['reservations'],
             template: '<div>{{ reservations.length }}</div>',
           },
+          ReservationRow: {
+            props: ['reservation'],
+            template: '<article>{{ reservation.customer_name }}</article>',
+          },
         },
       },
     })
@@ -69,5 +85,6 @@ describe('Dashboard', () => {
     await wrapper.get('button:nth-of-type(2)').trigger('click')
 
     expect(fetchDashboard).toHaveBeenCalled()
+    expect(wrapper.text()).toContain('mars')
   })
 })

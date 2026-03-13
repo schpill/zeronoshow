@@ -25,7 +25,7 @@ class TrialExpiryEmailTest extends TestCase
 
         $this->artisan('trial:expiry-emails')->assertSuccessful();
 
-        Mail::assertSent(TrialExpiryWarning::class, function (TrialExpiryWarning $mail) use ($business): bool {
+        Mail::assertQueued(TrialExpiryWarning::class, function (TrialExpiryWarning $mail) use ($business): bool {
             return $mail->hasTo($business->email);
         });
     }
@@ -47,7 +47,7 @@ class TrialExpiryEmailTest extends TestCase
 
         $this->artisan('trial:expiry-emails')->assertSuccessful();
 
-        Mail::assertNotSent(TrialExpiryWarning::class, function (TrialExpiryWarning $mail) use ($tooEarly, $active): bool {
+        Mail::assertNotQueued(TrialExpiryWarning::class, function (TrialExpiryWarning $mail) use ($tooEarly, $active): bool {
             return $mail->hasTo($tooEarly->email) || $mail->hasTo($active->email);
         });
     }
@@ -65,8 +65,8 @@ class TrialExpiryEmailTest extends TestCase
         $this->artisan('trial:expiry-emails')->assertSuccessful();
         $this->artisan('trial:expiry-emails')->assertSuccessful();
 
-        Mail::assertSent(TrialExpiryWarning::class, 1);
-        Mail::assertSent(TrialExpiryWarning::class, function (TrialExpiryWarning $mail) use ($business): bool {
+        Mail::assertQueued(TrialExpiryWarning::class, 1);
+        Mail::assertQueued(TrialExpiryWarning::class, function (TrialExpiryWarning $mail) use ($business): bool {
             return $mail->hasTo($business->email);
         });
     }

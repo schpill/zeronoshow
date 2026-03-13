@@ -27,6 +27,7 @@ describe('TrialBanner', () => {
       },
     })
 
+    expect(wrapper.attributes('role')).toBe('alert')
     expect(wrapper.text()).toContain('Votre essai expire')
     expect(wrapper.html()).toContain('/subscription')
     expect(wrapper.html()).toContain('border-red-200')

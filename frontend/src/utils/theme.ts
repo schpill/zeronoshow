@@ -1,6 +1,6 @@
 export type Theme = 'light' | 'dark'
 
-const STORAGE_KEY = 'znz_theme'
+const STORAGE_KEY = 'zns-theme'
 
 export function getStoredTheme(): Theme {
   return localStorage.getItem(STORAGE_KEY) === 'dark' ? 'dark' : 'light'

@@ -4,48 +4,47 @@ namespace App\Services;
 
 use App\Models\Business;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
-use RuntimeException;
+use Stripe\Checkout\Session;
+use Stripe\Customer;
+use Stripe\Exception\ApiErrorException;
+use Stripe\InvoiceItem;
+use Stripe\StripeClient;
 
 class StripeService
 {
+    /**
+     * @return array{id: string, url: string, customer_id: string|null}
+     *
+     * @throws ApiErrorException
+     */
     public function createCheckoutSession(Business $business): array
     {
-        $response = Http::asForm()
-            ->withBasicAuth((string) config('services.stripe.secret'), '')
-            ->post('https://api.stripe.com/v1/checkout/sessions', [
-                'mode' => 'subscription',
-                'success_url' => rtrim((string) config('app.frontend_url', config('app.url')), '/').'/subscription?status=success',
-                'cancel_url' => rtrim((string) config('app.frontend_url', config('app.url')), '/').'/subscription?status=cancelled',
-                'line_items[0][price_data][currency]' => 'eur',
-                'line_items[0][price_data][product_data][name]' => 'ZeroNoShow Monthly Subscription',
-                'line_items[0][price_data][recurring][interval]' => 'month',
-                'line_items[0][price_data][unit_amount]' => 1900,
-                'line_items[0][quantity]' => 1,
-                'customer_email' => $business->email,
-                'client_reference_id' => $business->id,
-            ]);
-
-        if (! $response->successful()) {
-            throw new RuntimeException('Unable to create Stripe Checkout session.');
-        }
-
-        /** @var array{id: string, url: string, customer?: string} $payload */
-        $payload = $response->json();
-
-        if (($payload['customer'] ?? null) !== null) {
-            $business->forceFill([
-                'stripe_customer_id' => $payload['customer'],
-            ])->save();
-        }
+        $client = new StripeClient((string) config('services.stripe.secret'));
+        $customerId = $this->resolveCustomerId($client, $business);
+        /** @var Session $session */
+        $session = $client->checkout->sessions->create([
+            'mode' => 'subscription',
+            'customer' => $customerId,
+            'client_reference_id' => $business->id,
+            'customer_email' => $business->email,
+            'success_url' => rtrim((string) config('app.frontend_url', config('app.url')), '/').'/subscription?status=success',
+            'cancel_url' => rtrim((string) config('app.frontend_url', config('app.url')), '/').'/subscription?status=cancelled',
+            'line_items' => [[
+                'price' => (string) config('services.stripe.price_id'),
+                'quantity' => 1,
+            ]],
+        ]);
 
         return [
-            'id' => $payload['id'],
-            'url' => $payload['url'],
-            'customer_id' => $payload['customer'] ?? $business->stripe_customer_id,
+            'id' => (string) $session->id,
+            'url' => (string) $session->url,
+            'customer_id' => $customerId,
         ];
     }
 
+    /**
+     * @throws ApiErrorException
+     */
     public function createInvoiceItem(Business $business, int $amountInCents, string $period): void
     {
         if ($business->stripe_customer_id === null) {
@@ -58,21 +57,45 @@ class StripeService
             return;
         }
 
-        $response = Http::asForm()
-            ->withBasicAuth((string) config('services.stripe.secret'), '')
-            ->post('https://api.stripe.com/v1/invoiceitems', [
-                'customer' => $business->stripe_customer_id,
-                'amount' => $amountInCents,
-                'currency' => 'eur',
-                'description' => sprintf('SMS ZeroNoShow - %s', $period),
-                'metadata[business_id]' => $business->id,
-                'metadata[period]' => $period,
-            ]);
+        $client = new StripeClient((string) config('services.stripe.secret'));
+        /** @var InvoiceItem $invoiceItem */
+        $invoiceItem = $client->invoiceItems->create([
+            'customer' => $business->stripe_customer_id,
+            'amount' => $amountInCents,
+            'currency' => 'eur',
+            'description' => sprintf('SMS ZeroNoShow - %s', $period),
+            'metadata' => [
+                'business_id' => $business->id,
+                'period' => $period,
+            ],
+        ]);
 
-        if (! $response->successful()) {
-            throw new RuntimeException('Unable to create Stripe invoice item.');
+        Cache::forever($cacheKey, (string) $invoiceItem->id);
+    }
+
+    /**
+     * @throws ApiErrorException
+     */
+    private function resolveCustomerId(StripeClient $client, Business $business): string
+    {
+        if ($business->stripe_customer_id !== null) {
+            return $business->stripe_customer_id;
         }
 
-        Cache::forever($cacheKey, true);
+        /** @var Customer $customer */
+        $customer = $client->customers->create([
+            'email' => $business->email,
+            'name' => $business->name,
+            'phone' => $business->phone,
+            'metadata' => [
+                'business_id' => $business->id,
+            ],
+        ]);
+
+        $business->forceFill([
+            'stripe_customer_id' => (string) $customer->id,
+        ])->save();
+
+        return (string) $customer->id;
     }
 }

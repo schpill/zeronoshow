@@ -65,7 +65,7 @@ async function handleCheckout() {
       </div>
       <button
         type="button"
-        class="mt-8 rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white"
+        class="mt-8 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
         @click="handleCheckout"
       >
         S’abonner

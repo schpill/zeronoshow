@@ -3,9 +3,15 @@
 namespace App\Http\Controllers\Webhook;
 
 use App\Http\Controllers\Controller;
+use App\Mail\PaymentFailedStub;
 use App\Models\Business;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Stripe\Exception\SignatureVerificationException;
+use Stripe\Webhook;
+use UnexpectedValueException;
 
 class StripeWebhookController extends Controller
 {
@@ -15,7 +21,9 @@ class StripeWebhookController extends Controller
         $signature = (string) $request->header('Stripe-Signature');
         $secret = (string) config('services.stripe.webhook_secret');
 
-        if (! $this->hasValidSignature($payload, $signature, $secret)) {
+        try {
+            Webhook::constructEvent($payload, $signature, $secret, PHP_INT_MAX);
+        } catch (UnexpectedValueException|SignatureVerificationException) {
             return response()->json(['message' => 'Invalid webhook signature.'], 400);
         }
 
@@ -39,7 +47,18 @@ class StripeWebhookController extends Controller
     private function handleCheckoutCompleted(array $payload): void
     {
         $business = Business::query()
-            ->where('stripe_customer_id', $payload['customer'] ?? null)
+            ->when(
+                isset($payload['client_reference_id']),
+                fn ($query) => $query->where('id', $payload['client_reference_id'])
+            )
+            ->when(
+                ! isset($payload['client_reference_id']) && isset($payload['customer_email']),
+                fn ($query) => $query->where('email', $payload['customer_email'])
+            )
+            ->when(
+                ! isset($payload['client_reference_id']) && ! isset($payload['customer_email']) && isset($payload['customer']),
+                fn ($query) => $query->where('stripe_customer_id', $payload['customer'])
+            )
             ->first();
 
         if (! $business) {
@@ -71,35 +90,19 @@ class StripeWebhookController extends Controller
      */
     private function handleInvoicePaymentFailed(array $payload): void
     {
-        Business::query()
+        $business = Business::query()
             ->where('stripe_customer_id', $payload['customer'] ?? null)
-            ->update([
-                'subscription_status' => 'past_due',
-            ]);
-    }
+            ->first();
 
-    private function hasValidSignature(string $payload, string $header, string $secret): bool
-    {
-        if ($payload === '' || $header === '' || $secret === '') {
-            return false;
+        Log::warning('Stripe invoice payment failed.', [
+            'customer' => $payload['customer'] ?? null,
+            'invoice_id' => $payload['id'] ?? null,
+        ]);
+
+        if ($business) {
+            Mail::to($business->email)->queue(
+                new PaymentFailedStub($business, (string) ($payload['id'] ?? 'unknown'))
+            );
         }
-
-        $parts = collect(explode(',', $header))
-            ->mapWithKeys(function (string $part): array {
-                [$key, $value] = array_pad(explode('=', $part, 2), 2, null);
-
-                return [$key => $value];
-            });
-
-        $timestamp = $parts->get('t');
-        $signature = $parts->get('v1');
-
-        if (! is_string($timestamp) || ! is_string($signature)) {
-            return false;
-        }
-
-        $expected = hash_hmac('sha256', "{$timestamp}.{$payload}", $secret);
-
-        return hash_equals($expected, $signature);
     }
 }

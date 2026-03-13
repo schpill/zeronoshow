@@ -48,6 +48,8 @@ function statusClasses(status: SmsLogRecord['status']) {
           <th class="pb-3">Statut</th>
           <th class="pb-3">Coût</th>
           <th class="pb-3">Téléphone</th>
+          <th class="pb-3">Envoyé</th>
+          <th class="pb-3">Livré</th>
         </tr>
       </thead>
       <tbody>
@@ -64,6 +66,10 @@ function statusClasses(status: SmsLogRecord['status']) {
           </td>
           <td class="py-3">{{ formatCost(log.cost_eur) }}</td>
           <td class="py-3 font-mono text-xs">{{ log.phone }}</td>
+          <td class="py-3 text-xs text-slate-500 dark:text-slate-400">{{ log.sent_at ?? '—' }}</td>
+          <td class="py-3 text-xs text-slate-500 dark:text-slate-400">
+            {{ log.delivered_at ?? '—' }}
+          </td>
         </tr>
       </tbody>
     </table>

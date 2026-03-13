@@ -3,6 +3,8 @@ import { describe, expect, it, vi } from 'vitest'
 
 import ReservationDetailPage from '@/pages/ReservationDetailPage.vue'
 
+const updateStatus = vi.fn()
+
 vi.mock('vue-router', () => ({
   useRoute: () => ({
     params: { id: 'res-1' },
@@ -12,8 +14,19 @@ vi.mock('vue-router', () => ({
 vi.mock('@/composables/useReservations', () => ({
   useReservations: () => ({
     fetchReservation: vi.fn().mockResolvedValue({
-      reservation: { id: 'res-1', customer_name: 'Marc', status: 'confirmed', guests: 2 },
+      reservation: {
+        id: 'res-1',
+        customer_name: 'Marc',
+        status: 'confirmed',
+        guests: 2,
+        scheduled_at: '2026-03-13T19:00:00Z',
+        phone_verified: true,
+        reminder_2h_sent: false,
+        reminder_30m_sent: false,
+        status_changed_at: new Date().toISOString(),
+      },
       customer: {
+        id: 'cust-1',
         phone: '+33612345678',
         reliability_score: 90,
         score_tier: 'reliable',
@@ -32,6 +45,8 @@ vi.mock('@/composables/useReservations', () => ({
         },
       ],
     }),
+    updateStatus,
+    loading: { updateStatus: { value: false } },
   }),
 }))
 
@@ -50,5 +65,7 @@ describe('ReservationDetailPage', () => {
     expect(wrapper.text()).toContain('Marc')
     expect(wrapper.text()).toContain('+33612345678')
     expect(wrapper.text()).toContain('reminder')
+    expect(wrapper.text()).toContain('Présent')
+    expect(wrapper.text()).toContain('No-show')
   })
 })

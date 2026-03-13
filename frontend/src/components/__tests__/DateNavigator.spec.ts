@@ -18,5 +18,6 @@ describe('DateNavigator', () => {
 
     expect(emitted[0]).toEqual(['2026-03-12'])
     expect(emitted[1]).toEqual(['2026-03-14'])
+    expect(wrapper.text()).toContain('mars')
   })
 })

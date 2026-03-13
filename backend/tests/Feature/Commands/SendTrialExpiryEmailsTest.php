@@ -28,6 +28,6 @@ class SendTrialExpiryEmailsTest extends TestCase
         $this->artisan('trial:send-expiry-warnings')
             ->assertExitCode(0);
 
-        Mail::assertSent(TrialExpiryWarning::class, fn (TrialExpiryWarning $mail) => $mail->hasTo($eligible->email));
+        Mail::assertQueued(TrialExpiryWarning::class, fn (TrialExpiryWarning $mail) => $mail->hasTo($eligible->email));
     }
 }

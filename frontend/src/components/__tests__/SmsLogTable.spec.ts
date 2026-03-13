@@ -15,6 +15,8 @@ describe('SmsLogTable', () => {
             phone: '+33612345678',
             body: 'Bonjour',
             cost_eur: 0.12,
+            sent_at: '2026-03-13T12:00:00Z',
+            delivered_at: '2026-03-13T12:01:00Z',
           },
         ],
       },
@@ -22,6 +24,7 @@ describe('SmsLogTable', () => {
 
     expect(wrapper.text()).toContain('reminder')
     expect(wrapper.text()).toContain('0,12')
+    expect(wrapper.text()).toContain('2026-03-13T12:01:00Z')
     expect(wrapper.html()).toContain('bg-emerald-100')
   })
 

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import AppLayout from '@/layouts/AppLayout.vue'
+import ReservationRow from '@/components/ReservationRow.vue'
 import SmsLogTable from '@/components/SmsLogTable.vue'
 import { useReservations } from '@/composables/useReservations'
 import type { ReservationCustomer, ReservationRecord, SmsLogRecord } from '@/types/reservations'
@@ -20,6 +21,19 @@ onMounted(async () => {
   customer.value = response.customer ?? null
   smsLogs.value = response.sms_logs ?? []
 })
+
+const reservationWithCustomer = computed(() =>
+  reservation.value && customer.value
+    ? {
+        ...reservation.value,
+        customer: customer.value,
+      }
+    : reservation.value,
+)
+
+function handleUpdated(updatedReservation: ReservationRecord) {
+  reservation.value = updatedReservation
+}
 </script>
 
 <template>
@@ -37,6 +51,13 @@ onMounted(async () => {
         Téléphone: <span class="font-mono">{{ customer.phone }}</span>
       </p>
     </section>
+
+    <ReservationRow
+      v-if="reservationWithCustomer"
+      class="mb-6"
+      :reservation="reservationWithCustomer"
+      @updated="handleUpdated"
+    />
 
     <SmsLogTable :logs="smsLogs" />
   </AppLayout>

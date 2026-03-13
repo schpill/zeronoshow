@@ -22,5 +22,6 @@ describe('DarkModeToggle', () => {
     await wrapper.trigger('click')
 
     expect(document.documentElement.classList.contains('dark')).toBe(false)
+    expect(wrapper.findAll('svg')).toHaveLength(1)
   })
 })

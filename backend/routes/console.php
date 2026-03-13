@@ -96,8 +96,8 @@ Artisan::command('sms-logs:purge', function () {
 })->purpose('Stub SMS log purge command for scheduler wiring');
 
 $sendTrialExpiryWarnings = function () {
-    $windowStart = now()->addHours(24);
-    $windowEnd = now()->addHours(48);
+    $windowStart = now()->addHours(47);
+    $windowEnd = now()->addHours(49);
     $sentCount = 0;
 
     Business::query()
@@ -112,11 +112,11 @@ $sendTrialExpiryWarnings = function () {
                 return;
             }
 
-            Mail::to($business->email)->send(new TrialExpiryWarning($business));
+            Mail::to($business->email)->queue(new TrialExpiryWarning($business));
             $sentCount++;
         });
 
-    $this->info("Sent {$sentCount} trial expiry emails.");
+    $this->info("Queued {$sentCount} trial expiry emails.");
 };
 
 $syncMonthlySmsCost = function () {
@@ -135,6 +135,7 @@ $syncMonthlySmsCost = function () {
         ->each(function (Business $business) use ($service, $start, $end, &$count): void {
             $amount = (float) SmsLog::query()
                 ->where('business_id', $business->id)
+                ->where('status', 'delivered')
                 ->whereBetween('created_at', [$start->utc(), $end->utc()])
                 ->sum('cost_eur');
 

@@ -7,6 +7,15 @@ const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
 
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat('fr-FR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(new Date(`${value}T12:00:00`))
+}
+
 function shiftDate(days: number) {
   const nextDate = new Date(`${props.modelValue}T12:00:00`)
   nextDate.setDate(nextDate.getDate() + days)
@@ -30,7 +39,9 @@ const isToday = () => props.modelValue === new Date().toISOString().slice(0, 10)
     >
       ←
     </button>
-    <p class="text-label min-w-32 text-center dark:text-slate-100">{{ modelValue }}</p>
+    <p class="text-label min-w-32 text-center capitalize dark:text-slate-100">
+      {{ formatDate(modelValue) }}
+    </p>
     <button
       type="button"
       class="rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200"
@@ -41,7 +52,7 @@ const isToday = () => props.modelValue === new Date().toISOString().slice(0, 10)
     </button>
     <button
       type="button"
-      class="rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+      class="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
       :disabled="isToday()"
       @click="goToToday"
     >

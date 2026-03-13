@@ -2,8 +2,11 @@
 
 namespace Tests\Feature\Webhook;
 
+use App\Mail\PaymentFailedStub;
 use App\Models\Business;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class StripeWebhookTest extends TestCase
@@ -29,7 +32,7 @@ class StripeWebhookTest extends TestCase
 
         $business = Business::factory()->create([
             'subscription_status' => 'trial',
-            'stripe_customer_id' => 'cus_test_123',
+            'stripe_customer_id' => null,
         ]);
 
         $payload = json_encode([
@@ -37,6 +40,8 @@ class StripeWebhookTest extends TestCase
             'data' => [
                 'object' => [
                     'customer' => 'cus_test_123',
+                    'customer_email' => $business->email,
+                    'client_reference_id' => $business->id,
                     'subscription' => 'sub_test_123',
                 ],
             ],
@@ -64,6 +69,87 @@ class StripeWebhookTest extends TestCase
             'subscription_status' => 'active',
             'stripe_subscription_id' => 'sub_test_123',
         ]);
+    }
+
+    public function test_it_marks_the_subscription_as_cancelled_when_subscription_is_deleted(): void
+    {
+        config()->set('services.stripe.webhook_secret', 'whsec_test');
+
+        $business = Business::factory()->create([
+            'subscription_status' => 'active',
+            'stripe_customer_id' => 'cus_test_123',
+            'stripe_subscription_id' => 'sub_test_123',
+        ]);
+
+        $payload = json_encode([
+            'type' => 'customer.subscription.deleted',
+            'data' => [
+                'object' => [
+                    'customer' => 'cus_test_123',
+                    'id' => 'sub_test_123',
+                ],
+            ],
+        ], JSON_THROW_ON_ERROR);
+
+        $response = $this->call(
+            'POST',
+            '/api/v1/webhooks/stripe',
+            [],
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_STRIPE_SIGNATURE' => $this->stripeSignature($payload, 'whsec_test'),
+            ],
+            $payload,
+        );
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('businesses', [
+            'id' => $business->id,
+            'subscription_status' => 'cancelled',
+        ]);
+    }
+
+    public function test_it_logs_a_warning_and_queues_a_stub_mail_when_payment_fails(): void
+    {
+        config()->set('services.stripe.webhook_secret', 'whsec_test');
+        Log::spy();
+        Mail::fake();
+
+        $business = Business::factory()->create([
+            'subscription_status' => 'active',
+            'stripe_customer_id' => 'cus_test_123',
+        ]);
+
+        $payload = json_encode([
+            'type' => 'invoice.payment_failed',
+            'data' => [
+                'object' => [
+                    'customer' => 'cus_test_123',
+                    'id' => 'in_test_123',
+                ],
+            ],
+        ], JSON_THROW_ON_ERROR);
+
+        $response = $this->call(
+            'POST',
+            '/api/v1/webhooks/stripe',
+            [],
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_STRIPE_SIGNATURE' => $this->stripeSignature($payload, 'whsec_test'),
+            ],
+            $payload,
+        );
+
+        $response->assertOk();
+
+        Log::shouldHaveReceived('warning')->once();
+        Mail::assertQueued(PaymentFailedStub::class, fn (PaymentFailedStub $mail) => $mail->hasTo($business->email));
     }
 
     private function stripeSignature(string $payload, string $secret): string

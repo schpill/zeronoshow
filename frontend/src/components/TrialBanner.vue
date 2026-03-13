@@ -27,7 +27,7 @@ const visible = computed(
 )
 
 const toneClasses = computed(() =>
-  (daysRemaining.value ?? 0) <= 2
+  (daysRemaining.value ?? 0) <= 3
     ? 'border-red-200 bg-red-50 text-red-800 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-200'
     : 'border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200',
 )
@@ -49,6 +49,7 @@ function dismiss() {
 <template>
   <section
     v-if="visible"
+    role="alert"
     class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-4 py-3"
     :class="toneClasses"
   >
