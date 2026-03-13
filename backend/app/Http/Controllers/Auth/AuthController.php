@@ -68,6 +68,7 @@ class AuthController extends Controller
             'phone' => $business->phone,
             'trial_ends_at' => optional($business->trial_ends_at)->toIso8601String(),
             'subscription_status' => $business->subscription_status,
+            'leo_addon_active' => (bool) $business->leo_addon_active,
         ];
     }
 }

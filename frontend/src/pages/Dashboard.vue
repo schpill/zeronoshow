@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { RouterLink } from 'vue-router'
 
 import AppLayout from '@/layouts/AppLayout.vue'
 import DateNavigator from '@/components/DateNavigator.vue'
@@ -13,6 +14,7 @@ import StatsBar from '@/components/StatsBar.vue'
 import { usePolling } from '@/composables/usePolling'
 import { useReservations } from '@/composables/useReservations'
 import { useToast } from '@/composables/useToast'
+import type { LeoMessageActivity } from '@/types/leo'
 import type { DashboardStats, ReservationRecord } from '@/types/reservations'
 
 const selectedDate = ref(new Date().toISOString().slice(0, 10))
@@ -30,6 +32,7 @@ const stats = ref<DashboardStats>({
 })
 const smsCostThisMonth = ref(0)
 const weeklyNoShowRate = ref<number | null>(null)
+const leoActivity = ref<LeoMessageActivity[]>([])
 const { fetchDashboard, loading } = useReservations()
 const toast = useToast()
 
@@ -44,6 +47,7 @@ async function refreshReservations() {
     stats.value = response.stats
     smsCostThisMonth.value = response.sms_cost_this_month
     weeklyNoShowRate.value = response.weekly_no_show_rate
+    leoActivity.value = response.leo_activity ?? []
   } catch (error) {
     pageError.value = error instanceof Error ? error.message : 'Impossible de charger le dashboard.'
   }
@@ -170,7 +174,42 @@ const groupedReservations = computed(() => {
       <StatsBar :stats="stats" />
 
       <div class="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
-        <ReservationForm @created="handleCreated" />
+        <div class="grid gap-6">
+          <ReservationForm @created="handleCreated" />
+          <section
+            v-if="leoActivity.length > 0"
+            class="rounded-[32px] border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900"
+          >
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <p class="text-overline">Activité Léo</p>
+                <h2 class="text-heading-4 dark:text-slate-50">3 derniers messages</h2>
+              </div>
+              <RouterLink to="/leo" class="text-sm font-semibold text-emerald-700 dark:text-emerald-400">
+                Voir Léo →
+              </RouterLink>
+            </div>
+            <div class="mt-4 grid gap-3">
+              <article
+                v-for="message in leoActivity"
+                :key="message.id"
+                class="rounded-2xl border border-slate-200 px-4 py-3 dark:border-slate-800"
+              >
+                <div class="flex items-center justify-between gap-3">
+                  <p class="text-sm font-semibold text-slate-900 dark:text-slate-50">
+                    {{ message.direction === 'inbound' ? 'Entrant' : 'Sortant' }}
+                    <span class="text-slate-400">· {{ message.intent ?? 'conversation' }}</span>
+                  </p>
+                  <p class="text-caption dark:text-slate-400">{{ message.created_at ?? '—' }}</p>
+                </div>
+                <p class="mt-2 text-body-sm dark:text-slate-400">
+                  {{ message.response_preview ?? 'Aucun aperçu disponible.' }}
+                </p>
+              </article>
+            </div>
+          </section>
+        </div>
+
         <ReservationList
           v-if="viewMode === 'day'"
           :reservations="reservations"

@@ -7,7 +7,16 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      component: () => import('@/views/LandingView.vue'),
+    },
+    {
+      path: '/dashboard',
       component: () => import('@/pages/Dashboard.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/leo',
+      component: () => import('@/views/LeoView.vue'),
       meta: { requiresAuth: true },
     },
     {
@@ -41,7 +50,7 @@ router.beforeEach((to) => {
   }
 
   if (to.meta.guestOnly && auth.isAuthenticated) {
-    return '/'
+    return '/dashboard'
   }
 
   return true

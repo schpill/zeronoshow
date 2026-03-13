@@ -6,6 +6,8 @@ export interface SubscriptionSnapshot {
   subscription_status: 'trial' | 'active' | 'cancelled'
   trial_ends_at: string | null
   stripe_customer_id?: string | null
+  leo_addon_active?: boolean
+  leo_addon_stripe_item_id?: string | null
   sms_cost_this_month: number
 }
 

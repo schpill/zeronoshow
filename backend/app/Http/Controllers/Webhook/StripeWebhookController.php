@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Webhook;
 use App\Http\Controllers\Controller;
 use App\Mail\PaymentFailedStub;
 use App\Models\Business;
+use App\Models\LeoChannel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -33,6 +34,7 @@ class StripeWebhookController extends Controller
 
         match ($event['type'] ?? null) {
             'checkout.session.completed' => $this->handleCheckoutCompleted($object),
+            'customer.subscription.updated' => $this->handleSubscriptionUpdated($object),
             'customer.subscription.deleted' => $this->handleSubscriptionDeleted($object),
             'invoice.payment_failed' => $this->handleInvoicePaymentFailed($object),
             default => null,
@@ -82,7 +84,49 @@ class StripeWebhookController extends Controller
             ->orWhere('stripe_subscription_id', $payload['id'] ?? null)
             ->update([
                 'subscription_status' => 'cancelled',
+                'leo_addon_active' => false,
+                'leo_addon_stripe_item_id' => null,
             ]);
+
+        $this->deactivateLeoChannels($payload);
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function handleSubscriptionUpdated(array $payload): void
+    {
+        $business = Business::query()
+            ->where('stripe_customer_id', $payload['customer'] ?? null)
+            ->orWhere('stripe_subscription_id', $payload['id'] ?? null)
+            ->first();
+
+        if (! $business) {
+            return;
+        }
+
+        $leoPriceId = (string) config('leo.stripe.price_id');
+        $items = data_get($payload, 'items.data', []);
+        $leoItem = collect(is_array($items) ? $items : [])
+            ->first(fn (mixed $item): bool => data_get($item, 'price.id') === $leoPriceId);
+
+        if ($leoItem) {
+            $business->forceFill([
+                'leo_addon_active' => true,
+                'leo_addon_stripe_item_id' => (string) data_get($leoItem, 'id'),
+            ])->save();
+
+            return;
+        }
+
+        $business->forceFill([
+            'leo_addon_active' => false,
+            'leo_addon_stripe_item_id' => null,
+        ])->save();
+
+        LeoChannel::query()
+            ->where('business_id', $business->id)
+            ->update(['is_active' => false]);
     }
 
     /**
@@ -104,5 +148,24 @@ class StripeWebhookController extends Controller
                 new PaymentFailedStub($business, (string) ($payload['id'] ?? 'unknown'))
             );
         }
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function deactivateLeoChannels(array $payload): void
+    {
+        $business = Business::query()
+            ->where('stripe_customer_id', $payload['customer'] ?? null)
+            ->orWhere('stripe_subscription_id', $payload['id'] ?? null)
+            ->first();
+
+        if (! $business) {
+            return;
+        }
+
+        LeoChannel::query()
+            ->where('business_id', $business->id)
+            ->update(['is_active' => false]);
     }
 }

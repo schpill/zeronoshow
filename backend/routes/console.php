@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\PurgeLeoMessageLogs;
 use App\Console\Commands\PurgeSmsLogs;
 use App\Console\Commands\RunSmokeTests;
 use App\Jobs\SendReminderSms;
@@ -94,8 +95,8 @@ Artisan::command('reservations:auto-cancel', function () {
 })->purpose('Auto-cancel expired unconfirmed reservations');
 
 $sendTrialExpiryWarnings = function () {
-    $windowStart = now()->addHours(47);
-    $windowEnd = now()->addHours(49);
+    $windowStart = now()->addHours(47)->subMinute();
+    $windowEnd = now()->addHours(49)->addMinute();
     $sentCount = 0;
 
     Business::query()
@@ -164,4 +165,5 @@ Schedule::command('reservations:auto-cancel')->everyMinute()->withoutOverlapping
 Schedule::command('trial:expiry-emails')->hourly()->withoutOverlapping(10);
 Schedule::command('billing:sync-sms-cost')->monthlyOn(1, '06:00')->withoutOverlapping(60);
 Schedule::command(PurgeSmsLogs::class)->dailyAt('03:30');
+Schedule::command(PurgeLeoMessageLogs::class)->monthly()->withoutOverlapping(60);
 Schedule::command(RunSmokeTests::class)->dailyAt('04:00')->environments(['production']);

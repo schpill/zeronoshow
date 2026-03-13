@@ -34,6 +34,8 @@ class SubscriptionController extends Controller
             'subscription_status' => $business->subscription_status,
             'trial_ends_at' => $business->trial_ends_at?->toIso8601String(),
             'stripe_customer_id' => $business->stripe_customer_id,
+            'leo_addon_active' => (bool) $business->leo_addon_active,
+            'leo_addon_stripe_item_id' => $business->leo_addon_stripe_item_id,
             'sms_cost_this_month' => round((float) SmsLog::query()
                 ->where('business_id', $business->id)
                 ->where('status', '!=', 'failed')
