@@ -13,6 +13,7 @@ RUN apt-get update \
         libonig-dev \
         libpng-dev \
         libpq-dev \
+        libsqlite3-dev \
         libwebp-dev \
         libxpm-dev \
         libzip-dev \
