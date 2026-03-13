@@ -5,6 +5,7 @@ namespace Tests\Unit\Leo\Tools;
 use App\Models\Business;
 use App\Models\Reservation;
 use App\Services\Leo\GetPendingReservationsTool;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -14,6 +15,8 @@ class GetPendingReservationsToolTest extends TestCase
 
     public function test_it_returns_today_pending_reservations_ordered_without_phone_numbers(): void
     {
+        CarbonImmutable::setTestNow('2026-03-13 10:00:00');
+
         $business = Business::factory()->create();
 
         Reservation::factory()->create([
@@ -42,5 +45,7 @@ class GetPendingReservationsToolTest extends TestCase
         $this->assertSame('Bob', $result[0]['name']);
         $this->assertSame('Alice', $result[1]['name']);
         $this->assertArrayNotHasKey('phone', $result[0]);
+
+        CarbonImmutable::setTestNow();
     }
 }
