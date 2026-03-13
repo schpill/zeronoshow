@@ -12,6 +12,7 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class RecalculateReliabilityScore implements ShouldQueue
 {
@@ -34,6 +35,10 @@ class RecalculateReliabilityScore implements ShouldQueue
      */
     public function handle(ReliabilityScoreService $service): void
     {
+        if (! Str::isUuid($this->customerId)) {
+            return;
+        }
+
         $customer = Customer::query()->find($this->customerId);
 
         if (! $customer) {

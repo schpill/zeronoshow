@@ -38,8 +38,14 @@ class ReservationObserver
             DB::table('customers')
                 ->where('id', $reservation->customer_id)
                 ->update([
-                    'shows_count' => DB::raw(sprintf('MAX(shows_count + (%d), 0)', $showDelta)),
-                    'no_shows_count' => DB::raw(sprintf('MAX(no_shows_count + (%d), 0)', $noShowDelta)),
+                    'shows_count' => DB::raw(sprintf(
+                        'CASE WHEN shows_count + (%1$d) < 0 THEN 0 ELSE shows_count + (%1$d) END',
+                        $showDelta,
+                    )),
+                    'no_shows_count' => DB::raw(sprintf(
+                        'CASE WHEN no_shows_count + (%1$d) < 0 THEN 0 ELSE no_shows_count + (%1$d) END',
+                        $noShowDelta,
+                    )),
                 ]);
         }
 
