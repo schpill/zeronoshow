@@ -142,7 +142,9 @@ function submit() {
     </div>
 
     <details class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-      <summary class="cursor-pointer text-sm font-semibold text-slate-900">{{ setupTitle }}</summary>
+      <summary class="cursor-pointer text-sm font-semibold text-slate-900">
+        {{ setupTitle }}
+      </summary>
       <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-600">
         <li>Ouvrez Telegram et démarrez une conversation avec `@userinfobot`.</li>
         <li>Envoyez n’importe quel message.</li>
