@@ -31,7 +31,7 @@ class AutoCancelExpiredTest extends TestCase
     {
         $reservation = Reservation::factory()->create([
             'status' => 'pending_reminder',
-            'phone_verified' => false,
+            'reminder_30m_sent' => true,
             'scheduled_at' => now()->subMinutes(16),
             'confirmation_token' => (string) fake()->uuid(),
         ]);
@@ -56,6 +56,23 @@ class AutoCancelExpiredTest extends TestCase
         $this->assertDatabaseHas('reservations', [
             'id' => $reservation->id,
             'status' => 'confirmed',
+        ]);
+    }
+
+    public function test_it_cancels_confirmed_reservations_that_are_still_unconfirmed_after_the_last_reminder(): void
+    {
+        $reservation = Reservation::factory()->create([
+            'status' => 'confirmed',
+            'reminder_30m_sent' => true,
+            'scheduled_at' => now()->subMinutes(16),
+            'confirmation_token' => (string) fake()->uuid(),
+        ]);
+
+        $this->artisan('reservations:auto-cancel')->assertExitCode(0);
+
+        $this->assertDatabaseHas('reservations', [
+            'id' => $reservation->id,
+            'status' => 'cancelled_no_confirmation',
         ]);
     }
 }

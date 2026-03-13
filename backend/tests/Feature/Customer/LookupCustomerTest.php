@@ -18,6 +18,7 @@ class LookupCustomerTest extends TestCase
         $customer = Customer::factory()->create([
             'phone' => '+33612345678',
             'reliability_score' => 94,
+            'opted_out' => true,
         ]);
 
         Sanctum::actingAs($business);
@@ -27,6 +28,7 @@ class LookupCustomerTest extends TestCase
         $response
             ->assertOk()
             ->assertJsonPath('found', true)
-            ->assertJsonPath('score_tier', 'reliable');
+            ->assertJsonPath('score_tier', 'reliable')
+            ->assertJsonPath('opted_out', true);
     }
 }

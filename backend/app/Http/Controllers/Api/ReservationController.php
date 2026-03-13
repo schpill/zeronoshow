@@ -156,14 +156,26 @@ class ReservationController extends Controller
         ]);
 
         $reservation->refresh()->load('customer');
-        $customer = $scoreService->recalculate($reservation->customer);
+        $customer = $reservation->customer;
+        $score = $this->calculateScore($customer);
 
         return response()->json([
             'reservation' => ReservationResource::make($reservation->load('customer')),
             'customer' => [
-                'reliability_score' => $customer->reliability_score,
-                'score_tier' => $customer->getScoreTier(),
+                'reliability_score' => $score,
+                'score_tier' => ReliabilityScoreService::getTierForScore($score),
             ],
         ]);
+    }
+
+    private function calculateScore(Customer $customer): ?float
+    {
+        $total = $customer->shows_count + $customer->no_shows_count;
+
+        if ($total === 0) {
+            return null;
+        }
+
+        return round(($customer->shows_count / $total) * 100, 2);
     }
 }

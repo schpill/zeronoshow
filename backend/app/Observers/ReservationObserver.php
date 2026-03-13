@@ -55,7 +55,7 @@ class ReservationObserver
     private function counterContribution(string $status, string $counter): int
     {
         return match ($counter) {
-            'show' => in_array($status, ['show', 'confirmed'], true) ? 1 : 0,
+            'show' => $status === 'show' ? 1 : 0,
             'no_show' => $status === 'no_show' ? 1 : 0,
             default => 0,
         };

@@ -30,6 +30,7 @@ class ReservationResource extends JsonResource
             'reminder_30m_sent' => $reservation->reminder_30m_sent,
             'confirmation_token' => $this->whenNotNull($reservation->confirmation_token),
             'token_expires_at' => optional($reservation->token_expires_at)->toIso8601String(),
+            'status_changed_at' => optional($reservation->status_changed_at)->toIso8601String(),
             'created_at' => optional($reservation->created_at)->toIso8601String(),
             'customer' => $this->whenLoaded('customer', fn () => [
                 'id' => $reservation->customer->id,

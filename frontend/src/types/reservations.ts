@@ -12,6 +12,7 @@ export interface CustomerLookupResponse {
   found: boolean
   reliability_score: number | null
   score_tier: ReliabilityTier
+  opted_out?: boolean | null
 }
 
 export interface ReservationCustomer {

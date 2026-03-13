@@ -37,6 +37,7 @@ class UpdateStatusTest extends TestCase
         $response
             ->assertOk()
             ->assertJsonPath('reservation.status', 'show')
+            ->assertJsonPath('reservation.status_changed_at', fn (mixed $value): bool => is_string($value) && $value !== '')
             ->assertJsonPath('customer.score_tier', 'average');
 
         Queue::assertPushed(RecalculateReliabilityScore::class);

@@ -59,7 +59,7 @@ class ReservationObserverTest extends TestCase
         $this->assertSame(0, $customer->no_shows_count);
     }
 
-    public function test_it_dispatches_score_recalculation_for_confirmed_status(): void
+    public function test_it_dispatches_score_recalculation_for_confirmed_status_without_counting_a_show(): void
     {
         Queue::fake();
         $customer = Customer::factory()->create();
@@ -77,7 +77,7 @@ class ReservationObserverTest extends TestCase
 
         $customer->refresh();
 
-        $this->assertSame(1, $customer->shows_count);
+        $this->assertSame(0, $customer->shows_count);
     }
 
     public function test_it_does_not_dispatch_for_non_terminal_status_changes(): void

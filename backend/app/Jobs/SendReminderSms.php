@@ -63,23 +63,43 @@ class SendReminderSms implements ShouldQueue
             $reservation->refresh();
         }
 
-        $time = $this->reminderType === '30m' ? 'dans 30 min' : 'dans 2h';
-        $prefix = $this->reminderType === '30m'
-            ? 'Rappel important'
-            : ($reservation->customer->getScoreTier() === 'at_risk' ? 'Réponse requise' : 'Merci de confirmer');
-
         $showUrl = route('confirmation.show', $reservation->confirmation_token);
         $cancelUrl = route('confirmation.cancel', $reservation->confirmation_token);
+        $businessName = $reservation->business->name;
+        $customerName = $reservation->customer_name;
+        $time = $reservation->scheduled_at->timezone($reservation->business->timezone)->format('H:i');
 
-        $body = sprintf(
-            '%s: votre réservation %s à %s est prévue %s. Confirmez: %s | Annulez: %s',
-            $prefix,
-            $reservation->scheduled_at->timezone($reservation->business->timezone)->format('d/m/Y'),
-            $reservation->scheduled_at->timezone($reservation->business->timezone)->format('H:i'),
-            $time,
-            $showUrl,
-            $cancelUrl,
-        );
+        $body = match ($this->reminderType) {
+            '30m' => sprintf(
+                'Bonjour %s, Dernier rappel: votre RDV dans 30 min chez %s à %s. Confirmez: %s',
+                $customerName,
+                $businessName,
+                $time,
+                $showUrl,
+            ),
+            '2h' => $reservation->customer->getScoreTier() === 'at_risk'
+                ? sprintf(
+                    'Bonjour %s, rappel URGENT: votre RDV est dans 2h chez %s. Confirmez impérativement: %s ou annulez: %s',
+                    $customerName,
+                    $businessName,
+                    $showUrl,
+                    $cancelUrl,
+                )
+                : sprintf(
+                    'Bonjour %s, rappel: votre RDV est dans 2h chez %s à %s. Confirmez: %s',
+                    $customerName,
+                    $businessName,
+                    $time,
+                    $showUrl,
+                ),
+            default => sprintf(
+                'Bonjour %s, rappel: votre RDV est dans 2h chez %s à %s. Confirmez: %s',
+                $customerName,
+                $businessName,
+                $time,
+                $showUrl,
+            ),
+        };
 
         $smsLog = SmsLog::query()->create([
             'reservation_id' => $reservation->id,

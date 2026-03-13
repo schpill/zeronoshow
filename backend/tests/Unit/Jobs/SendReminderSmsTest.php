@@ -44,8 +44,9 @@ class SendReminderSmsTest extends TestCase
         $log = SmsLog::query()->where('reservation_id', $reservation->id)->latest('created_at')->firstOrFail();
 
         $this->assertSame('reminder_2h', $log->type);
+        $this->assertStringContainsString("Bonjour {$reservation->customer_name}", $log->body);
         $this->assertStringContainsString('dans 2h', $log->body);
-        $this->assertStringContainsString('Merci de confirmer', $log->body);
+        $this->assertStringContainsString($reservation->business->name, $log->body);
         $this->assertDatabaseHas('reservations', [
             'id' => $reservation->id,
             'reminder_2h_sent' => true,
@@ -70,7 +71,9 @@ class SendReminderSmsTest extends TestCase
 
         $log = SmsLog::query()->where('reservation_id', $reservation->id)->latest('created_at')->firstOrFail();
 
-        $this->assertStringContainsString('Réponse requise', $log->body);
+        $this->assertStringContainsString("Bonjour {$reservation->customer_name}", $log->body);
+        $this->assertStringContainsString('URGENT', $log->body);
+        $this->assertStringContainsString($reservation->business->name, $log->body);
     }
 
     public function test_it_sends_the_thirty_minute_reminder(): void
@@ -93,7 +96,8 @@ class SendReminderSmsTest extends TestCase
         $log = SmsLog::query()->where('reservation_id', $reservation->id)->latest('created_at')->firstOrFail();
 
         $this->assertSame('reminder_30m', $log->type);
-        $this->assertStringContainsString('dans 30 min', $log->body);
+        $this->assertStringContainsString('Dernier rappel', $log->body);
+        $this->assertStringContainsString($reservation->business->name, $log->body);
         $this->assertDatabaseHas('reservations', [
             'id' => $reservation->id,
             'reminder_30m_sent' => true,

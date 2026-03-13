@@ -70,8 +70,8 @@ Artisan::command('reservations:auto-cancel', function () {
         ]);
 
     $expiredPendingReminders = Reservation::query()
-        ->where('status', 'pending_reminder')
-        ->where('phone_verified', false)
+        ->whereIn('status', ['pending_reminder', 'confirmed'])
+        ->where('reminder_30m_sent', true)
         ->whereNotNull('confirmation_token')
         ->where('scheduled_at', '<', now()->subMinutes(15))
         ->update([
@@ -84,5 +84,10 @@ Artisan::command('reservations:auto-cancel', function () {
     $this->info("Cancelled {$expiredTokens} token expired reservations and {$expiredPendingReminders} pending reminder reservations.");
 })->purpose('Auto-cancel expired unconfirmed reservations');
 
+Artisan::command('sms-logs:purge', function () {
+    $this->info('sms-logs:purge stub - full implementation planned for Phase 4.');
+})->purpose('Stub SMS log purge command for scheduler wiring');
+
 Schedule::command('reminders:process')->everyMinute()->withoutOverlapping(10);
 Schedule::command('reservations:auto-cancel')->everyMinute()->withoutOverlapping(10);
+Schedule::command('sms-logs:purge')->dailyAt('03:00');
