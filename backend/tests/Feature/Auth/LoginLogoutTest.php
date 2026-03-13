@@ -41,15 +41,16 @@ class LoginLogoutTest extends TestCase
         $business = Business::factory()->create([
             'password' => Hash::make('password123'),
         ]);
+        $client = $this->withServerVariables(['REMOTE_ADDR' => '192.0.2.10']);
 
         for ($attempt = 0; $attempt < 10; $attempt++) {
-            $this->postJson('/api/v1/auth/login', [
+            $client->postJson('/api/v1/auth/login', [
                 'email' => $business->email,
                 'password' => 'wrong-password',
             ])->assertStatus(401);
         }
 
-        $this->postJson('/api/v1/auth/login', [
+        $client->postJson('/api/v1/auth/login', [
             'email' => $business->email,
             'password' => 'wrong-password',
         ])
