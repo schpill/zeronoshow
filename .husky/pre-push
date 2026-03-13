@@ -22,7 +22,13 @@ echo "▶ [2/5] Backend — PHPStan (static analysis)"
 docker compose exec -T api ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M
 
 echo "▶ [3/5] Backend — Pest (tests)"
-docker compose exec -T api ./vendor/bin/pest --stop-on-failure
+docker compose exec -T \
+  -e APP_ENV=testing \
+  -e DB_CONNECTION=sqlite \
+  -e DB_DATABASE=:memory: \
+  -e CACHE_STORE=array \
+  -e QUEUE_CONNECTION=sync \
+  api ./vendor/bin/pest --stop-on-failure
 
 echo "▶ [4/5] Frontend — Prettier + ESLint (check only)"
 (cd frontend && pnpm exec prettier --check .)

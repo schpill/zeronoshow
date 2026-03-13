@@ -41,7 +41,13 @@ test-be:
 	$(DOCKER_COMPOSE) run --rm api php artisan config:clear
 	$(DOCKER_COMPOSE) run --rm api ./vendor/bin/pint --test
 	$(DOCKER_COMPOSE) run --rm api ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M
-	$(DOCKER_COMPOSE) run --rm api ./vendor/bin/pest --stop-on-failure
+	$(DOCKER_COMPOSE) run --rm \
+		-e APP_ENV=testing \
+		-e DB_CONNECTION=sqlite \
+		-e DB_DATABASE=:memory: \
+		-e CACHE_STORE=array \
+		-e QUEUE_CONNECTION=sync \
+		api ./vendor/bin/pest --stop-on-failure
 
 test-fe:
 	$(DOCKER_COMPOSE) run --rm frontend pnpm vitest run --coverage
