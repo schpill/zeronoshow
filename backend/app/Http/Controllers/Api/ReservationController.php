@@ -146,7 +146,6 @@ class ReservationController extends Controller
     public function updateStatus(
         UpdateReservationStatusRequest $request,
         Reservation $reservation,
-        ReliabilityScoreService $scoreService,
     ): JsonResponse {
         abort_if($reservation->business_id !== $request->user()->id, 403);
 
