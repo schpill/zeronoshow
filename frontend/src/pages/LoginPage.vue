@@ -24,7 +24,7 @@ async function handleSubmit() {
 
   try {
     await auth.login(form.email, form.password)
-    await router.push('/')
+    await router.push('/dashboard')
   } catch (error) {
     if (typeof error === 'object' && error !== null && 'status' in error) {
       const status = Reflect.get(error, 'status')

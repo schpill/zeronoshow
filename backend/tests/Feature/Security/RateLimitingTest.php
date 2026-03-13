@@ -6,12 +6,21 @@ use App\Models\Business;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class RateLimitingTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        RateLimiter::clear('192.0.2.31');
+        RateLimiter::clear('192.0.2.32');
+    }
 
     public function test_login_is_rate_limited_per_ip(): void
     {

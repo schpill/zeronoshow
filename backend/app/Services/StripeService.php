@@ -12,6 +12,11 @@ use Stripe\StripeClient;
 
 class StripeService
 {
+    public function leoAddonPriceId(): string
+    {
+        return (string) (config('leo.stripe.price_id') ?: Cache::get('leo:stripe:price_id', ''));
+    }
+
     /**
      * @return array{id: string, url: string, customer_id: string|null}
      *
@@ -71,6 +76,34 @@ class StripeService
         ]);
 
         Cache::forever($cacheKey, (string) $invoiceItem->id);
+    }
+
+    /**
+     * @return array{id: string}
+     *
+     * @throws ApiErrorException
+     */
+    public function createSubscriptionItem(string $subscriptionId, string $priceId): array
+    {
+        $client = new StripeClient((string) config('services.stripe.secret'));
+        $item = $client->subscriptionItems->create([
+            'subscription' => $subscriptionId,
+            'price' => $priceId,
+            'proration_behavior' => 'create_prorations',
+        ]);
+
+        return [
+            'id' => (string) $item->id,
+        ];
+    }
+
+    /**
+     * @throws ApiErrorException
+     */
+    public function deleteSubscriptionItem(string $subscriptionItemId): void
+    {
+        $client = new StripeClient((string) config('services.stripe.secret'));
+        $client->subscriptionItems->delete($subscriptionItemId, []);
     }
 
     /**

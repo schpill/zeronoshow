@@ -3,6 +3,9 @@
 namespace App\Observers;
 
 use App\Jobs\RecalculateReliabilityScore;
+use App\Jobs\SendLeoNotificationJob;
+use App\Models\Business;
+use App\Models\LeoChannel;
 use App\Models\Reservation;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -53,6 +56,7 @@ class ReservationObserver
         }
 
         RecalculateReliabilityScore::dispatch($reservation->customer_id);
+        $this->dispatchLeoNotificationIfNeeded($reservation, $status);
     }
 
     public function created(Reservation $reservation): void
@@ -79,5 +83,30 @@ class ReservationObserver
         $key = "dashboard_version:{$reservation->business_id}";
 
         Cache::forever($key, ((int) Cache::get($key, 1)) + 1);
+    }
+
+    private function dispatchLeoNotificationIfNeeded(Reservation $reservation, string $status): void
+    {
+        if (! in_array($status, ['cancelled_by_client', 'no_show'], true)) {
+            return;
+        }
+
+        /** @var Business|null $business */
+        $business = $reservation->business()->first();
+
+        if (! $business?->leo_addon_active) {
+            return;
+        }
+
+        $hasActiveLeoChannel = LeoChannel::query()
+            ->where('business_id', $reservation->business_id)
+            ->where('is_active', true)
+            ->exists();
+
+        if (! $hasActiveLeoChannel) {
+            return;
+        }
+
+        SendLeoNotificationJob::dispatch($reservation->id, $status);
     }
 }

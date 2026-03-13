@@ -82,6 +82,13 @@ make tinker       # php artisan tinker
 | 3 | Analytics Dashboard, Billing & Dark Mode | **Complete** (merged 2026-03-13) | docs/phases/phase3.md | docs/dev/phase3.md |
 | 4 | Hardening & Launch | **Complete** (merged 2026-03-13) | docs/phases/phase4.md | docs/dev/phase4.md |
 
+## Team
+
+| Rôle | Personne | Statut |
+|------|----------|--------|
+| Développeur principal | Pierre | En arrêt maladie (retour à confirmer) |
+| Développeur intérimaire | Gerald (propriétaire du projet) | Actif |
+
 ## Workflow
 
 - Feature branches: `apex/phase{N}-{feature}`

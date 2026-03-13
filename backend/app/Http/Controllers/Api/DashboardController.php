@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ReservationResource;
+use App\Models\LeoMessageLog;
 use App\Models\Reservation;
 use App\Models\SmsLog;
 use Carbon\Carbon;
@@ -81,6 +82,7 @@ class DashboardController extends Controller
                 'weekly_no_show_rate' => $weeklyTotal > 0
                     ? (float) round(($weeklyNoShows / $weeklyTotal) * 100, 1)
                     : 0.0,
+                'leo_activity' => $this->latestLeoActivity($business->id),
             ];
         });
 
@@ -96,5 +98,27 @@ class DashboardController extends Controller
                 $referenceDate->copy()->endOfMonth()->utc(),
             ])
             ->sum('cost_eur');
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function latestLeoActivity(string $businessId): array
+    {
+        return LeoMessageLog::query()
+            ->select('leo_message_logs.*')
+            ->join('leo_channels', 'leo_channels.id', '=', 'leo_message_logs.channel_id')
+            ->where('leo_channels.business_id', $businessId)
+            ->latest('leo_message_logs.created_at')
+            ->limit(3)
+            ->get()
+            ->map(fn (LeoMessageLog $log): array => [
+                'id' => $log->id,
+                'direction' => $log->direction->value,
+                'intent' => $log->intent,
+                'response_preview' => $log->response_preview,
+                'created_at' => optional($log->created_at)->toIso8601String(),
+            ])
+            ->all();
     }
 }

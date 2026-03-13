@@ -90,6 +90,10 @@ instance.interceptors.response.use(
 )
 
 export const apiClient = {
+  async delete<T>(path: string) {
+    const response = await instance.delete<T>(path)
+    return response.data
+  },
   async get<T>(path: string) {
     const response = await instance.get<T>(path)
     return response.data

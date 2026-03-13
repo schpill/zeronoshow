@@ -49,4 +49,27 @@ return [
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
     ],
 
+    'telegram' => [
+        'token' => env('TELEGRAM_BOT_TOKEN'),
+        'webhook_secret' => env('TELEGRAM_WEBHOOK_SECRET'),
+    ],
+
+    /*
+    |----------------------------------------------------------------------
+    | Gemini REST API
+    |----------------------------------------------------------------------
+    |
+    | Leo uses Laravel's HTTP client against the Gemini generateContent
+    | REST endpoint:
+    | https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent
+    |
+    | The API key is passed as the `key` query parameter. Payloads are sent
+    | as JSON with `contents[].parts[].text`.
+    |
+    */
+    'gemini' => [
+        'api_key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-2.5-flash'),
+    ],
+
 ];

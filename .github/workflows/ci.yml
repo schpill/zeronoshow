@@ -57,6 +57,9 @@ jobs:
       REDIS_HOST: 127.0.0.1
       REDIS_PORT: 6379
       MAIL_MAILER: array
+      TELEGRAM_BOT_TOKEN: fake
+      TELEGRAM_WEBHOOK_SECRET: fake
+      GEMINI_API_KEY: fake
 
     steps:
       - uses: actions/checkout@v5

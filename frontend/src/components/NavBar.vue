@@ -60,6 +60,18 @@ const statusDotClass = computed(() =>
 
       <nav class="hidden items-center gap-3 sm:flex" role="navigation" aria-label="Main navigation">
         <RouterLink
+          to="/dashboard"
+          class="inline-flex items-center rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-800"
+        >
+          Dashboard
+        </RouterLink>
+        <RouterLink
+          to="/leo"
+          class="inline-flex items-center rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-800"
+        >
+          Léo
+        </RouterLink>
+        <RouterLink
           to="/subscription"
           class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-100"
         >
@@ -97,10 +109,16 @@ const statusDotClass = computed(() =>
           Nouvelle réservation
         </a>
         <RouterLink
-          to="/"
+          to="/dashboard"
           class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200"
         >
           Dashboard
+        </RouterLink>
+        <RouterLink
+          to="/leo"
+          class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200"
+        >
+          Léo
         </RouterLink>
         <RouterLink
           to="/subscription"

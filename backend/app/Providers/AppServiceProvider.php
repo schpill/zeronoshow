@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\Reservation;
 use App\Observers\ReservationObserver;
 use App\Services\Contracts\SmsServiceInterface;
+use App\Services\Leo\TelegramChannel;
+use App\Services\Leo\TwilioSmsChannel;
 use App\Services\StripeService;
 use App\Services\TwilioSmsService;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -21,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(SmsServiceInterface::class, TwilioSmsService::class);
         $this->app->singleton(StripeService::class);
+        $this->app->singleton(TelegramChannel::class);
+        $this->app->singleton(TwilioSmsChannel::class);
     }
 
     /**

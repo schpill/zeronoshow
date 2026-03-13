@@ -54,7 +54,7 @@ describe('LoginPage', () => {
     await wrapper.get('form').trigger('submit.prevent')
 
     expect(store.login).toHaveBeenCalledWith('owner@example.com', 'secret123')
-    expect(push).toHaveBeenCalledWith('/')
+    expect(push).toHaveBeenCalledWith('/dashboard')
   })
 
   it('shows 401 error message', async () => {

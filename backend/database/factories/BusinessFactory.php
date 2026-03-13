@@ -26,6 +26,8 @@ class BusinessFactory extends Factory
             'timezone' => 'Europe/Paris',
             'subscription_status' => 'trial',
             'trial_ends_at' => now()->addDays(14),
+            'leo_addon_active' => false,
+            'leo_addon_stripe_item_id' => null,
         ];
     }
 }

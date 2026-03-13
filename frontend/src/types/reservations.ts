@@ -1,3 +1,5 @@
+import type { LeoMessageActivity } from '@/types/leo'
+
 export type ReliabilityTier = 'reliable' | 'average' | 'at_risk' | null
 export type ReservationStatus =
   | 'pending_verification'
@@ -81,6 +83,7 @@ export interface DashboardResponse {
   stats: DashboardStats
   sms_cost_this_month: number
   weekly_no_show_rate: number | null
+  leo_activity: LeoMessageActivity[]
 }
 
 export interface ReservationPayload {

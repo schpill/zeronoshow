@@ -65,7 +65,7 @@ describe('RegisterPage', () => {
       password: 'secret123',
       password_confirmation: 'secret123',
     })
-    expect(push).toHaveBeenCalledWith('/')
+    expect(push).toHaveBeenCalledWith('/dashboard')
   })
 
   it('shows field errors on 422', async () => {
