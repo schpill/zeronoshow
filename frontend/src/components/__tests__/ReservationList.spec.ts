@@ -85,9 +85,7 @@ describe('ReservationList', () => {
       status: 'show' as const,
     }
 
-    await wrapper
-      .getComponent({ name: 'ReservationRow' })
-      .vm.$emit('updated', updatedReservation)
+    await wrapper.getComponent({ name: 'ReservationRow' }).vm.$emit('updated', updatedReservation)
 
     expect(wrapper.text()).toContain('Présent')
   })
