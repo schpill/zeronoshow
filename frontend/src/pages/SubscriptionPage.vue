@@ -45,7 +45,10 @@ async function handleCheckout() {
 
 <template>
   <AppLayout>
-    <div v-if="loading && !subscription && !pageError" class="flex min-h-[240px] items-center justify-center">
+    <div
+      v-if="loading && !subscription && !pageError"
+      class="flex min-h-[240px] items-center justify-center"
+    >
       <LoadingSpinner size="lg" label="Chargement de l abonnement" />
     </div>
 
