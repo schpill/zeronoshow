@@ -35,7 +35,7 @@ class ReservationResource extends JsonResource
                 'id' => $reservation->customer->id,
                 'phone' => $reservation->customer->phone,
                 'reliability_score' => $reservation->customer->reliability_score,
-                'score_tier' => $reservation->customer->getScoreTier(),
+                'score_tier' => $reservation->customer->reliability_score === null ? null : $reservation->customer->getScoreTier(),
                 'reservations_count' => $reservation->customer->reservations_count,
                 'shows_count' => $reservation->customer->shows_count,
                 'no_shows_count' => $reservation->customer->no_shows_count,

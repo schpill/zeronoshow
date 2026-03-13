@@ -13,4 +13,11 @@ class CustomerTest extends TestCase
 
         $this->assertSame('average', $customer->getScoreTier());
     }
+
+    public function test_it_returns_at_risk_for_null_score(): void
+    {
+        $customer = new Customer(['reliability_score' => null]);
+
+        $this->assertSame('at_risk', $customer->getScoreTier());
+    }
 }

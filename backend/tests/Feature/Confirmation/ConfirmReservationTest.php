@@ -26,4 +26,18 @@ class ConfirmReservationTest extends TestCase
         $this->assertSame('confirmed', $reservation->status);
         $this->assertNull($reservation->confirmation_token);
     }
+
+    public function test_it_cancels_a_reservation_via_get_cancel_link(): void
+    {
+        Queue::fake();
+        $reservation = Reservation::factory()->create();
+
+        $response = $this->get("/c/{$reservation->confirmation_token}/cancel");
+
+        $response->assertOk()->assertSee('Réservation annulée');
+        $reservation->refresh();
+
+        $this->assertSame('cancelled_by_client', $reservation->status);
+        $this->assertNull($reservation->confirmation_token);
+    }
 }

@@ -39,7 +39,7 @@ class StoreReservationRequest extends FormRequest
             'phone.required' => 'Le numéro de téléphone est obligatoire.',
             'phone.regex' => 'Le numéro doit être au format E.164.',
             'scheduled_at.required' => 'La date du rendez-vous est obligatoire.',
-            'scheduled_at.after' => 'Appointment date must be in the future.',
+            'scheduled_at.after' => 'La date du rendez-vous doit être dans le futur.',
             'guests.min' => 'Le nombre de couverts doit être au moins de 1.',
             'guests.max' => 'Le nombre de couverts ne peut pas dépasser 100.',
             'notes.max' => 'Les notes ne peuvent pas dépasser 1000 caractères.',

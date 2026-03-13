@@ -1,9 +1,4 @@
-type HttpMethod = 'GET' | 'POST'
-
-interface RequestOptions {
-  method?: HttpMethod
-  body?: unknown
-}
+import axios from 'axios'
 
 export interface ApiError {
   status: number
@@ -13,48 +8,53 @@ export interface ApiError {
   }
 }
 
-async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const token = localStorage.getItem('znz_token')
-  const response = await fetch(`/api/v1${path}`, {
-    method: options.method ?? 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    credentials: 'include',
-    body: options.body ? JSON.stringify(options.body) : undefined,
-  })
+const instance = axios.create({
+  baseURL: '/api/v1',
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
 
-  if (response.status === 204) {
-    return undefined as T
+instance.interceptors.request.use((config) => {
+  const token = localStorage.getItem('znz_token')
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
   }
 
-  const data = (await response.json().catch(() => ({}))) as T
+  return config
+})
 
-  if (!response.ok) {
-    if (response.status === 401) {
+instance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const status = error.response?.status as number | undefined
+    const data = error.response?.data as ApiError['data'] | undefined
+
+    if (status === 401) {
       localStorage.removeItem('znz_token')
       window.location.assign('/login')
     }
 
-    if (response.status === 402) {
+    if (status === 402) {
       window.location.assign('/subscription')
     }
 
     throw {
-      status: response.status,
-      data: data as ApiError['data'],
+      status: status ?? 500,
+      data: data ?? {},
     } satisfies ApiError
-  }
-
-  return data
-}
+  },
+)
 
 export const apiClient = {
-  get<T>(path: string) {
-    return request<T>(path)
+  async get<T>(path: string) {
+    const response = await instance.get<T>(path)
+    return response.data
   },
-  post<T>(path: string, body?: unknown) {
-    return request<T>(path, { method: 'POST', body })
+  async post<T>(path: string, body?: unknown) {
+    const response = await instance.post<T>(path, body)
+    return response.data
   },
 }

@@ -9,11 +9,14 @@ describe('design system', () => {
     const css = readFileSync(resolve(process.cwd(), 'src/assets/app.css'), 'utf8')
 
     expect(css).toContain('.text-heading-1')
-    expect(css).toContain('@apply text-4xl font-extrabold')
+    expect(css).toContain('font-size: 2.25rem;')
+    expect(css).toContain('font-weight: 800;')
     expect(css).toContain('.text-label')
-    expect(css).toContain('@apply text-sm font-medium')
+    expect(css).toContain('font-size: 0.875rem;')
+    expect(css).toContain('font-weight: 500;')
     expect(css).toContain('.text-overline')
-    expect(css).toContain('uppercase tracking-widest')
+    expect(css).toContain('text-transform: uppercase;')
+    expect(css).toContain('letter-spacing: 0.16em;')
   })
 
   it('defines brand palette and dark mode in tailwind config', () => {

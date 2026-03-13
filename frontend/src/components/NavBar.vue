@@ -57,7 +57,7 @@ const initials = computed(() =>
           class="inline-flex items-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:text-white"
           @click="auth.logout"
         >
-          Logout
+          Déconnexion
         </button>
       </nav>
     </div>

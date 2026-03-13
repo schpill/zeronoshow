@@ -20,7 +20,7 @@ class CustomerController extends Controller
         return response()->json([
             'found' => (bool) $customer,
             'reliability_score' => $customer?->reliability_score,
-            'score_tier' => $customer?->getScoreTier(),
+            'score_tier' => $customer?->reliability_score === null ? null : $customer->getScoreTier(),
         ]);
     }
 }

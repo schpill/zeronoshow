@@ -40,12 +40,22 @@ class ConfirmationController extends Controller
         ]);
     }
 
+    public function cancel(string $token): Response
+    {
+        return $this->processAction('cancel', $token);
+    }
+
     public function confirm(Request $request, string $token): Response
     {
         $validated = $request->validate([
             'action' => ['required', 'in:confirm,cancel'],
         ]);
 
+        return $this->processAction($validated['action'], $token);
+    }
+
+    private function processAction(string $action, string $token): Response
+    {
         $reservation = Reservation::query()->where('confirmation_token', $token)->first();
 
         if (! $reservation) {
@@ -62,9 +72,9 @@ class ConfirmationController extends Controller
             ], 410);
         }
 
-        DB::transaction(function () use ($reservation, $validated): void {
+        DB::transaction(function () use ($reservation, $action): void {
             $reservation->update([
-                'status' => $validated['action'] === 'confirm' ? 'confirmed' : 'cancelled_by_client',
+                'status' => $action === 'confirm' ? 'confirmed' : 'cancelled_by_client',
                 'status_changed_at' => now(),
                 'confirmation_token' => null,
                 'token_expires_at' => null,
@@ -74,8 +84,8 @@ class ConfirmationController extends Controller
         RecalculateReliabilityScore::dispatch($reservation->customer_id);
 
         return response()->view('confirmation.result', [
-            'title' => $validated['action'] === 'confirm' ? 'Réservation confirmée' : 'Réservation annulée',
-            'message' => $validated['action'] === 'confirm'
+            'title' => $action === 'confirm' ? 'Réservation confirmée' : 'Réservation annulée',
+            'message' => $action === 'confirm'
                 ? 'Merci, votre présence est confirmée.'
                 : 'Votre réservation a bien été annulée.',
         ]);

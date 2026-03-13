@@ -11,6 +11,7 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Sentry\Laravel\Facade;
 
 class SendVerificationSms implements ShouldQueue
 {
@@ -42,7 +43,7 @@ class SendVerificationSms implements ShouldQueue
         }
 
         $confirmUrl = route('confirmation.show', $reservation->confirmation_token);
-        $cancelUrl = route('confirmation.confirm', $reservation->confirmation_token);
+        $cancelUrl = route('confirmation.cancel', $reservation->confirmation_token);
 
         $body = sprintf(
             'Bonjour %s, confirmez votre RDV le %s à %s. Confirmez : %s | Annulez : %s',
@@ -64,13 +65,7 @@ class SendVerificationSms implements ShouldQueue
             'created_at' => now(),
         ]);
 
-        $response = $sms->send($reservation->customer->phone, $body);
-
-        $log->update([
-            'twilio_sid' => $response['sid'],
-            'status' => $response['status'],
-            'sent_at' => now(),
-        ]);
+        $sms->send($log);
     }
 
     public function failed(\Throwable $exception): void
@@ -88,5 +83,13 @@ class SendVerificationSms implements ShouldQueue
             'reservation_id' => $this->reservationId,
             'error' => $exception->getMessage(),
         ]);
+
+        if (class_exists(Facade::class)) {
+            Facade::captureException($exception);
+
+            return;
+        }
+
+        report($exception);
     }
 }

@@ -34,10 +34,10 @@ class Customer extends Model
         return $this->hasMany(Reservation::class);
     }
 
-    public function getScoreTier(): ?string
+    public function getScoreTier(): string
     {
         if ($this->reliability_score === null) {
-            return null;
+            return 'at_risk';
         }
 
         if ($this->reliability_score >= 90) {

@@ -162,7 +162,7 @@ async function handleSubmit() {
             type="checkbox"
             class="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
           />
-          Number confirmed by phone call
+          Numéro confirmé par appel
         </label>
 
         <ReliabilityBadge

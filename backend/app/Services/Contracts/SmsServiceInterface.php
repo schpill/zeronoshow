@@ -2,14 +2,12 @@
 
 namespace App\Services\Contracts;
 
+use App\Models\SmsLog;
 use Illuminate\Http\Request;
 
 interface SmsServiceInterface
 {
-    /**
-     * @return array{sid:?string,status:string}
-     */
-    public function send(string $to, string $body): array;
+    public function send(SmsLog $smsLog): SmsLog;
 
     public function validateWebhookSignature(Request $request): bool;
 }
