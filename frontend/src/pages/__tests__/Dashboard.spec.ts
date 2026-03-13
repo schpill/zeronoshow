@@ -89,7 +89,8 @@ function mountDashboard() {
         },
         ReservationRow: {
           props: ['reservation'],
-          template: '<article data-test="reservation-row">{{ reservation.customer_name }}</article>',
+          template:
+            '<article data-test="reservation-row">{{ reservation.customer_name }}</article>',
         },
       },
     },
@@ -198,7 +199,10 @@ describe('Dashboard', () => {
     await Promise.resolve()
     await nextTick()
 
-    expect(fetchDashboard).toHaveBeenCalledWith({ date: expect.any(String), week: expect.stringMatching(/^\d{4}-W\d{2}$/) })
+    expect(fetchDashboard).toHaveBeenCalledWith({
+      date: expect.any(String),
+      week: expect.stringMatching(/^\d{4}-W\d{2}$/),
+    })
     expect(wrapper.find('[data-test="reservation-list"]').exists()).toBe(false)
     expect(wrapper.findAll('[data-test="reservation-row"]')).toHaveLength(2)
     expect(wrapper.text()).toContain('vendredi 13 mars')
