@@ -1,27 +1,26 @@
 #!/usr/bin/env sh
 set -eu
 
-echo ""
-echo "╔══════════════════════════════════════════╗"
-echo "║         ZeroNoShow — pre-push checks     ║"
-echo "╚══════════════════════════════════════════╝"
-echo ""
+echo
+echo "========================================="
+echo " ZeroNoShow pre-push checks"
+echo "========================================="
+echo
 
-# Vérifie que le container api est démarré
 if ! docker compose ps --status running api 2>/dev/null | grep -q "api"; then
-  echo "✗ Le container 'api' n'est pas démarré."
-  echo "  Lance 'make up' puis réessaie."
+  echo "Container 'api' is not running."
+  echo "Run 'make up' and try again."
   exit 1
 fi
 
-echo "▶ [1/5] Backend — Pint (code style)"
+echo "[1/5] Backend - Pint"
 docker compose exec -T api php artisan config:clear >/dev/null
 docker compose exec -T api ./vendor/bin/pint --test
 
-echo "▶ [2/5] Backend — PHPStan (static analysis)"
+echo "[2/5] Backend - PHPStan"
 docker compose exec -T api ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M
 
-echo "▶ [3/5] Backend — Pest (tests)"
+echo "[3/5] Backend - Pest"
 docker compose exec -T \
   -e APP_ENV=testing \
   -e DB_CONNECTION=sqlite \
@@ -30,15 +29,19 @@ docker compose exec -T \
   -e QUEUE_CONNECTION=sync \
   api ./vendor/bin/pest --stop-on-failure
 
-echo "▶ [4/5] Frontend — Prettier + ESLint (check only)"
-cd frontend
-pnpm exec prettier --check .
-pnpm exec eslint . --cache
+echo "[4/5] Frontend - Prettier + ESLint"
+(
+  cd frontend
+  pnpm exec prettier --check .
+  pnpm exec eslint . --cache
+)
 
-echo "▶ [5/5] Frontend — Vitest (tests)"
-pnpm exec vitest run
-cd ..
+echo "[5/5] Frontend - Vitest"
+(
+  cd frontend
+  pnpm exec vitest run
+)
 
-echo ""
-echo "✓ Tous les checks sont passés — push autorisé."
-echo ""
+echo
+echo "All checks passed. Push allowed."
+echo
