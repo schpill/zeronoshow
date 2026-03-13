@@ -78,7 +78,7 @@ make tinker       # php artisan tinker
 | Phase | Name | Status | Spec | Tasks |
 |-------|------|--------|------|-------|
 | 1 | Foundation — Auth, Reservations & SMS Pipeline | **Complete** (merged 2026-03-13) | docs/phases/phase1.md | docs/dev/phase1.md |
-| 2 | Reminders, Auto-cancel & Billing | Not started | docs/phases/phase2.md | docs/dev/phase2.md |
+| 2 | Smart Reminders, Scoring & Auto-cancel | **Complete** (merged 2026-03-13) | docs/phases/phase2.md | docs/dev/phase2.md |
 | 3 | Analytics Dashboard & Customer Portal | Not started | docs/phases/phase3.md | docs/dev/phase3.md |
 | 4 | Advanced Features | Not started | docs/phases/phase4.md | docs/dev/phase4.md |
 
