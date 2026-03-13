@@ -3,10 +3,10 @@ import { reactive, ref } from 'vue'
 
 import ReliabilityBadge from '@/components/ReliabilityBadge.vue'
 import { useReservations } from '@/composables/useReservations'
-import type { CustomerLookupResponse } from '@/types/reservations'
+import type { CustomerLookupResponse, ReservationRecord } from '@/types/reservations'
 
 const emit = defineEmits<{
-  created: [reservation: { id: string }]
+  created: [reservation: ReservationRecord]
 }>()
 
 const { createReservation, lookupCustomer, loading, errors } = useReservations()

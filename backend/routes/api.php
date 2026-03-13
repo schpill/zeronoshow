@@ -19,6 +19,7 @@ Route::prefix('v1')->group(function (): void {
             Route::get('/reservations', [ReservationController::class, 'index']);
             Route::post('/reservations', [ReservationController::class, 'store']);
             Route::get('/reservations/{reservation}', [ReservationController::class, 'show']);
+            Route::patch('/reservations/{reservation}/status', [ReservationController::class, 'updateStatus']);
         });
     });
 });

@@ -23,6 +23,9 @@ class CustomerFactory extends Factory
             'shows_count' => 0,
             'no_shows_count' => 0,
             'reliability_score' => null,
+            'score_tier' => null,
+            'opted_out' => false,
+            'opted_out_at' => null,
             'last_calculated_at' => null,
         ];
     }

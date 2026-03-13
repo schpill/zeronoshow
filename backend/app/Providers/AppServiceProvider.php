@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Reservation;
+use App\Observers\ReservationObserver;
 use App\Services\Contracts\SmsServiceInterface;
 use App\Services\TwilioSmsService;
 use Illuminate\Support\ServiceProvider;
@@ -21,6 +23,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Reservation::observe(ReservationObserver::class);
     }
 }

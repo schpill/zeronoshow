@@ -21,11 +21,16 @@ class Customer extends Model
         'shows_count',
         'no_shows_count',
         'reliability_score',
+        'score_tier',
+        'opted_out',
+        'opted_out_at',
         'last_calculated_at',
     ];
 
     protected $casts = [
         'reliability_score' => 'float',
+        'opted_out' => 'boolean',
+        'opted_out_at' => 'datetime',
         'last_calculated_at' => 'datetime',
     ];
 
@@ -36,18 +41,10 @@ class Customer extends Model
 
     public function getScoreTier(): string
     {
-        if ($this->reliability_score === null) {
-            return 'at_risk';
+        if ($this->score_tier !== null) {
+            return $this->score_tier;
         }
 
-        if ($this->reliability_score >= 90) {
-            return 'reliable';
-        }
-
-        if ($this->reliability_score >= 70) {
-            return 'average';
-        }
-
-        return 'at_risk';
+        return \App\Services\ReliabilityScoreService::getTierForScore($this->reliability_score);
     }
 }

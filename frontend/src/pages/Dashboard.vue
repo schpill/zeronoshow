@@ -1,14 +1,42 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 import AppLayout from '@/layouts/AppLayout.vue'
 import ReservationForm from '@/components/ReservationForm.vue'
+import ReservationList from '@/components/ReservationList.vue'
+import { usePolling } from '@/composables/usePolling'
+import { useReservations } from '@/composables/useReservations'
+import type { ReservationListResponse, ReservationRecord } from '@/types/reservations'
 
 const createdMessage = ref<string | null>(null)
+const reservations = ref<ReservationRecord[]>([])
+const stats = ref<ReservationListResponse['stats']>()
+const { fetchReservations, loading } = useReservations()
 
-function handleCreated() {
+async function refreshReservations() {
+  const response = await fetchReservations({})
+  reservations.value = response.reservations
+  stats.value = response.stats
+}
+
+usePolling(refreshReservations, 30_000)
+
+const summary = computed(() => ({
+  total: stats.value?.total ?? reservations.value.length,
+  confirmed: stats.value?.confirmed ?? reservations.value.filter((reservation) => reservation.status === 'confirmed').length,
+  pending: (stats.value?.pending_verification ?? 0) + (stats.value?.pending_reminder ?? 0),
+}))
+
+function handleCreated(reservation: ReservationRecord) {
   createdMessage.value = 'Réservation créée avec succès.'
+  reservations.value = [...reservations.value, reservation]
+}
+
+function handleUpdated(updatedReservation: ReservationRecord) {
+  reservations.value = reservations.value.map((reservation) =>
+    reservation.id === updatedReservation.id ? updatedReservation : reservation,
+  )
 }
 </script>
 
@@ -31,19 +59,25 @@ function handleCreated() {
             class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950"
           >
             <p class="text-caption dark:text-slate-400">Aujourd’hui</p>
-            <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-50">7</p>
+            <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-50">
+              {{ summary.total }}
+            </p>
           </div>
           <div
             class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950"
           >
             <p class="text-caption dark:text-slate-400">Confirmées</p>
-            <p class="mt-2 text-3xl font-bold text-emerald-600 dark:text-emerald-400">4</p>
+            <p class="mt-2 text-3xl font-bold text-emerald-600 dark:text-emerald-400">
+              {{ summary.confirmed }}
+            </p>
           </div>
           <div
             class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950"
           >
             <p class="text-caption dark:text-slate-400">À vérifier</p>
-            <p class="mt-2 text-3xl font-bold text-slate-700 dark:text-slate-200">2</p>
+            <p class="mt-2 text-3xl font-bold text-slate-700 dark:text-slate-200">
+              {{ summary.pending }}
+            </p>
           </div>
         </div>
       </div>
@@ -56,6 +90,13 @@ function handleCreated() {
       {{ createdMessage }}
     </p>
 
-    <ReservationForm @created="handleCreated" />
+    <div class="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+      <ReservationForm @created="handleCreated" />
+      <ReservationList
+        :reservations="reservations"
+        :loading="loading.fetch.value"
+        @updated="handleUpdated"
+      />
+    </div>
   </AppLayout>
 </template>

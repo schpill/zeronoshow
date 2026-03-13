@@ -42,6 +42,10 @@ class SendVerificationSms implements ShouldQueue
             return;
         }
 
+        if ($reservation->customer->opted_out) {
+            return;
+        }
+
         $confirmUrl = route('confirmation.show', $reservation->confirmation_token);
         $cancelUrl = route('confirmation.cancel', $reservation->confirmation_token);
 

@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreReservationRequest;
+use App\Http\Requests\UpdateReservationStatusRequest;
 use App\Http\Resources\ReservationResource;
 use App\Http\Resources\SmsLogResource;
 use App\Jobs\SendVerificationSms;
 use App\Models\Customer;
 use App\Models\Reservation;
+use App\Services\ReliabilityScoreService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,19 +27,24 @@ class ReservationController extends Controller
 
         $customer = Customer::query()->firstOrCreate(
             ['phone' => $request->string('phone')->toString()],
-            ['reservations_count' => 0, 'shows_count' => 0, 'no_shows_count' => 0],
+            [
+                'reservations_count' => 0,
+                'shows_count' => 0,
+                'no_shows_count' => 0,
+                'score_tier' => 'at_risk',
+                'opted_out' => false,
+            ],
         );
 
         $customer->increment('reservations_count');
 
-        $token = null;
-        $expiresAt = null;
+        $token = (string) Str::uuid();
+        $expiresAt = $scheduledAt->copy()->subMinutes(15);
         $status = 'pending_verification';
 
         if ($phoneVerified) {
             $status = 'pending_reminder';
         } elseif ($scheduledAt->greaterThan(now()->utc()->addMinutes(30))) {
-            $token = (string) Str::uuid();
             $expiresAt = now()->utc()->addHours(24)->min($scheduledAt->copy()->subHours(2));
         }
 
@@ -63,7 +70,8 @@ class ReservationController extends Controller
             'reservation' => ReservationResource::make($reservation),
             'customer' => [
                 'reliability_score' => $customer->reliability_score,
-                'score_tier' => $customer->reliability_score === null ? null : $customer->getScoreTier(),
+                'score_tier' => $customer->getScoreTier(),
+                'opted_out' => $customer->opted_out,
             ],
         ], 201);
     }
@@ -122,14 +130,37 @@ class ReservationController extends Controller
             'customer' => [
                 'phone' => $reservation->customer->phone,
                 'reliability_score' => $reservation->customer->reliability_score,
-                'score_tier' => $reservation->customer->reliability_score === null
-                    ? null
-                    : $reservation->customer->getScoreTier(),
+                'score_tier' => $reservation->customer->getScoreTier(),
                 'reservations_count' => $reservation->customer->reservations_count,
                 'shows_count' => $reservation->customer->shows_count,
                 'no_shows_count' => $reservation->customer->no_shows_count,
+                'opted_out' => $reservation->customer->opted_out,
             ],
             'sms_logs' => SmsLogResource::collection($reservation->smsLogs),
+        ]);
+    }
+
+    public function updateStatus(
+        UpdateReservationStatusRequest $request,
+        Reservation $reservation,
+        ReliabilityScoreService $scoreService,
+    ): JsonResponse {
+        abort_if($reservation->business_id !== $request->user()->id, 403);
+
+        $reservation->update([
+            'status' => $request->string('status')->toString(),
+            'status_changed_at' => now()->utc(),
+        ]);
+
+        $reservation->refresh()->load('customer');
+        $customer = $scoreService->recalculate($reservation->customer);
+
+        return response()->json([
+            'reservation' => ReservationResource::make($reservation->load('customer')),
+            'customer' => [
+                'reliability_score' => $customer->reliability_score,
+                'score_tier' => $customer->getScoreTier(),
+            ],
         ]);
     }
 }

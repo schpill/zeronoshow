@@ -53,6 +53,10 @@ export const apiClient = {
     const response = await instance.get<T>(path)
     return response.data
   },
+  async patch<T>(path: string, body?: unknown) {
+    const response = await instance.patch<T>(path, body)
+    return response.data
+  },
   async post<T>(path: string, body?: unknown) {
     const response = await instance.post<T>(path, body)
     return response.data

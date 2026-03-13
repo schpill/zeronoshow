@@ -1,7 +1,13 @@
 import { ref } from 'vue'
 
 import { apiClient } from '@/api/axios'
-import type { CustomerLookupResponse, ReservationPayload } from '@/types/reservations'
+import type {
+  CustomerLookupResponse,
+  ReservationListResponse,
+  ReservationMutationResponse,
+  ReservationPayload,
+  ReservationStatus,
+} from '@/types/reservations'
 
 function toQuery(params: Record<string, string | undefined>): string {
   const search = new URLSearchParams()
@@ -39,6 +45,7 @@ export function useReservations() {
     fetch: ref(false),
     lookup: ref(false),
     show: ref(false),
+    updateStatus: ref(false),
   }
 
   const errors = {
@@ -46,6 +53,7 @@ export function useReservations() {
     fetch: ref<string | null>(null),
     lookup: ref<string | null>(null),
     show: ref<string | null>(null),
+    updateStatus: ref<string | null>(null),
   }
 
   async function createReservation(payload: ReservationPayload) {
@@ -53,7 +61,7 @@ export function useReservations() {
     errors.create.value = null
 
     try {
-      return await apiClient.post<{ reservation: { id: string } }>('/reservations', payload)
+      return await apiClient.post<ReservationMutationResponse>('/reservations', payload)
     } catch (error) {
       errors.create.value = normalizeError(error)
       throw error
@@ -68,7 +76,7 @@ export function useReservations() {
 
     try {
       const query = toQuery(params)
-      return await apiClient.get<{ reservations: unknown[] }>(
+      return await apiClient.get<ReservationListResponse>(
         `/reservations${query ? `?${query}` : ''}`,
       )
     } catch (error) {
@@ -84,7 +92,7 @@ export function useReservations() {
     errors.show.value = null
 
     try {
-      return await apiClient.get(`/reservations/${id}`)
+      return await apiClient.get<ReservationMutationResponse>(`/reservations/${id}`)
     } catch (error) {
       errors.show.value = normalizeError(error)
       throw error
@@ -107,6 +115,22 @@ export function useReservations() {
     }
   }
 
+  async function updateStatus(id: string, status: ReservationStatus) {
+    loading.updateStatus.value = true
+    errors.updateStatus.value = null
+
+    try {
+      return await apiClient.patch<ReservationMutationResponse>(`/reservations/${id}/status`, {
+        status,
+      })
+    } catch (error) {
+      errors.updateStatus.value = normalizeError(error)
+      throw error
+    } finally {
+      loading.updateStatus.value = false
+    }
+  }
+
   return {
     loading,
     errors,
@@ -114,5 +138,6 @@ export function useReservations() {
     fetchReservations,
     fetchReservation,
     lookupCustomer,
+    updateStatus,
   }
 }

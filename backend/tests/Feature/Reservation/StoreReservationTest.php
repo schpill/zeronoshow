@@ -51,8 +51,18 @@ class StoreReservationTest extends TestCase
             'phone_verified' => true,
         ]);
 
-        $response->assertCreated()->assertJsonPath('reservation.status', 'pending_reminder');
+        $response
+            ->assertCreated()
+            ->assertJsonPath('reservation.status', 'pending_reminder')
+            ->assertJsonPath('reservation.phone_verified', true);
+
         Queue::assertNothingPushed();
+        $this->assertDatabaseHas('reservations', [
+            'business_id' => $business->id,
+            'status' => 'pending_reminder',
+            'phone_verified' => true,
+        ]);
+        $this->assertNotNull($response->json('reservation.confirmation_token'));
     }
 
     public function test_it_returns_the_existing_customer_reliability_score(): void
@@ -76,7 +86,8 @@ class StoreReservationTest extends TestCase
         $response
             ->assertCreated()
             ->assertJsonPath('customer.reliability_score', 94)
-            ->assertJsonPath('customer.score_tier', 'reliable');
+            ->assertJsonPath('customer.score_tier', 'reliable')
+            ->assertJsonPath('customer.opted_out', false);
     }
 
     public function test_it_returns_no_history_when_existing_customer_has_no_score(): void
@@ -100,7 +111,8 @@ class StoreReservationTest extends TestCase
         $response
             ->assertCreated()
             ->assertJsonPath('customer.reliability_score', null)
-            ->assertJsonPath('customer.score_tier', null);
+            ->assertJsonPath('customer.score_tier', 'at_risk')
+            ->assertJsonPath('customer.opted_out', false);
     }
 
     public function test_it_reuses_an_existing_customer_by_phone(): void

@@ -32,6 +32,7 @@ class ShowReservationTest extends TestCase
             ->assertOk()
             ->assertJsonPath('reservation.id', $reservation->id)
             ->assertJsonPath('customer.phone', $reservation->customer->phone)
+            ->assertJsonPath('customer.opted_out', false)
             ->assertJsonCount(1, 'sms_logs');
     }
 
@@ -53,6 +54,6 @@ class ShowReservationTest extends TestCase
         $response
             ->assertOk()
             ->assertJsonPath('customer.reliability_score', null)
-            ->assertJsonPath('customer.score_tier', null);
+            ->assertJsonPath('customer.score_tier', 'at_risk');
     }
 }
