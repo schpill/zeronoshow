@@ -64,21 +64,6 @@ class LeoAddonBillingTest extends TestCase
             ->assertJsonPath('message', 'Aucun abonnement Stripe actif n’a ete trouve.');
     }
 
-    public function test_activate_returns_payment_required_when_business_is_not_on_an_active_plan(): void
-    {
-        $business = Business::factory()->create([
-            'subscription_status' => 'cancelled',
-            'stripe_subscription_id' => 'sub_cancelled',
-            'leo_addon_active' => false,
-        ]);
-
-        Sanctum::actingAs($business);
-
-        $this->postJson('/api/v1/leo/addon/activate')
-            ->assertStatus(402)
-            ->assertJsonPath('message', 'Aucun abonnement Stripe actif n’a ete trouve.');
-    }
-
     public function test_activate_returns_payment_required_when_business_plan_is_not_active(): void
     {
         $business = Business::factory()->create([

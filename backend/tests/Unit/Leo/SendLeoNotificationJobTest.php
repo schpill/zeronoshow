@@ -18,12 +18,16 @@ class SendLeoNotificationJobTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        config()->set('services.telegram.token', 'telegram-token');
+    }
+
     public function test_it_logs_a_cancellation_notification_without_exposing_a_phone_number(): void
     {
-        config()->set('services.telegram.token', 'telegram-token');
-        Http::fake([
-            'https://api.telegram.org/*' => Http::response(['ok' => true], 200),
-        ]);
+        $this->fakeTelegramSuccess();
 
         $reservation = $this->reservationWithChannel();
         $job = new SendLeoNotificationJob($reservation->id, 'cancelled_by_client');
@@ -54,15 +58,7 @@ class SendLeoNotificationJobTest extends TestCase
 
     public function test_it_logs_a_no_show_notification(): void
     {
-        config()->set('services.telegram.token', 'telegram-token');
-        Http::fake([
-            'https://api.telegram.org/*' => Http::response(['ok' => true], 200),
-        ]);
-
-        config()->set('services.telegram.token', 'telegram-token');
-        Http::fake([
-            'https://api.telegram.org/*' => Http::response(['ok' => true], 200),
-        ]);
+        $this->fakeTelegramSuccess();
 
         $reservation = $this->reservationWithChannel();
         $job = new SendLeoNotificationJob($reservation->id, 'no_show');
@@ -91,7 +87,6 @@ class SendLeoNotificationJobTest extends TestCase
 
     public function test_it_logs_a_throttled_event_and_skips_the_regular_notification(): void
     {
-        config()->set('services.telegram.token', 'telegram-token');
         Http::fake();
 
         $reservation = $this->reservationWithChannel();
@@ -155,5 +150,12 @@ class SendLeoNotificationJobTest extends TestCase
             'notes' => 'Client 0601020304',
             'status' => 'confirmed',
         ])->load('business');
+    }
+
+    private function fakeTelegramSuccess(): void
+    {
+        Http::fake([
+            'https://api.telegram.org/*' => Http::response(['ok' => true], 200),
+        ]);
     }
 }

@@ -52,7 +52,7 @@ class LeoGeminiServiceTest extends TestCase
 
         $service = app(LeoGeminiService::class);
 
-        $response = $service->ask($business->id, 'Milo', 'Quel est le bilan du jour ?');
+        $response = $service->ask($business->id, 'Milo', 'Quel est le bilan du jour immédiatement ?');
 
         $this->assertSame('Résumé réel du jour.', $response);
 
@@ -194,6 +194,77 @@ class LeoGeminiServiceTest extends TestCase
                 && data_get($functionResponse, 'response.score_avg') === 82.5
                 && data_get($functionResponse, 'response.confirmed') === 1;
         });
+
+        CarbonImmutable::setTestNow();
+    }
+
+    public function test_it_stops_after_two_function_calls_and_falls_back_locally(): void
+    {
+        CarbonImmutable::setTestNow('2026-03-13 10:00:00');
+
+        config()->set('services.gemini.api_key', 'gemini-key');
+        config()->set('services.gemini.model', 'gemini-2.5-flash');
+
+        $business = Business::factory()->create([
+            'name' => 'Atelier Marais',
+        ]);
+
+        Reservation::factory()->create([
+            'business_id' => $business->id,
+            'scheduled_at' => now()->addHour(),
+            'status' => 'confirmed',
+        ]);
+
+        Http::fake([
+            'https://generativelanguage.googleapis.com/*' => Http::sequence()
+                ->push([
+                    'candidates' => [[
+                        'content' => [
+                            'parts' => [[
+                                'functionCall' => [
+                                    'name' => 'get_today_stats',
+                                    'args' => new \stdClass,
+                                ],
+                            ]],
+                        ],
+                    ]],
+                ], 200)
+                ->push([
+                    'candidates' => [[
+                        'content' => [
+                            'parts' => [[
+                                'functionCall' => [
+                                    'name' => 'get_pending_reservations',
+                                    'args' => new \stdClass,
+                                ],
+                            ]],
+                        ],
+                    ]],
+                ], 200)
+                ->push([
+                    'candidates' => [[
+                        'content' => [
+                            'parts' => [[
+                                'functionCall' => [
+                                    'name' => 'get_upcoming_reservations',
+                                    'args' => new \stdClass,
+                                ],
+                            ]],
+                        ],
+                    ]],
+                ], 200),
+        ]);
+
+        $service = app(LeoGeminiService::class);
+
+        $response = $service->ask($business->id, 'Milo', 'Quel est le bilan du jour aujourd’hui ?');
+
+        $this->assertSame(
+            'Milo pour Atelier Marais: 1 réservations aujourd’hui, 1 confirmées, 0 en attente, 0 annulées.',
+            $response,
+        );
+
+        Http::assertSentCount(3);
 
         CarbonImmutable::setTestNow();
     }
