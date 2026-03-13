@@ -1,0 +1,46 @@
+#!/usr/bin/env sh
+set -e
+
+# Helper: run a command in the api container (exec if running, run --rm otherwise)
+run_api() {
+  if docker compose ps --status running api 2>/dev/null | grep -q "api"; then
+    docker compose exec -T api "$@"
+  else
+    docker compose run --rm api "$@"
+  fi
+}
+
+# Helper: run a command in the frontend container
+run_frontend() {
+  if docker compose ps --status running frontend 2>/dev/null | grep -q "frontend"; then
+    docker compose exec -T frontend "$@"
+  else
+    docker compose run --rm frontend "$@"
+  fi
+}
+
+echo ""
+echo "╔══════════════════════════════════════════╗"
+echo "║         ZeroNoShow — pre-push checks     ║"
+echo "╚══════════════════════════════════════════╝"
+echo ""
+
+echo "▶ [1/5] Backend — Pint (code style)"
+run_api ./vendor/bin/pint --test
+
+echo "▶ [2/5] Backend — PHPStan (static analysis)"
+run_api ./vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M
+
+echo "▶ [3/5] Backend — Pest (tests)"
+run_api ./vendor/bin/pest --stop-on-failure
+
+echo "▶ [4/5] Frontend — Prettier + ESLint"
+run_frontend pnpm format:check
+run_frontend pnpm lint
+
+echo "▶ [5/5] Frontend — Vitest (tests)"
+run_frontend pnpm vitest run
+
+echo ""
+echo "✓ Tous les checks sont passés — push autorisé."
+echo ""
