@@ -20,6 +20,11 @@ const router = createRouter({
       component: () => import('@/pages/RegisterPage.vue'),
       meta: { guestOnly: true },
     },
+    {
+      path: '/subscription',
+      component: () => import('@/pages/SubscriptionPage.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 

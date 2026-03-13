@@ -8,8 +8,63 @@ services:
         PGID: ${PGID:-1000}
     container_name: znz_api
     working_dir: /var/www/html
-    env_file:
-      - ./backend/.env.example
+    environment: &backend_env
+      APP_NAME: ${APP_NAME:-ZeroNoShow}
+      APP_ENV: ${APP_ENV:-local}
+      APP_KEY: ${APP_KEY:-base64:7Sukl99c9M7xAsKeVZTzjQ9zDihqgKjDh+9inI6F3LA=}
+      APP_DEBUG: ${APP_DEBUG:-true}
+      APP_URL: ${APP_URL:-http://localhost}
+      APP_TIMEZONE: ${APP_TIMEZONE:-UTC}
+      APP_LOCALE: ${APP_LOCALE:-fr}
+      APP_FALLBACK_LOCALE: ${APP_FALLBACK_LOCALE:-fr}
+      APP_FAKER_LOCALE: ${APP_FAKER_LOCALE:-fr_FR}
+      APP_MAINTENANCE_DRIVER: ${APP_MAINTENANCE_DRIVER:-file}
+      BCRYPT_ROUNDS: ${BCRYPT_ROUNDS:-12}
+      LOG_CHANNEL: ${LOG_CHANNEL:-stack}
+      LOG_STACK: ${LOG_STACK:-single}
+      LOG_DEPRECATIONS_CHANNEL: ${LOG_DEPRECATIONS_CHANNEL:-null}
+      LOG_LEVEL: ${LOG_LEVEL:-debug}
+      DB_CONNECTION: ${DB_CONNECTION:-pgsql}
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_DATABASE: ${DB_DATABASE:-zeronoshow}
+      DB_USERNAME: ${DB_USERNAME:-zeronoshow}
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
+      SESSION_DRIVER: ${SESSION_DRIVER:-file}
+      SESSION_LIFETIME: ${SESSION_LIFETIME:-120}
+      SESSION_ENCRYPT: ${SESSION_ENCRYPT:-false}
+      SESSION_PATH: ${SESSION_PATH:-/}
+      SESSION_DOMAIN: ${SESSION_DOMAIN:-null}
+      BROADCAST_CONNECTION: ${BROADCAST_CONNECTION:-log}
+      FILESYSTEM_DISK: ${FILESYSTEM_DISK:-local}
+      QUEUE_CONNECTION: ${QUEUE_CONNECTION:-redis}
+      CACHE_STORE: ${CACHE_STORE:-redis}
+      REDIS_CLIENT: ${REDIS_CLIENT:-phpredis}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-null}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      MAIL_MAILER: ${MAIL_MAILER:-smtp}
+      MAIL_SCHEME: ${MAIL_SCHEME:-null}
+      MAIL_HOST: ${MAIL_HOST:-mailpit}
+      MAIL_PORT: ${MAIL_PORT:-1025}
+      MAIL_USERNAME: ${MAIL_USERNAME:-null}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-null}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-hello@zeronoshow.test}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-ZeroNoShow}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
+      TWILIO_FROM: ${TWILIO_FROM:-}
+      TWILIO_WEBHOOK_SECRET: ${TWILIO_WEBHOOK_SECRET:-}
+      STRIPE_KEY: ${STRIPE_KEY:-}
+      STRIPE_SECRET: ${STRIPE_SECRET:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      SENTRY_LARAVEL_DSN: ${SENTRY_LARAVEL_DSN:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-eu-west-3}
+      AWS_BUCKET: ${AWS_BUCKET:-}
+      AWS_USE_PATH_STYLE_ENDPOINT: ${AWS_USE_PATH_STYLE_ENDPOINT:-false}
+      VITE_APP_NAME: ${VITE_APP_NAME:-ZeroNoShow}
     volumes:
       - ./backend:/var/www/html
     depends_on:
@@ -30,8 +85,7 @@ services:
     container_name: znz_worker
     working_dir: /var/www/html
     command: php artisan queue:work --tries=3 --sleep=1 --max-time=3600
-    env_file:
-      - ./backend/.env.example
+    environment: *backend_env
     volumes:
       - ./backend:/var/www/html
     depends_on:
@@ -52,8 +106,7 @@ services:
     container_name: znz_scheduler
     working_dir: /var/www/html
     command: php artisan schedule:work
-    env_file:
-      - ./backend/.env.example
+    environment: *backend_env
     volumes:
       - ./backend:/var/www/html
     depends_on:

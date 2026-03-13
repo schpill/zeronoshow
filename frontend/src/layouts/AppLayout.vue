@@ -6,13 +6,29 @@ import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
 
-const daysUntilTrialEnd = computed(() => {
+const trialBanner = computed(() => {
   if (!auth.user?.trial_ends_at || auth.user.subscription_status !== 'trial') {
     return null
   }
 
   const diff = new Date(auth.user.trial_ends_at).getTime() - Date.now()
-  return Math.ceil(diff / (1000 * 60 * 60 * 24))
+  const daysRemaining = Math.ceil(diff / (1000 * 60 * 60 * 24))
+
+  if (daysRemaining < 0) {
+    return {
+      tone: 'danger',
+      message: 'Essai gratuit expiré. Abonnez-vous pour continuer à créer des réservations.',
+    }
+  }
+
+  if (daysRemaining < 3) {
+    return {
+      tone: 'warning',
+      message: `Essai gratuit: ${daysRemaining} jour${daysRemaining > 1 ? 's' : ''} restant${daysRemaining > 1 ? 's' : ''}.`,
+    }
+  }
+
+  return null
 })
 </script>
 
@@ -21,11 +37,15 @@ const daysUntilTrialEnd = computed(() => {
     <NavBar />
 
     <div
-      v-if="daysUntilTrialEnd !== null && daysUntilTrialEnd < 3"
-      class="border-b border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm font-medium text-amber-800 dark:border-amber-900/60 dark:bg-amber-900/20 dark:text-amber-300"
+      v-if="trialBanner"
+      class="border-b px-4 py-3 text-center text-sm font-medium"
+      :class="
+        trialBanner.tone === 'danger'
+          ? 'border-red-200 bg-red-50 text-red-800 dark:border-red-900/60 dark:bg-red-900/20 dark:text-red-300'
+          : 'border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900/60 dark:bg-amber-900/20 dark:text-amber-300'
+      "
     >
-      Essai gratuit: {{ daysUntilTrialEnd }} jour<span v-if="daysUntilTrialEnd > 1">s</span>
-      restant<span v-if="daysUntilTrialEnd > 1">s</span>.
+      {{ trialBanner.message }}
     </div>
 
     <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">

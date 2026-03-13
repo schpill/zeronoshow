@@ -63,7 +63,7 @@ class ReservationController extends Controller
             'reservation' => ReservationResource::make($reservation),
             'customer' => [
                 'reliability_score' => $customer->reliability_score,
-                'score_tier' => $customer->getScoreTier(),
+                'score_tier' => $customer->reliability_score === null ? null : $customer->getScoreTier(),
             ],
         ], 201);
     }
