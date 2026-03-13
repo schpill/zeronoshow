@@ -1,0 +1,14 @@
+export type SubscriptionStatus = 'trial' | 'active' | 'cancelled'
+
+export interface BusinessUser {
+  id: string
+  name: string
+  email: string
+  subscription_status: SubscriptionStatus
+  trial_ends_at: string
+}
+
+export interface AuthResponse {
+  token: string
+  business: BusinessUser
+}
