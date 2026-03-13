@@ -13,6 +13,9 @@ PROD_DIR  := /home/gerald/web/zeronoshow
 # ─── Local dev ────────────────────────────────────────────────────────────────
 
 up:
+	$(DOCKER_COMPOSE) up -d
+
+upbuild:
 	$(DOCKER_COMPOSE) up -d --build
 
 down:
