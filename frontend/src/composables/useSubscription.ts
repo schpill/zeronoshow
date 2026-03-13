@@ -18,7 +18,9 @@ export function useSubscription() {
       return null
     }
 
-    return Math.ceil((new Date(subscription.value.trial_ends_at).getTime() - Date.now()) / 86_400_000)
+    return Math.ceil(
+      (new Date(subscription.value.trial_ends_at).getTime() - Date.now()) / 86_400_000,
+    )
   })
 
   async function fetchSubscription() {

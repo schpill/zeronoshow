@@ -55,6 +55,11 @@ function handleUpdated(updatedReservation: ReservationRecord) {
   )
 }
 
+function switchView(mode: 'day' | 'week') {
+  viewMode.value = mode
+  void refreshReservations()
+}
+
 function toIsoWeek(date: string) {
   const value = new Date(`${date}T12:00:00`)
   const day = (value.getDay() + 6) % 7
@@ -66,7 +71,9 @@ function toIsoWeek(date: string) {
   return `${value.getFullYear()}-W${String(week).padStart(2, '0')}`
 }
 
-const summary = computed(() => `${smsCostThisMonth.value.toFixed(2)} € SMS · ${weeklyNoShowRate.value ?? 0}% no-show`)
+const summary = computed(
+  () => `${smsCostThisMonth.value.toFixed(2)} € SMS · ${weeklyNoShowRate.value ?? 0}% no-show`,
+)
 </script>
 
 <template>
@@ -88,16 +95,24 @@ const summary = computed(() => `${smsCostThisMonth.value.toFixed(2)} € SMS · 
             <button
               type="button"
               class="rounded-xl px-4 py-2 text-sm font-semibold"
-              :class="viewMode === 'day' ? 'bg-emerald-500 text-white' : 'border border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-200'"
-              @click="viewMode = 'day'; refreshReservations()"
+              :class="
+                viewMode === 'day'
+                  ? 'bg-emerald-500 text-white'
+                  : 'border border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-200'
+              "
+              @click="switchView('day')"
             >
               Jour
             </button>
             <button
               type="button"
               class="rounded-xl px-4 py-2 text-sm font-semibold"
-              :class="viewMode === 'week' ? 'bg-emerald-500 text-white' : 'border border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-200'"
-              @click="viewMode = 'week'; refreshReservations()"
+              :class="
+                viewMode === 'week'
+                  ? 'bg-emerald-500 text-white'
+                  : 'border border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-200'
+              "
+              @click="switchView('week')"
             >
               Semaine
             </button>

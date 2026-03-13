@@ -26,7 +26,9 @@ function statusClasses(status: SmsLogRecord['status']) {
 </script>
 
 <template>
-  <section class="rounded-[28px] border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+  <section
+    class="rounded-[28px] border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900"
+  >
     <div class="mb-4">
       <p class="text-overline">Logs SMS</p>
       <h2 class="text-heading-3 dark:text-slate-50">Historique d’envoi</h2>
@@ -49,7 +51,11 @@ function statusClasses(status: SmsLogRecord['status']) {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="log in logs" :key="log.id" class="border-t border-slate-100 dark:border-slate-800">
+        <tr
+          v-for="log in logs"
+          :key="log.id"
+          class="border-t border-slate-100 dark:border-slate-800"
+        >
           <td class="py-3">{{ log.type }}</td>
           <td class="py-3">
             <span class="rounded-full px-2 py-1 text-badge" :class="statusClasses(log.status)">

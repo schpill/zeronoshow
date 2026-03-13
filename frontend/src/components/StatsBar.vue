@@ -6,7 +6,11 @@ defineProps<{
 }>()
 
 const cards: Array<{ key: keyof DashboardStats; label: string; tone: string }> = [
-  { key: 'confirmed', label: 'Confirmées', tone: 'text-emerald-700 bg-emerald-50 border-emerald-200' },
+  {
+    key: 'confirmed',
+    label: 'Confirmées',
+    tone: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+  },
   { key: 'pending_reminder', label: 'Rappels', tone: 'text-blue-700 bg-blue-50 border-blue-200' },
   { key: 'cancelled', label: 'Annulations', tone: 'text-amber-700 bg-amber-50 border-amber-200' },
   { key: 'no_show', label: 'No-shows', tone: 'text-red-700 bg-red-50 border-red-200' },
