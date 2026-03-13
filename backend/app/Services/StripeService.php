@@ -12,6 +12,11 @@ use Stripe\StripeClient;
 
 class StripeService
 {
+    public function leoAddonPriceId(): string
+    {
+        return (string) (config('leo.stripe.price_id') ?: Cache::get('leo:stripe:price_id', ''));
+    }
+
     /**
      * @return array{id: string, url: string, customer_id: string|null}
      *

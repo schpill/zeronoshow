@@ -112,6 +112,7 @@
 | 2026-03-13 | Key decisions: Telegram-first (no WhatsApp MVP), Gemini 2.5 Flash via GEMINI_API_KEY, channel abstraction, 9€/mois Stripe Subscription Item, **un seul canal par établissement** (UNIQUE business_id), changement de canal = delete+create, throttle Redis 20 msg/heure (anti-loop, pas billing), WhatsApp pricing TBD (coût ~0,03€/msg incompatible avec 9€ flat), site vitrine ajouté + refactor routes /→LandingView /dashboard→Dashboard |
 | 2026-03-13 | Implémentation APEX livrée: backend Léo (canaux, sessions, logs, webhook Telegram, Gemini fallback, add-on billing, throttle, purge logs) + frontend Léo/dashboard + landing page publique |
 | 2026-03-13 | BotFather flow documenté: créer le bot via `/newbot`, renseigner `TELEGRAM_BOT_TOKEN`, définir `TELEGRAM_WEBHOOK_SECRET`, puis exécuter `php artisan leo:setup-telegram-webhook` |
+| 2026-03-13 | Sessions Léo conservées en base volontairement pour auditabilité et simplicité opérationnelle; purge opportuniste des sessions expirées à chaque résolution/écriture pour éviter l’accumulation sans dépendre de Redis TTL |
 
 ### Telegram Bot Setup (run once at deploy)
 

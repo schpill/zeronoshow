@@ -25,7 +25,7 @@ class LeoAddonController extends Controller
             ]);
         }
 
-        if (! $business->stripe_subscription_id) {
+        if (! $business->stripe_subscription_id || ! $business->isOnActivePlan()) {
             return response()->json([
                 'message' => 'Aucun abonnement Stripe actif n’a ete trouve.',
             ], 402);
@@ -33,7 +33,7 @@ class LeoAddonController extends Controller
 
         $item = $this->stripeService->createSubscriptionItem(
             (string) $business->stripe_subscription_id,
-            (string) config('leo.stripe.price_id'),
+            $this->stripeService->leoAddonPriceId(),
         );
 
         $business->forceFill([

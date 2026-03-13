@@ -19,7 +19,7 @@ Route::prefix('v1')->group(function (): void {
     Route::get('/health', [HealthController::class, 'check']);
     Route::post('/webhooks/twilio', [TwilioWebhookController::class, 'handle'])->middleware('throttle:webhook');
     Route::post('/webhooks/stripe', [StripeWebhookController::class, 'handle']);
-    Route::post('/webhooks/leo/telegram', [LeoWebhookController::class, 'telegram'])->middleware('throttle:webhook');
+    Route::post('/webhooks/leo/telegram', [LeoWebhookController::class, 'telegram'])->middleware(['telegram.allowlist', 'throttle:webhook']);
 
     Route::middleware('auth:sanctum')->group(function (): void {
         Route::post('/auth/logout', [AuthController::class, 'logout']);

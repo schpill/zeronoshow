@@ -11,6 +11,8 @@ class LeoSessionService
 {
     public function resolve(string $channelId, string $senderId): ?Business
     {
+        $this->purgeExpired();
+
         $session = LeoSession::query()
             ->where('channel_id', $channelId)
             ->forSender($senderId)
@@ -31,6 +33,22 @@ class LeoSessionService
         int $ttlSeconds = 300,
         bool $pendingSelection = false,
     ): void {
+        $this->purgeExpired();
+
+        $existingSession = LeoSession::query()
+            ->where('channel_id', $channelId)
+            ->forSender($senderId)
+            ->valid()
+            ->first();
+
+        if (
+            $existingSession
+            && $existingSession->active_business_id === $businessId
+            && $existingSession->pending_selection === $pendingSelection
+        ) {
+            return;
+        }
+
         LeoSession::query()->updateOrCreate(
             [
                 'channel_id' => $channelId,
@@ -49,6 +67,8 @@ class LeoSessionService
      */
     public function findPendingSelection(Collection $channels, string $senderId): ?LeoSession
     {
+        $this->purgeExpired();
+
         $channelIds = $channels->pluck('id');
 
         if ($channelIds->isEmpty()) {
@@ -68,6 +88,8 @@ class LeoSessionService
      */
     public function clearPendingSelections(Collection $channels, string $senderId): void
     {
+        $this->purgeExpired();
+
         $channelIds = $channels->pluck('id');
 
         if ($channelIds->isEmpty()) {
@@ -86,6 +108,13 @@ class LeoSessionService
         LeoSession::query()
             ->where('channel_id', $channelId)
             ->forSender($senderId)
+            ->delete();
+    }
+
+    public function purgeExpired(): int
+    {
+        return LeoSession::query()
+            ->where('expires_at', '<=', now())
             ->delete();
     }
 }

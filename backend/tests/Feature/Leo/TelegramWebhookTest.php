@@ -149,9 +149,37 @@ class TelegramWebhookTest extends TestCase
         ]);
     }
 
+    public function test_it_rejects_requests_from_ips_outside_the_telegram_allowlist(): void
+    {
+        config()->set('services.telegram.webhook_secret', 'telegram-secret');
+
+        Http::fake([
+            'https://api.telegram.org/*' => Http::response(['ok' => true], 200),
+        ]);
+
+        $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.10'])
+            ->postJson(
+                '/api/v1/webhooks/leo/telegram',
+                [
+                    'message' => [
+                        'text' => 'Bonjour',
+                        'from' => [
+                            'id' => 123456789,
+                        ],
+                    ],
+                ],
+                [
+                    'X-Telegram-Bot-Api-Secret-Token' => 'telegram-secret',
+                ],
+            )
+            ->assertForbidden();
+
+        Http::assertNothingSent();
+    }
+
     private function telegramWebhook(string $text)
     {
-        return $this->postJson(
+        return $this->withServerVariables(['REMOTE_ADDR' => '149.154.160.10'])->postJson(
             '/api/v1/webhooks/leo/telegram',
             [
                 'message' => [

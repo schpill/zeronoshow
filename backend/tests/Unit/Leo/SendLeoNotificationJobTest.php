@@ -7,8 +7,10 @@ use App\Models\Business;
 use App\Models\LeoMessageLog;
 use App\Models\Reservation;
 use App\Services\Leo\LeoThrottleService;
+use App\Services\Leo\TelegramChannel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -18,61 +20,101 @@ class SendLeoNotificationJobTest extends TestCase
 
     public function test_it_logs_a_cancellation_notification_without_exposing_a_phone_number(): void
     {
+        config()->set('services.telegram.token', 'telegram-token');
+        Http::fake([
+            'https://api.telegram.org/*' => Http::response(['ok' => true], 200),
+        ]);
+
         $reservation = $this->reservationWithChannel();
         $job = new SendLeoNotificationJob($reservation->id, 'cancelled_by_client');
 
-        $job->handle(new class extends LeoThrottleService
-        {
-            public function isThrottled(string $key): bool
+        $job->handle(
+            new class extends LeoThrottleService
             {
-                return false;
-            }
-        });
+                public function isThrottled(string $key): bool
+                {
+                    return false;
+                }
+            },
+            app(TelegramChannel::class),
+        );
 
         $log = LeoMessageLog::query()->latest('created_at')->firstOrFail();
 
         $this->assertSame('cancelled_by_client', $log->intent);
         $this->assertStringContainsString('Annulation client', $log->raw_message);
         $this->assertStringNotContainsString('0601020304', $log->raw_message);
+
+        Http::assertSent(function ($request): bool {
+            return str_contains($request->url(), '/sendMessage')
+                && str_contains((string) $request['text'], 'Annulation client')
+                && ! str_contains((string) $request['text'], '0601020304');
+        });
     }
 
     public function test_it_logs_a_no_show_notification(): void
     {
+        config()->set('services.telegram.token', 'telegram-token');
+        Http::fake([
+            'https://api.telegram.org/*' => Http::response(['ok' => true], 200),
+        ]);
+
+        config()->set('services.telegram.token', 'telegram-token');
+        Http::fake([
+            'https://api.telegram.org/*' => Http::response(['ok' => true], 200),
+        ]);
+
         $reservation = $this->reservationWithChannel();
         $job = new SendLeoNotificationJob($reservation->id, 'no_show');
 
-        $job->handle(new class extends LeoThrottleService
-        {
-            public function isThrottled(string $key): bool
+        $job->handle(
+            new class extends LeoThrottleService
             {
-                return false;
-            }
-        });
+                public function isThrottled(string $key): bool
+                {
+                    return false;
+                }
+            },
+            app(TelegramChannel::class),
+        );
 
         $log = LeoMessageLog::query()->latest('created_at')->firstOrFail();
 
         $this->assertSame('no_show', $log->intent);
         $this->assertStringContainsString('No-show', $log->raw_message);
+
+        Http::assertSent(function ($request): bool {
+            return str_contains($request->url(), '/sendMessage')
+                && str_contains((string) $request['text'], 'No-show');
+        });
     }
 
     public function test_it_logs_a_throttled_event_and_skips_the_regular_notification(): void
     {
+        config()->set('services.telegram.token', 'telegram-token');
+        Http::fake();
+
         $reservation = $this->reservationWithChannel();
         $job = new SendLeoNotificationJob($reservation->id, 'cancelled_by_client');
 
-        $job->handle(new class extends LeoThrottleService
-        {
-            public function isThrottled(string $key): bool
+        $job->handle(
+            new class extends LeoThrottleService
             {
-                return true;
-            }
-        });
+                public function isThrottled(string $key): bool
+                {
+                    return true;
+                }
+            },
+            app(TelegramChannel::class),
+        );
 
         $this->assertDatabaseHas('leo_message_logs', [
             'channel_id' => $reservation->business->leoChannel?->id,
             'intent' => 'throttled',
             'raw_message' => 'Notification Léo bloquée par le throttle.',
         ]);
+
+        Http::assertNothingSent();
     }
 
     public function test_it_targets_the_default_queue(): void

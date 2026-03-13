@@ -6,6 +6,7 @@ use App\Models\LeoChannel;
 use App\Models\LeoMessageLog;
 use App\Models\Reservation;
 use App\Services\Leo\LeoThrottleService;
+use App\Services\Leo\TelegramChannel;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
@@ -30,7 +31,7 @@ class SendLeoNotificationJob implements ShouldQueue
         $this->onQueue('default');
     }
 
-    public function handle(LeoThrottleService $throttleService): void
+    public function handle(LeoThrottleService $throttleService, TelegramChannel $telegramChannel): void
     {
         $reservation = Reservation::query()->with('business')->find($this->reservationId);
 
@@ -76,6 +77,10 @@ class SendLeoNotificationJob implements ShouldQueue
             ),
             default => sprintf('Mise a jour Léo: %s.', $reservation->customer_name),
         };
+
+        if ($channel->channel === 'telegram') {
+            $telegramChannel->sendMessage($channel->external_identifier, $message);
+        }
 
         $throttleService->increment($throttleKey);
 

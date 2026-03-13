@@ -4,6 +4,7 @@ namespace Tests\Feature\Leo;
 
 use App\Models\Business;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -144,6 +145,45 @@ class StripeWebhookLeoAddonTest extends TestCase
         $this->assertDatabaseHas('leo_channels', [
             'business_id' => $business->id,
             'is_active' => false,
+        ]);
+    }
+
+    public function test_it_uses_the_cached_leo_price_id_when_the_config_value_is_empty(): void
+    {
+        config()->set('services.stripe.webhook_secret', 'whsec_test');
+        config()->set('leo.stripe.price_id', null);
+        Cache::forever('leo:stripe:price_id', 'price_cached_leo');
+
+        $business = Business::factory()->create([
+            'stripe_customer_id' => 'cus_leo',
+            'stripe_subscription_id' => 'sub_leo',
+            'leo_addon_active' => false,
+        ]);
+
+        $payload = json_encode([
+            'type' => 'customer.subscription.updated',
+            'data' => [
+                'object' => [
+                    'id' => 'sub_leo',
+                    'customer' => 'cus_leo',
+                    'items' => [
+                        'data' => [
+                            [
+                                'id' => 'si_leo_cached',
+                                'price' => ['id' => 'price_cached_leo'],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], JSON_THROW_ON_ERROR);
+
+        $this->callWebhook($payload)->assertOk();
+
+        $this->assertDatabaseHas('businesses', [
+            'id' => $business->id,
+            'leo_addon_active' => true,
+            'leo_addon_stripe_item_id' => 'si_leo_cached',
         ]);
     }
 

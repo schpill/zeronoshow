@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 
 import LeoChannelTypeBadge from '@/components/leo/LeoChannelTypeBadge.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
@@ -23,6 +23,39 @@ const form = reactive({
 const error = ref<string | null>(null)
 
 const types: LeoChannelType[] = ['telegram', 'whatsapp', 'sms', 'slack', 'discord']
+const channelCopy: Record<
+  LeoChannelType,
+  { label: string; placeholder: string; setupTitle: string }
+> = {
+  telegram: {
+    label: 'Identifiant du canal',
+    placeholder: '123456789',
+    setupTitle: 'Comment obtenir votre Chat ID Telegram',
+  },
+  whatsapp: {
+    label: 'Identifiant du canal',
+    placeholder: '+33612345678',
+    setupTitle: 'Comment connecter votre numéro WhatsApp',
+  },
+  sms: {
+    label: 'Identifiant du canal',
+    placeholder: '+33612345678',
+    setupTitle: 'Comment renseigner votre numéro SMS',
+  },
+  slack: {
+    label: 'Identifiant du canal',
+    placeholder: 'C0123456789',
+    setupTitle: 'Comment connecter votre canal Slack',
+  },
+  discord: {
+    label: 'Identifiant du canal',
+    placeholder: '123456789012345678',
+    setupTitle: 'Comment connecter votre salon Discord',
+  },
+}
+const identifierLabel = computed(() => channelCopy[form.channel].label)
+const identifierPlaceholder = computed(() => channelCopy[form.channel].placeholder)
+const setupTitle = computed(() => channelCopy[form.channel].setupTitle)
 
 function submit() {
   error.value = null
@@ -33,7 +66,7 @@ function submit() {
   }
 
   if (!form.external_identifier.trim()) {
-    error.value = 'Le Chat ID Telegram est obligatoire.'
+    error.value = `${identifierLabel.value} est obligatoire.`
     return
   }
 
@@ -68,13 +101,13 @@ function submit() {
       </div>
 
       <div>
-        <label for="leo-chat-id" class="text-label">Chat ID Telegram</label>
+        <label for="leo-chat-id" class="text-label">{{ identifierLabel }}</label>
         <input
           id="leo-chat-id"
           v-model="form.external_identifier"
           type="text"
           class="mt-2 input-field"
-          placeholder="123456789"
+          :placeholder="identifierPlaceholder"
         />
       </div>
     </div>
@@ -109,9 +142,7 @@ function submit() {
     </div>
 
     <details class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-      <summary class="cursor-pointer text-sm font-semibold text-slate-900">
-        Comment obtenir votre Chat ID
-      </summary>
+      <summary class="cursor-pointer text-sm font-semibold text-slate-900">{{ setupTitle }}</summary>
       <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-600">
         <li>Ouvrez Telegram et démarrez une conversation avec `@userinfobot`.</li>
         <li>Envoyez n’importe quel message.</li>

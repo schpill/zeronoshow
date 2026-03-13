@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AllowTelegramWebhookIps;
 use App\Http\Middleware\LeoAddonActiveMiddleware;
 use App\Http\Middleware\RequireActiveSubscription;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -22,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
+            'telegram.allowlist' => AllowTelegramWebhookIps::class,
             'leo.addon' => LeoAddonActiveMiddleware::class,
             'subscription' => RequireActiveSubscription::class,
         ]);

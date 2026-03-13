@@ -9,11 +9,9 @@ class LeoThrottleService
     public function increment(string $identifier): int
     {
         $key = $this->cacheKey($identifier);
-        $current = (int) Cache::get($key, 0) + 1;
+        Cache::add($key, 0, now()->addHour());
 
-        Cache::put($key, $current, now()->addHour());
-
-        return $current;
+        return (int) Cache::increment($key);
     }
 
     public function isThrottled(string $identifier): bool

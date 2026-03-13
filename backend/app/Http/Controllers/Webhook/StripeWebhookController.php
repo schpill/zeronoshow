@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\PaymentFailedStub;
 use App\Models\Business;
 use App\Models\LeoChannel;
+use App\Services\StripeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -16,6 +17,10 @@ use UnexpectedValueException;
 
 class StripeWebhookController extends Controller
 {
+    public function __construct(
+        private readonly StripeService $stripeService,
+    ) {}
+
     public function handle(Request $request): JsonResponse
     {
         $payload = $request->getContent();
@@ -105,7 +110,7 @@ class StripeWebhookController extends Controller
             return;
         }
 
-        $leoPriceId = (string) config('leo.stripe.price_id');
+        $leoPriceId = $this->stripeService->leoAddonPriceId();
         $items = data_get($payload, 'items.data', []);
         $leoItem = collect(is_array($items) ? $items : [])
             ->first(fn (mixed $item): bool => data_get($item, 'price.id') === $leoPriceId);

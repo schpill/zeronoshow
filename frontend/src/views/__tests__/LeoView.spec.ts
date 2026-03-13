@@ -31,20 +31,16 @@ const authState = ref({
   leo_addon_active: false,
 })
 
-vi.mock('@/composables/useLeoChannels', () => ({
-  useLeoChannels: () => ({
+vi.mock('@/composables/useLeo', () => ({
+  useLeo: () => ({
     channel,
-    channels: ref([]),
     addonStatus,
     loading,
     error,
     refresh,
-    fetchChannels: refresh,
     createChannel,
     patchChannel,
-    updateChannel: patchChannel,
     removeChannel,
-    deleteChannel: removeChannel,
     activateAddon,
   }),
 }))

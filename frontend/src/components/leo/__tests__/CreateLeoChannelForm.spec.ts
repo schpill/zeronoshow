@@ -24,6 +24,26 @@ describe('CreateLeoChannelForm', () => {
     expect(wrapper.emitted('created')).toBeUndefined()
   })
 
+  it('uses a generic channel identifier validation message', async () => {
+    const wrapper = mount(CreateLeoChannelForm, {
+      props: {
+        loading: false,
+      },
+    })
+
+    await wrapper.get('#leo-bot-name').setValue('Léo')
+    await wrapper.get('#leo-chat-id').setValue('')
+    const buttons = wrapper.findAll('button')
+    const submitButton = buttons[buttons.length - 1]
+
+    expect(submitButton).toBeDefined()
+
+    await submitButton!.trigger('click')
+
+    expect(wrapper.text()).toContain('Identifiant du canal est obligatoire.')
+    expect(wrapper.text()).not.toContain('Chat ID Telegram est obligatoire.')
+  })
+
   it('emits a trimmed payload for telegram channel creation', async () => {
     const wrapper = mount(CreateLeoChannelForm, {
       props: {
@@ -63,6 +83,6 @@ describe('CreateLeoChannelForm', () => {
     expect(radios).toHaveLength(5)
     expect(radios[0]!.attributes('disabled')).toBeUndefined()
     expect(radios[1]!.attributes('disabled')).toBeDefined()
-    expect(wrapper.text()).toContain('Comment obtenir votre Chat ID')
+    expect(wrapper.text()).toContain('Comment obtenir votre Chat ID Telegram')
   })
 })

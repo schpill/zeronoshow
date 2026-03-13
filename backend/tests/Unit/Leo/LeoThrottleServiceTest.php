@@ -51,4 +51,21 @@ class LeoThrottleServiceTest extends TestCase
 
         $this->assertFalse($service->isThrottled($identifier));
     }
+
+    public function test_it_uses_atomic_cache_operations_when_incrementing(): void
+    {
+        $service = app(LeoThrottleService::class);
+        $identifier = 'telegram:123:test-expiration-metadata:'.random_int(1000, 999999);
+        $key = 'leo:throttle:'.$identifier;
+
+        Cache::shouldReceive('add')
+            ->once()
+            ->with($key, 0, \Mockery::type(\DateTimeInterface::class));
+        Cache::shouldReceive('increment')
+            ->once()
+            ->with($key)
+            ->andReturn(1);
+
+        $this->assertSame(1, $service->increment($identifier));
+    }
 }

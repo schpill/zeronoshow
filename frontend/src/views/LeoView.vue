@@ -7,14 +7,14 @@ import ErrorMessage from '@/components/ErrorMessage.vue'
 import LeoChannelCard from '@/components/leo/LeoChannelCard.vue'
 import LeoUpgradeBanner from '@/components/leo/LeoUpgradeBanner.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
-import { useLeoChannels } from '@/composables/useLeoChannels'
+import { useLeo } from '@/composables/useLeo'
 import { useToast } from '@/composables/useToast'
 import { useAuthStore } from '@/stores/auth'
 import type { LeoChannelType } from '@/types/leo'
 
 const auth = useAuthStore()
 const toast = useToast()
-const leo = useLeoChannels()
+const leo = useLeo()
 const showCreateModal = ref(false)
 
 async function loadLeo() {

@@ -5,6 +5,7 @@ namespace Tests\Feature\Leo;
 use App\Models\Business;
 use App\Services\StripeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -61,6 +62,65 @@ class LeoAddonBillingTest extends TestCase
         $this->postJson('/api/v1/leo/addon/activate')
             ->assertStatus(402)
             ->assertJsonPath('message', 'Aucun abonnement Stripe actif n’a ete trouve.');
+    }
+
+    public function test_activate_returns_payment_required_when_business_is_not_on_an_active_plan(): void
+    {
+        $business = Business::factory()->create([
+            'subscription_status' => 'cancelled',
+            'stripe_subscription_id' => 'sub_cancelled',
+            'leo_addon_active' => false,
+        ]);
+
+        Sanctum::actingAs($business);
+
+        $this->postJson('/api/v1/leo/addon/activate')
+            ->assertStatus(402)
+            ->assertJsonPath('message', 'Aucun abonnement Stripe actif n’a ete trouve.');
+    }
+
+    public function test_activate_returns_payment_required_when_business_plan_is_not_active(): void
+    {
+        $business = Business::factory()->create([
+            'stripe_subscription_id' => 'sub_cancelled',
+            'subscription_status' => 'cancelled',
+            'leo_addon_active' => false,
+        ]);
+
+        Sanctum::actingAs($business);
+
+        $this->postJson('/api/v1/leo/addon/activate')
+            ->assertStatus(402)
+            ->assertJsonPath('message', 'Aucun abonnement Stripe actif n’a ete trouve.');
+    }
+
+    public function test_activate_uses_the_cached_leo_price_id_when_config_is_empty(): void
+    {
+        config()->set('leo.stripe.price_id', null);
+        Cache::forever('leo:stripe:price_id', 'price_cached_leo');
+
+        $business = Business::factory()->create([
+            'subscription_status' => 'active',
+            'stripe_subscription_id' => 'sub_active',
+            'leo_addon_active' => false,
+            'leo_addon_stripe_item_id' => null,
+        ]);
+
+        $this->instance(StripeService::class, new class extends StripeService
+        {
+            public function createSubscriptionItem(string $subscriptionId, string $priceId): array
+            {
+                test()->assertSame('price_cached_leo', $priceId);
+
+                return ['id' => 'si_cached_123'];
+            }
+        });
+
+        Sanctum::actingAs($business);
+
+        $this->postJson('/api/v1/leo/addon/activate')
+            ->assertOk()
+            ->assertJsonPath('activated', true);
     }
 
     public function test_deactivate_deletes_the_stripe_item_and_disables_the_addon_and_channels(): void
