@@ -1,12 +1,13 @@
 #!/usr/bin/env sh
 set -e
 
-# Helper: run a command in the api container (exec if running, run --rm otherwise)
+# Helper: run a command in the api container (exec if running, run --no-deps otherwise)
+# --no-deps: ne démarre pas db/redis (tests backend utilisent SQLite en local)
 run_api() {
   if docker compose ps --status running api 2>/dev/null | grep -q "api"; then
     docker compose exec -T api "$@"
   else
-    docker compose run --rm api "$@"
+    docker compose run --rm --no-deps api "$@"
   fi
 }
 
@@ -15,7 +16,7 @@ run_frontend() {
   if docker compose ps --status running frontend 2>/dev/null | grep -q "frontend"; then
     docker compose exec -T frontend "$@"
   else
-    docker compose run --rm frontend "$@"
+    docker compose run --rm --no-deps frontend "$@"
   fi
 }
 
