@@ -21,7 +21,7 @@ class RegisterTest extends TestCase
 
     public function test_it_registers_a_business_and_returns_a_token(): void
     {
-        $response = $this->postJson('/api/v1/auth/register', [
+        $response = $this->withServerVariables(['REMOTE_ADDR' => '192.0.2.21'])->postJson('/api/v1/auth/register', [
             'name' => 'Gerald',
             'business_name' => 'Le Bistrot',
             'email' => 'owner@gmail.com',
@@ -46,7 +46,7 @@ class RegisterTest extends TestCase
     {
         Business::factory()->create(['email' => 'owner@gmail.com']);
 
-        $response = $this->postJson('/api/v1/auth/register', [
+        $response = $this->withServerVariables(['REMOTE_ADDR' => '192.0.2.22'])->postJson('/api/v1/auth/register', [
             'name' => 'Gerald',
             'business_name' => 'Le Bistrot',
             'email' => 'owner@gmail.com',
