@@ -10,8 +10,8 @@ Smart no-show prevention platform via SMS reliability scoring.
 ```
 backend/          Laravel 12 API + queue workers + scheduler
 frontend/         Vue 3 SPA (pnpm, Vite, Tailwind CSS 3)
-docs/phases/      Spec per phase (phase1.md … phase4.md)
-docs/dev/         Task tracking per phase (phase1.md … phase4.md)
+docs/phases/      Spec per phase (phase1.md … phase5.md)
+docs/dev/         Task tracking per phase (phase1.md … phase5.md)
 docs/graphics/    Design system — colors.md, polices.md
 architecture.md   System architecture reference
 PRD.md            Product requirements
@@ -81,6 +81,7 @@ make tinker       # php artisan tinker
 | 2 | Smart Reminders, Scoring & Auto-cancel | **Complete** (merged 2026-03-13) | docs/phases/phase2.md | docs/dev/phase2.md |
 | 3 | Analytics Dashboard, Billing & Dark Mode | **Complete** (merged 2026-03-13) | docs/phases/phase3.md | docs/dev/phase3.md |
 | 4 | Hardening & Launch | **Complete** (merged 2026-03-13) | docs/phases/phase4.md | docs/dev/phase4.md |
+| 5 | Léo — AI Assistant (Telegram-first) | **Complete** (merged 2026-03-13) | docs/phases/phase5.md | docs/dev/phase5.md |
 
 ## Team
 
