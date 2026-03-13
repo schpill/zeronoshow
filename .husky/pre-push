@@ -14,13 +14,6 @@ if ! docker compose ps --status running api 2>/dev/null | grep -q "api"; then
   exit 1
 fi
 
-# Vérifie que le container frontend est démarré
-if ! docker compose ps --status running frontend 2>/dev/null | grep -q "frontend"; then
-  echo "✗ Le container 'frontend' n'est pas démarré."
-  echo "  Lance 'make up' puis réessaie."
-  exit 1
-fi
-
 echo "▶ [1/5] Backend — Pint (code style)"
 docker compose exec -T api ./vendor/bin/pint --test
 
@@ -31,11 +24,11 @@ echo "▶ [3/5] Backend — Pest (tests)"
 docker compose exec -T api ./vendor/bin/pest --stop-on-failure
 
 echo "▶ [4/5] Frontend — Prettier + ESLint"
-docker compose exec -T frontend pnpm format:check
-docker compose exec -T frontend pnpm lint
+pnpm --dir frontend format:check
+pnpm --dir frontend lint
 
 echo "▶ [5/5] Frontend — Vitest (tests)"
-docker compose exec -T frontend pnpm vitest run
+pnpm --dir frontend vitest run
 
 echo ""
 echo "✓ Tous les checks sont passés — push autorisé."
