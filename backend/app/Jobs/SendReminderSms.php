@@ -119,4 +119,22 @@ class SendReminderSms implements ShouldQueue
             'reminder_30m_sent' => $this->reminderType === '30m' ? true : $reservation->reminder_30m_sent,
         ])->save();
     }
+
+    public function failed(\Throwable $exception): void
+    {
+        if (! $this->preclaimed) {
+            return;
+        }
+
+        $reservation = Reservation::query()->find($this->reservationId);
+
+        if (! $reservation) {
+            return;
+        }
+
+        $reservation->forceFill([
+            'reminder_2h_sent' => $this->reminderType === '2h' ? false : $reservation->reminder_2h_sent,
+            'reminder_30m_sent' => $this->reminderType === '30m' ? false : $reservation->reminder_30m_sent,
+        ])->save();
+    }
 }

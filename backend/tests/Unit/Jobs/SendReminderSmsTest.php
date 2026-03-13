@@ -10,6 +10,7 @@ use App\Services\Contracts\SmsServiceInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 use Mockery;
+use RuntimeException;
 use Tests\TestCase;
 
 class SendReminderSmsTest extends TestCase
@@ -151,5 +152,20 @@ class SendReminderSmsTest extends TestCase
         (new SendReminderSms($reservation->id, '2h'))->handle($service);
 
         $this->assertDatabaseCount('sms_logs', 0);
+    }
+
+    public function test_it_resets_preclaimed_flags_when_the_job_fails(): void
+    {
+        $reservation = Reservation::factory()->create([
+            'status' => 'pending_reminder',
+            'reminder_2h_sent' => true,
+        ]);
+
+        (new SendReminderSms($reservation->id, '2h', true))->failed(new RuntimeException('twilio down'));
+
+        $this->assertDatabaseHas('reservations', [
+            'id' => $reservation->id,
+            'reminder_2h_sent' => false,
+        ]);
     }
 }

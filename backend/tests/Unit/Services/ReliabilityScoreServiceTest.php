@@ -73,4 +73,17 @@ class ReliabilityScoreServiceTest extends TestCase
             'score_tier' => 'average',
         ]);
     }
+
+    public function test_it_rounds_scores_to_two_decimals(): void
+    {
+        $customer = Customer::factory()->create([
+            'shows_count' => 2,
+            'no_shows_count' => 1,
+        ]);
+
+        $updated = app(ReliabilityScoreService::class)->recalculate($customer);
+
+        $this->assertSame(66.67, $updated->reliability_score);
+        $this->assertSame('at_risk', $updated->score_tier);
+    }
 }

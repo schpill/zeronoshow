@@ -19,10 +19,12 @@ const localError = ref<string | null>(null)
 
 const displayTime = computed(() => {
   const date = new Date(props.reservation.scheduled_at)
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
   return new Intl.DateTimeFormat('fr-FR', {
     hour: '2-digit',
     minute: '2-digit',
-    timeZone: 'Europe/Paris',
+    timeZone: timezone,
   }).format(date)
 })
 

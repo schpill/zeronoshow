@@ -72,7 +72,7 @@ describe('ReservationList', () => {
     expect(wrapper.text()).toContain('Aucune réservation pour cette journée.')
   })
 
-  it('updates the row when a child emits updated', async () => {
+  it('updates the row locally when a child emits updated', async () => {
     const wrapper = mount(ReservationList, {
       props: {
         reservations: [makeReservation('a', '2026-03-13T18:00:00.000Z')],
@@ -80,12 +80,15 @@ describe('ReservationList', () => {
       },
     })
 
+    const updatedReservation = {
+      ...makeReservation('a', '2026-03-13T18:00:00.000Z'),
+      status: 'show' as const,
+    }
+
     await wrapper
       .getComponent({ name: 'ReservationRow' })
-      .vm.$emit('updated', makeReservation('a', '2026-03-13T18:00:00.000Z'))
+      .vm.$emit('updated', updatedReservation)
 
-    const emitted = wrapper.emitted('updated')
-    expect(Array.isArray(emitted)).toBe(true)
-    expect((emitted?.[0]?.[0] as ReservationRecord | undefined)?.id).toBe('a')
+    expect(wrapper.text()).toContain('Présent')
   })
 })

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 import ReservationRow from '@/components/ReservationRow.vue'
 import type { ReservationRecord } from '@/types/reservations'
@@ -13,11 +13,28 @@ const emit = defineEmits<{
   updated: [reservation: ReservationRecord]
 }>()
 
+const localReservations = ref<ReservationRecord[]>([])
+
+watch(
+  () => props.reservations,
+  (reservations) => {
+    localReservations.value = [...reservations]
+  },
+  { immediate: true },
+)
+
 const sortedReservations = computed(() =>
-  [...props.reservations].sort(
+  [...localReservations.value].sort(
     (left, right) => new Date(left.scheduled_at).getTime() - new Date(right.scheduled_at).getTime(),
   ),
 )
+
+function handleUpdated(updatedReservation: ReservationRecord) {
+  localReservations.value = localReservations.value.map((reservation) =>
+    reservation.id === updatedReservation.id ? updatedReservation : reservation,
+  )
+  emit('updated', updatedReservation)
+}
 </script>
 
 <template>
@@ -52,7 +69,7 @@ const sortedReservations = computed(() =>
         v-for="reservation in sortedReservations"
         :key="reservation.id"
         :reservation="reservation"
-        @updated="emit('updated', $event)"
+        @updated="handleUpdated"
       />
     </div>
   </section>

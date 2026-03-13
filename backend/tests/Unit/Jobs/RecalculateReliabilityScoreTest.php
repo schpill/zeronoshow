@@ -24,8 +24,12 @@ class RecalculateReliabilityScoreTest extends TestCase
         Reservation::factory()->create([
             'business_id' => $business->id,
             'customer_id' => $customer->id,
+            'scheduled_at' => now()->setISODate(2026, 12)->setTime(20, 0),
         ]);
         Cache::put("dashboard:{$business->id}:today:list", ['cached' => true], 300);
+        Cache::put("dashboard:{$business->id}:none:none", ['cached' => true], 300);
+        Cache::put("dashboard:{$business->id}:2026-03-16:none", ['cached' => true], 300);
+        Cache::put("dashboard:{$business->id}:none:2026-W12", ['cached' => true], 300);
 
         $service = Mockery::mock(ReliabilityScoreService::class);
         $service->shouldReceive('recalculate')
@@ -49,6 +53,9 @@ class RecalculateReliabilityScoreTest extends TestCase
             'score_tier' => 'reliable',
         ]);
         $this->assertNull(Cache::get("dashboard:{$business->id}:today:list"));
+        $this->assertNull(Cache::get("dashboard:{$business->id}:none:none"));
+        $this->assertNull(Cache::get("dashboard:{$business->id}:2026-03-16:none"));
+        $this->assertNull(Cache::get("dashboard:{$business->id}:none:2026-W12"));
     }
 
     public function test_it_ignores_missing_customers(): void

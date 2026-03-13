@@ -75,4 +75,21 @@ class AutoCancelExpiredTest extends TestCase
             'status' => 'cancelled_no_confirmation',
         ]);
     }
+
+    public function test_it_does_not_cancel_reservations_when_the_last_reminder_was_not_sent(): void
+    {
+        $reservation = Reservation::factory()->create([
+            'status' => 'pending_reminder',
+            'reminder_30m_sent' => false,
+            'scheduled_at' => now()->subMinutes(30),
+            'confirmation_token' => (string) fake()->uuid(),
+        ]);
+
+        $this->artisan('reservations:auto-cancel')->assertExitCode(0);
+
+        $this->assertDatabaseHas('reservations', [
+            'id' => $reservation->id,
+            'status' => 'pending_reminder',
+        ]);
+    }
 }
