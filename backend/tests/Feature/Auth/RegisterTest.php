@@ -4,11 +4,20 @@ namespace Tests\Feature\Auth;
 
 use App\Models\Business;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\RateLimiter;
 use Tests\TestCase;
 
 class RegisterTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        RateLimiter::clear('127.0.0.1');
+        RateLimiter::clear('192.0.2.20');
+    }
 
     public function test_it_registers_a_business_and_returns_a_token(): void
     {

@@ -5,12 +5,22 @@ namespace Tests\Feature\Auth;
 use App\Models\Business;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class LoginLogoutTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        RateLimiter::clear('127.0.0.1');
+        RateLimiter::clear('192.0.2.10');
+        RateLimiter::clear('192.0.2.11');
+    }
 
     public function test_it_logs_in_and_returns_a_token(): void
     {
