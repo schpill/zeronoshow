@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\LeoChannel;
+use App\Services\StripeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Stripe\StripeClient;
 
 class LeoAddonController extends Controller
 {
+    public function __construct(
+        private readonly StripeService $stripeService,
+    ) {}
+
     public function activate(Request $request): JsonResponse
     {
         $business = $request->user();
@@ -27,16 +31,14 @@ class LeoAddonController extends Controller
             ], 402);
         }
 
-        $client = new StripeClient((string) config('services.stripe.secret'));
-        $item = $client->subscriptionItems->create([
-            'subscription' => $business->stripe_subscription_id,
-            'price' => (string) config('leo.stripe.price_id'),
-            'proration_behavior' => 'create_prorations',
-        ]);
+        $item = $this->stripeService->createSubscriptionItem(
+            (string) $business->stripe_subscription_id,
+            (string) config('leo.stripe.price_id'),
+        );
 
         $business->forceFill([
             'leo_addon_active' => true,
-            'leo_addon_stripe_item_id' => (string) $item->id,
+            'leo_addon_stripe_item_id' => (string) $item['id'],
         ])->save();
 
         return response()->json([
@@ -50,8 +52,7 @@ class LeoAddonController extends Controller
         $business = $request->user();
 
         if ($business->leo_addon_stripe_item_id) {
-            $client = new StripeClient((string) config('services.stripe.secret'));
-            $client->subscriptionItems->delete($business->leo_addon_stripe_item_id, []);
+            $this->stripeService->deleteSubscriptionItem($business->leo_addon_stripe_item_id);
         }
 
         $business->forceFill([

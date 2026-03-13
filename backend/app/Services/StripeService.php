@@ -74,6 +74,34 @@ class StripeService
     }
 
     /**
+     * @return array{id: string}
+     *
+     * @throws ApiErrorException
+     */
+    public function createSubscriptionItem(string $subscriptionId, string $priceId): array
+    {
+        $client = new StripeClient((string) config('services.stripe.secret'));
+        $item = $client->subscriptionItems->create([
+            'subscription' => $subscriptionId,
+            'price' => $priceId,
+            'proration_behavior' => 'create_prorations',
+        ]);
+
+        return [
+            'id' => (string) $item->id,
+        ];
+    }
+
+    /**
+     * @throws ApiErrorException
+     */
+    public function deleteSubscriptionItem(string $subscriptionItemId): void
+    {
+        $client = new StripeClient((string) config('services.stripe.secret'));
+        $client->subscriptionItems->delete($subscriptionItemId, []);
+    }
+
+    /**
      * @throws ApiErrorException
      */
     private function resolveCustomerId(StripeClient $client, Business $business): string
