@@ -1,11 +1,12 @@
 import { mount } from '@vue/test-utils'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import ToastContainer from '@/components/ToastContainer.vue'
 import { resetToastsForTests, useToast } from '@/composables/useToast'
 
 describe('ToastContainer', () => {
   beforeEach(() => {
+    vi.useFakeTimers()
     resetToastsForTests()
   })
 
@@ -40,5 +41,19 @@ describe('ToastContainer', () => {
     await wrapper.get('button').trigger('click')
 
     expect(wrapper.text()).not.toContain('Watch out')
+  })
+
+  it('auto dismisses timed toasts after their duration', async () => {
+    const toast = useToast()
+    toast.success('Auto close')
+
+    const wrapper = mount(ToastContainer)
+
+    expect(wrapper.text()).toContain('Auto close')
+
+    vi.advanceTimersByTime(4000)
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.text()).not.toContain('Auto close')
   })
 })

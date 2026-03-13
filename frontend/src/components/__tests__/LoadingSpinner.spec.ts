@@ -17,4 +17,18 @@ describe('LoadingSpinner', () => {
     )
     expect(wrapper.find('svg').classes()).toContain('animate-spin')
   })
+
+  it.each([
+    ['sm', 'h-4'],
+    ['md', 'h-6'],
+    ['lg', 'h-10'],
+  ] as const)('renders the %s size variant', (size, expectedClass) => {
+    const wrapper = mount(LoadingSpinner, {
+      props: {
+        size,
+      },
+    })
+
+    expect(wrapper.find('svg').classes()).toContain(expectedClass)
+  })
 })

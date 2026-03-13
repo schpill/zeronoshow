@@ -46,7 +46,10 @@ const toneClasses = {
               v-if="item.duration > 0"
               class="mt-3 h-1.5 overflow-hidden rounded-full bg-white/40 dark:bg-slate-900/40"
             >
-              <div class="h-full w-full rounded-full bg-current opacity-50" />
+              <div
+                class="toast-progress h-full rounded-full bg-current opacity-50"
+                :style="{ animationDuration: `${item.duration}ms` }"
+              />
             </div>
           </div>
           <button
@@ -75,5 +78,20 @@ const toneClasses = {
 .toast-leave-to {
   opacity: 0;
   transform: translateX(16px);
+}
+
+.toast-progress {
+  transform-origin: left center;
+  animation: toast-countdown linear forwards;
+}
+
+@keyframes toast-countdown {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
 }
 </style>

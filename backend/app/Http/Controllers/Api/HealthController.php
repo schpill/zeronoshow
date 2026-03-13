@@ -50,6 +50,16 @@ class HealthController extends Controller
 
     private function checkQueue(): string
     {
-        return config('queue.default') ? 'ok' : 'error';
+        if (config('queue.default') !== 'redis') {
+            return 'error';
+        }
+
+        try {
+            $supervisors = Redis::smembers(sprintf('%ssupervisors', config('horizon.prefix')));
+
+            return count($supervisors) > 0 ? 'ok' : 'error';
+        } catch (\Throwable) {
+            return 'error';
+        }
     }
 }

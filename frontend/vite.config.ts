@@ -9,12 +9,12 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 export default defineConfig({
   plugins: [
     vue(),
-    vueDevTools(),
+    process.env.NODE_ENV === 'production' ? undefined : vueDevTools(),
     viteCompression({
       algorithm: 'brotliCompress',
       ext: '.br',
     }),
-  ],
+  ].filter(Boolean),
   server: {
     proxy: {
       '/api': {

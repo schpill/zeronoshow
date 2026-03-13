@@ -3,6 +3,7 @@
 namespace Tests\Feature\Health;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Tests\TestCase;
 
@@ -13,7 +14,11 @@ class HealthCheckTest extends TestCase
     public function test_it_returns_ok_when_dependencies_are_healthy(): void
     {
         Redis::shouldReceive('ping')->once()->andReturn('PONG');
-        config()->set('queue.default', 'database');
+        Redis::shouldReceive('smembers')
+            ->once()
+            ->with(sprintf('%ssupervisors', config('horizon.prefix')))
+            ->andReturn(['supervisor-1']);
+        config()->set('queue.default', 'redis');
 
         $response = $this->getJson('/api/v1/health');
 
@@ -35,5 +40,40 @@ class HealthCheckTest extends TestCase
             ->assertStatus(503)
             ->assertJsonPath('status', 'degraded')
             ->assertJsonPath('redis', 'error');
+    }
+
+    public function test_it_returns_degraded_when_no_queue_workers_are_registered(): void
+    {
+        Redis::shouldReceive('ping')->once()->andReturn('PONG');
+        Redis::shouldReceive('smembers')
+            ->once()
+            ->with(sprintf('%ssupervisors', config('horizon.prefix')))
+            ->andReturn([]);
+        config()->set('queue.default', 'redis');
+
+        $response = $this->getJson('/api/v1/health');
+
+        $response
+            ->assertStatus(503)
+            ->assertJsonPath('status', 'degraded')
+            ->assertJsonPath('queue', 'error');
+    }
+
+    public function test_it_returns_degraded_when_the_database_is_unavailable(): void
+    {
+        DB::shouldReceive('connection')->once()->andThrow(new \RuntimeException('db down'));
+        Redis::shouldReceive('ping')->once()->andReturn('PONG');
+        Redis::shouldReceive('smembers')
+            ->once()
+            ->with(sprintf('%ssupervisors', config('horizon.prefix')))
+            ->andReturn(['supervisor-1']);
+        config()->set('queue.default', 'redis');
+
+        $response = $this->getJson('/api/v1/health');
+
+        $response
+            ->assertStatus(503)
+            ->assertJsonPath('status', 'degraded')
+            ->assertJsonPath('db', 'error');
     }
 }

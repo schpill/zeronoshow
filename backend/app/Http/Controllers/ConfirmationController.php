@@ -10,6 +10,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ConfirmationController extends Controller
 {
+    /**
+     * Phase 4 keeps confirmation tokens after a client action.
+     * Idempotence is enforced by reservation status so the original SMS link
+     * can return an explicit "already confirmed/cancelled" response.
+     */
     public function show(string $token): Response
     {
         $reservation = $this->findReservation($token, withBusiness: true);
