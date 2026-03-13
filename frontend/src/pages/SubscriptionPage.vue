@@ -1,20 +1,63 @@
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+
+import AppLayout from '@/layouts/AppLayout.vue'
+import { useSubscription } from '@/composables/useSubscription'
+
+const route = useRoute()
+const { subscription, fetchSubscription, createCheckoutSession } = useSubscription()
+const statusMessage = ref<string | null>(null)
+
+onMounted(async () => {
+  await fetchSubscription()
+
+  if (route.query.status === 'success') {
+    statusMessage.value = 'Abonnement activé.'
+  }
+
+  if (route.query.status === 'cancelled') {
+    statusMessage.value = 'Le paiement a été annulé.'
+  }
+})
+
+const statusLabel = computed(() => subscription.value?.subscription_status ?? 'trial')
+
+async function handleCheckout() {
+  const response = await createCheckoutSession()
+  window.location.assign(response.checkout_url)
+}
+</script>
+
 <template>
-  <main
-    class="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 dark:bg-slate-950"
-  >
-    <section
-      class="w-full max-w-xl rounded-[32px] border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/50 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/20"
-    >
-      <p class="text-overline">Abonnement requis</p>
-      <h1 class="text-heading-2 mt-2 dark:text-slate-50">Votre essai a expiré</h1>
-      <p class="text-body mt-4 dark:text-slate-300">
-        L’accès à la création et au suivi des réservations est suspendu tant qu’aucun abonnement
-        actif n’est associé à votre établissement.
+  <AppLayout>
+    <section class="mx-auto max-w-3xl rounded-[32px] border border-slate-200 bg-white p-8 dark:border-slate-800 dark:bg-slate-900">
+      <p class="text-overline">Abonnement</p>
+      <h1 class="text-heading-2 mt-2 dark:text-slate-50">Pilotage de la facturation</h1>
+      <p v-if="statusMessage" class="mt-4 text-body-sm text-emerald-700 dark:text-emerald-300">
+        {{ statusMessage }}
       </p>
-      <p class="text-body-sm mt-4 dark:text-slate-400">
-        La phase 1 n’inclut pas encore le tunnel de paiement. Contactez ZeroNoShow pour réactiver
-        votre accès.
-      </p>
+      <div class="mt-6 grid gap-4 md:grid-cols-3">
+        <article class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950">
+          <p class="text-caption">Statut</p>
+          <p class="mt-2 text-heading-4 dark:text-slate-50">{{ statusLabel }}</p>
+        </article>
+        <article class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950">
+          <p class="text-caption">Fin d’essai</p>
+          <p class="mt-2 text-heading-4 dark:text-slate-50">{{ subscription?.trial_ends_at ?? '—' }}</p>
+        </article>
+        <article class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950">
+          <p class="text-caption">SMS ce mois</p>
+          <p class="mt-2 text-heading-4 dark:text-slate-50">{{ subscription?.sms_cost_this_month ?? 0 }} €</p>
+        </article>
+      </div>
+      <button
+        type="button"
+        class="mt-8 rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white"
+        @click="handleCheckout"
+      >
+        S’abonner
+      </button>
     </section>
-  </main>
+  </AppLayout>
 </template>

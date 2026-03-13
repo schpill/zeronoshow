@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Reservation;
 use App\Observers\ReservationObserver;
 use App\Services\Contracts\SmsServiceInterface;
+use App\Services\StripeService;
 use App\Services\TwilioSmsService;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,6 +17,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(SmsServiceInterface::class, TwilioSmsService::class);
+        $this->app->singleton(StripeService::class);
     }
 
     /**

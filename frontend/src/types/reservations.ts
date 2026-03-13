@@ -43,22 +43,44 @@ export interface ReservationRecord {
   sms_count?: number
 }
 
+export interface SmsLogRecord {
+  id: string
+  type: string
+  status: 'queued' | 'sent' | 'delivered' | 'failed'
+  phone: string
+  body: string
+  cost_eur: number | null
+  queued_at?: string | null
+  sent_at?: string | null
+  delivered_at?: string | null
+}
+
+export interface DashboardStats {
+  confirmed: number
+  pending_verification: number
+  pending_reminder: number
+  cancelled: number
+  no_show: number
+  show: number
+  total: number
+}
+
 export interface ReservationListResponse {
   reservations: ReservationRecord[]
-  stats?: {
-    confirmed: number
-    pending_verification: number
-    pending_reminder: number
-    cancelled: number
-    no_show: number
-    show: number
-    total: number
-  }
+  stats?: DashboardStats
 }
 
 export interface ReservationMutationResponse {
   reservation: ReservationRecord
   customer?: ReservationCustomer
+  sms_logs?: SmsLogRecord[]
+}
+
+export interface DashboardResponse {
+  reservations: ReservationRecord[]
+  stats: DashboardStats
+  sms_cost_this_month: number
+  weekly_no_show_rate: number | null
 }
 
 export interface ReservationPayload {

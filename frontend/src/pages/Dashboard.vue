@@ -3,37 +3,50 @@
 import { computed, ref } from 'vue'
 
 import AppLayout from '@/layouts/AppLayout.vue'
+import DateNavigator from '@/components/DateNavigator.vue'
 import ReservationForm from '@/components/ReservationForm.vue'
 import ReservationList from '@/components/ReservationList.vue'
+import StatsBar from '@/components/StatsBar.vue'
 import { usePolling } from '@/composables/usePolling'
 import { useReservations } from '@/composables/useReservations'
-import type { ReservationListResponse, ReservationRecord } from '@/types/reservations'
+import type { DashboardStats, ReservationRecord } from '@/types/reservations'
 
 const createdMessage = ref<string | null>(null)
+const selectedDate = ref(new Date().toISOString().slice(0, 10))
+const viewMode = ref<'day' | 'week'>('day')
 const reservations = ref<ReservationRecord[]>([])
-const stats = ref<ReservationListResponse['stats']>()
-const { fetchReservations, loading } = useReservations()
+const stats = ref<DashboardStats>({
+  confirmed: 0,
+  pending_verification: 0,
+  pending_reminder: 0,
+  cancelled: 0,
+  no_show: 0,
+  show: 0,
+  total: 0,
+})
+const smsCostThisMonth = ref(0)
+const weeklyNoShowRate = ref<number | null>(null)
+const { fetchDashboard, loading } = useReservations()
 
 async function refreshReservations() {
-  const response = await fetchReservations({})
+  const date = selectedDate.value
+  const week = viewMode.value === 'week' ? toIsoWeek(date) : undefined
+  const response = await fetchDashboard({ date, week })
   reservations.value = response.reservations
   stats.value = response.stats
+  smsCostThisMonth.value = response.sms_cost_this_month
+  weeklyNoShowRate.value = response.weekly_no_show_rate
 }
 
 usePolling(refreshReservations, 30_000)
 
-const summary = computed(() => ({
-  total: reservations.value.length,
-  confirmed: reservations.value.filter((reservation) => reservation.status === 'confirmed').length,
-  pending: reservations.value.filter(
-    (reservation) =>
-      reservation.status === 'pending_verification' || reservation.status === 'pending_reminder',
-  ).length,
-}))
-
 function handleCreated(reservation: ReservationRecord) {
   createdMessage.value = 'Réservation créée avec succès.'
   reservations.value = [...reservations.value, reservation]
+  stats.value = {
+    ...stats.value,
+    total: stats.value.total + 1,
+  }
 }
 
 function handleUpdated(updatedReservation: ReservationRecord) {
@@ -41,6 +54,19 @@ function handleUpdated(updatedReservation: ReservationRecord) {
     reservation.id === updatedReservation.id ? updatedReservation : reservation,
   )
 }
+
+function toIsoWeek(date: string) {
+  const value = new Date(`${date}T12:00:00`)
+  const day = (value.getDay() + 6) % 7
+  value.setDate(value.getDate() - day + 3)
+  const firstThursday = new Date(value.getFullYear(), 0, 4)
+  const firstDay = (firstThursday.getDay() + 6) % 7
+  firstThursday.setDate(firstThursday.getDate() - firstDay + 3)
+  const week = 1 + Math.round((value.getTime() - firstThursday.getTime()) / 604800000)
+  return `${value.getFullYear()}-W${String(week).padStart(2, '0')}`
+}
+
+const summary = computed(() => `${smsCostThisMonth.value.toFixed(2)} € SMS · ${weeklyNoShowRate.value ?? 0}% no-show`)
 </script>
 
 <template>
@@ -53,38 +79,35 @@ function handleUpdated(updatedReservation: ReservationRecord) {
           <p class="text-overline">Dashboard</p>
           <h1 class="text-heading-1 mt-2 dark:text-slate-50">Réservations</h1>
           <p class="text-body mt-4 max-w-2xl dark:text-slate-300">
-            Créez une réservation, envoyez le lien de confirmation par SMS et suivez la fiabilité
-            client depuis une interface inspirée du template backoffice.
+            Vue journée ou semaine, coût SMS et suivi opérationnel complet.
           </p>
         </div>
-        <div class="grid grid-cols-3 gap-3">
-          <div
-            class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950"
-          >
-            <p class="text-caption dark:text-slate-400">Aujourd’hui</p>
-            <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-50">
-              {{ summary.total }}
-            </p>
+        <div class="flex flex-col items-start gap-3 lg:items-end">
+          <DateNavigator v-model="selectedDate" />
+          <div class="flex gap-2">
+            <button
+              type="button"
+              class="rounded-xl px-4 py-2 text-sm font-semibold"
+              :class="viewMode === 'day' ? 'bg-emerald-500 text-white' : 'border border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-200'"
+              @click="viewMode = 'day'; refreshReservations()"
+            >
+              Jour
+            </button>
+            <button
+              type="button"
+              class="rounded-xl px-4 py-2 text-sm font-semibold"
+              :class="viewMode === 'week' ? 'bg-emerald-500 text-white' : 'border border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-200'"
+              @click="viewMode = 'week'; refreshReservations()"
+            >
+              Semaine
+            </button>
           </div>
-          <div
-            class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950"
-          >
-            <p class="text-caption dark:text-slate-400">Confirmées</p>
-            <p class="mt-2 text-3xl font-bold text-emerald-600 dark:text-emerald-400">
-              {{ summary.confirmed }}
-            </p>
-          </div>
-          <div
-            class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950"
-          >
-            <p class="text-caption dark:text-slate-400">À vérifier</p>
-            <p class="mt-2 text-3xl font-bold text-slate-700 dark:text-slate-200">
-              {{ summary.pending }}
-            </p>
-          </div>
+          <p class="text-caption dark:text-slate-400">{{ summary }}</p>
         </div>
       </div>
     </section>
+
+    <StatsBar :stats="stats" />
 
     <p
       v-if="createdMessage"

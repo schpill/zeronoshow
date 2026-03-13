@@ -11,6 +11,14 @@ class CustomerController extends Controller
 {
     public function lookup(Request $request): JsonResponse
     {
+        $rawPhone = (string) $request->input('phone');
+        $digits = preg_replace('/\D+/', '', $rawPhone) ?? '';
+        $normalizedPhone = str_starts_with(trim($rawPhone), '+')
+            ? '+'.$digits
+            : ($digits !== '' ? '+'.$digits : $rawPhone);
+
+        $request->merge(['phone' => $normalizedPhone]);
+
         $validated = $request->validate([
             'phone' => ['required', 'string', 'regex:/^\+[1-9]\d{7,14}$/'],
         ]);

@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Jobs\RecalculateReliabilityScore;
 use App\Models\Reservation;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ReservationObserver
@@ -18,6 +19,8 @@ class ReservationObserver
 
     public function updated(Reservation $reservation): void
     {
+        $this->bumpDashboardVersion($reservation);
+
         if (! $reservation->wasChanged('status')) {
             return;
         }
@@ -52,6 +55,16 @@ class ReservationObserver
         RecalculateReliabilityScore::dispatch($reservation->customer_id);
     }
 
+    public function created(Reservation $reservation): void
+    {
+        $this->bumpDashboardVersion($reservation);
+    }
+
+    public function deleted(Reservation $reservation): void
+    {
+        $this->bumpDashboardVersion($reservation);
+    }
+
     private function counterContribution(string $status, string $counter): int
     {
         return match ($counter) {
@@ -59,5 +72,12 @@ class ReservationObserver
             'no_show' => $status === 'no_show' ? 1 : 0,
             default => 0,
         };
+    }
+
+    private function bumpDashboardVersion(Reservation $reservation): void
+    {
+        $key = "dashboard_version:{$reservation->business_id}";
+
+        Cache::forever($key, ((int) Cache::get($key, 1)) + 1);
     }
 }

@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { apiClient } from '@/api/axios'
 import type {
   CustomerLookupResponse,
+  DashboardResponse,
   ReservationListResponse,
   ReservationMutationResponse,
   ReservationPayload,
@@ -87,6 +88,21 @@ export function useReservations() {
     }
   }
 
+  async function fetchDashboard(params: { date?: string; week?: string }) {
+    loading.fetch.value = true
+    errors.fetch.value = null
+
+    try {
+      const query = toQuery(params)
+      return await apiClient.get<DashboardResponse>(`/dashboard${query ? `?${query}` : ''}`)
+    } catch (error) {
+      errors.fetch.value = normalizeError(error)
+      throw error
+    } finally {
+      loading.fetch.value = false
+    }
+  }
+
   async function fetchReservation(id: string) {
     loading.show.value = true
     errors.show.value = null
@@ -135,6 +151,7 @@ export function useReservations() {
     loading,
     errors,
     createReservation,
+    fetchDashboard,
     fetchReservations,
     fetchReservation,
     lookupCustomer,

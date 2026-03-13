@@ -25,6 +25,11 @@ const router = createRouter({
       component: () => import('@/pages/SubscriptionPage.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/reservations/:id',
+      component: () => import('@/pages/ReservationDetailPage.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 

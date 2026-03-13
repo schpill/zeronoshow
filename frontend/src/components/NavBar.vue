@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 
+import DarkModeToggle from '@/components/DarkModeToggle.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
@@ -13,6 +14,14 @@ const initials = computed(() =>
     .map((chunk) => chunk[0]?.toUpperCase() ?? '')
     .join(''),
 )
+
+const subscriptionLabel = computed(() => {
+  if (auth.user?.subscription_status === 'active') {
+    return 'Actif'
+  }
+
+  return 'Essai'
+})
 </script>
 
 <template>
@@ -46,6 +55,13 @@ const initials = computed(() =>
       </button>
 
       <nav class="hidden items-center gap-3 sm:flex" role="navigation" aria-label="Main navigation">
+        <RouterLink
+          to="/subscription"
+          class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-100"
+        >
+          {{ subscriptionLabel }}
+        </RouterLink>
+        <DarkModeToggle />
         <a
           href="#reservation-form"
           class="inline-flex items-center rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-600"
@@ -80,6 +96,12 @@ const initials = computed(() =>
           class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200"
         >
           Dashboard
+        </RouterLink>
+        <RouterLink
+          to="/subscription"
+          class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200"
+        >
+          Abonnement
         </RouterLink>
         <button
           type="button"

@@ -1,10 +1,17 @@
 <?php
 
 use App\Jobs\SendReminderSms;
+use App\Mail\TrialExpiryWarning;
+use App\Models\Business;
 use App\Models\Reservation;
+use App\Models\SmsLog;
+use App\Services\StripeService;
+use Carbon\Carbon;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schedule;
 
 Artisan::command('inspire', function () {
@@ -88,6 +95,79 @@ Artisan::command('sms-logs:purge', function () {
     $this->info('sms-logs:purge stub - full implementation planned for Phase 4.');
 })->purpose('Stub SMS log purge command for scheduler wiring');
 
+$sendTrialExpiryWarnings = function () {
+    $windowStart = now()->addHours(24);
+    $windowEnd = now()->addHours(48);
+    $sentCount = 0;
+
+    Business::query()
+        ->where('subscription_status', 'trial')
+        ->whereBetween('trial_ends_at', [$windowStart, $windowEnd])
+        ->orderBy('trial_ends_at')
+        ->get()
+        ->each(function (Business $business) use (&$sentCount): void {
+            $key = sprintf('trial-expiry-email:%s:%s', $business->id, now()->format('YmdH'));
+
+            if (! Cache::add($key, true, now()->addHours(2))) {
+                return;
+            }
+
+            Mail::to($business->email)->send(new TrialExpiryWarning($business));
+            $sentCount++;
+        });
+
+    $this->info("Sent {$sentCount} trial expiry emails.");
+};
+
+$syncMonthlySmsCost = function () {
+    $service = app(StripeService::class);
+    $monthOption = $this->option('month');
+    $start = $monthOption
+        ? Carbon::createFromFormat('Y-m', (string) $monthOption)->startOfMonth()
+        : now()->subMonthNoOverflow()->startOfMonth();
+    $end = $start->copy()->endOfMonth();
+    $count = 0;
+
+    Business::query()
+        ->where('subscription_status', 'active')
+        ->orderBy('name')
+        ->get()
+        ->each(function (Business $business) use ($service, $start, $end, &$count): void {
+            $amount = (float) SmsLog::query()
+                ->where('business_id', $business->id)
+                ->whereBetween('created_at', [$start->utc(), $end->utc()])
+                ->sum('cost_eur');
+
+            if ($amount <= 0) {
+                return;
+            }
+
+            $service->createInvoiceItem(
+                $business,
+                (int) floor($amount * 100),
+                $start->format('Y-m'),
+            );
+
+            $count++;
+        });
+
+    $this->info("Created {$count} SMS invoice items.");
+};
+
+Artisan::command('trial:expiry-emails', $sendTrialExpiryWarnings)
+    ->purpose('Queue trial expiry warning emails for businesses expiring in 48 hours');
+
+Artisan::command('trial:send-expiry-warnings', $sendTrialExpiryWarnings)
+    ->purpose('Send trial expiry warning emails');
+
+Artisan::command('billing:sync-sms-cost {--month=}', $syncMonthlySmsCost)
+    ->purpose('Create monthly Stripe invoice items for SMS costs');
+
+Artisan::command('billing:sync-sms-costs {--month=}', $syncMonthlySmsCost)
+    ->purpose('Alias for monthly Stripe invoice items');
+
 Schedule::command('reminders:process')->everyMinute()->withoutOverlapping(10);
 Schedule::command('reservations:auto-cancel')->everyMinute()->withoutOverlapping(10);
+Schedule::command('trial:send-expiry-warnings')->hourly()->withoutOverlapping(10);
+Schedule::command('billing:sync-sms-cost')->monthlyOn(1, '06:00')->withoutOverlapping(60);
 Schedule::command('sms-logs:purge')->dailyAt('03:00');

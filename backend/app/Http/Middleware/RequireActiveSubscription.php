@@ -17,11 +17,16 @@ class RequireActiveSubscription
     {
         $business = $request->user();
 
-        if (! $business || ! $business->isOnActivePlan()) {
+        if (
+            $business
+            && ! $business->isOnActivePlan()
+            && ! $request->isMethod('get')
+            && ! $request->isMethod('head')
+        ) {
             return response()->json([
                 'error' => [
                     'code' => 'SUBSCRIPTION_REQUIRED',
-                    'message' => 'Your trial has expired. Please subscribe to continue.',
+                    'message' => "Votre période d'essai est terminée. Abonnez-vous pour continuer.",
                 ],
             ], 402);
         }
