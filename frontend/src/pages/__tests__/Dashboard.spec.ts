@@ -90,7 +90,7 @@ function mountDashboard() {
         ReservationRow: {
           props: ['reservation'],
           template:
-            '<article data-test="reservation-row">{{ reservation.customer_name }}</article>',
+            '<button data-test="reservation-row" @click="$emit(`updated`, { ...reservation, customer_name: `${reservation.customer_name} mis a jour`, status: `show` })">{{ reservation.customer_name }}</button>',
         },
       },
     },
@@ -207,5 +207,23 @@ describe('Dashboard', () => {
     expect(wrapper.findAll('[data-test="reservation-row"]')).toHaveLength(2)
     expect(wrapper.text()).toContain('vendredi 13 mars')
     expect(wrapper.text()).toContain('samedi 14 mars')
+  })
+
+  it('applies an updated reservation emitted by ReservationRow in weekly view', async () => {
+    fetchDashboard.mockResolvedValue(createDashboardResponse())
+
+    const wrapper = mountDashboard()
+
+    await Promise.resolve()
+    await nextTick()
+    await wrapper.get('button:nth-of-type(2)').trigger('click')
+    await Promise.resolve()
+    await nextTick()
+
+    await wrapper.findAll('[data-test="reservation-row"]')[0]?.trigger('click')
+    await nextTick()
+
+    expect(wrapper.text()).toContain('Marc mis a jour')
+    expect(wrapper.text()).not.toContain('Marc</')
   })
 })

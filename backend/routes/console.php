@@ -161,9 +161,6 @@ Artisan::command('trial:expiry-emails', $sendTrialExpiryWarnings)
 Artisan::command('billing:sync-sms-cost {--month=}', $syncMonthlySmsCost)
     ->purpose('Create monthly Stripe invoice items for SMS costs');
 
-Artisan::command('billing:sync-sms-costs {--month=}', $syncMonthlySmsCost)
-    ->purpose('Alias for monthly Stripe invoice items');
-
 Schedule::command('reminders:process')->everyMinute()->withoutOverlapping(10);
 Schedule::command('reservations:auto-cancel')->everyMinute()->withoutOverlapping(10);
 Schedule::command('trial:expiry-emails')->hourly()->withoutOverlapping(10);
