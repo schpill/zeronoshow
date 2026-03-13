@@ -16,10 +16,14 @@ const initials = computed(() =>
 </script>
 
 <template>
-  <header class="border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95">
+  <header
+    class="border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95"
+  >
     <div class="mx-auto flex min-h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
       <div class="flex items-center gap-3">
-        <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-sm font-extrabold text-white shadow-lg shadow-emerald-500/20">
+        <div
+          class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-sm font-extrabold text-white shadow-lg shadow-emerald-500/20"
+        >
           {{ initials }}
         </div>
         <div>
@@ -41,11 +45,7 @@ const initials = computed(() =>
         <span class="mt-1 block h-0.5 w-5 bg-current" />
       </button>
 
-      <nav
-        class="hidden items-center gap-3 sm:flex"
-        role="navigation"
-        aria-label="Main navigation"
-      >
+      <nav class="hidden items-center gap-3 sm:flex" role="navigation" aria-label="Main navigation">
         <a
           href="#reservation-form"
           class="inline-flex items-center rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-600"

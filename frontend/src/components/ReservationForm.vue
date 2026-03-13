@@ -93,20 +93,44 @@ async function handleSubmit() {
       <div class="grid gap-5 md:grid-cols-2">
         <div>
           <label for="customer_name" class="text-label dark:text-slate-200">Client</label>
-          <input id="customer_name" v-model="form.customer_name" type="text" class="mt-2 input-field" placeholder="Marc Dubois" />
-          <p v-if="fieldErrors.customer_name" class="mt-2 text-sm text-red-700 dark:text-red-300">{{ fieldErrors.customer_name[0] }}</p>
+          <input
+            id="customer_name"
+            v-model="form.customer_name"
+            type="text"
+            class="mt-2 input-field"
+            placeholder="Marc Dubois"
+          />
+          <p v-if="fieldErrors.customer_name" class="mt-2 text-sm text-red-700 dark:text-red-300">
+            {{ fieldErrors.customer_name[0] }}
+          </p>
         </div>
 
         <div>
           <label for="phone" class="text-label dark:text-slate-200">Téléphone</label>
-          <input id="phone" v-model="form.phone" type="tel" class="mt-2 input-field" placeholder="+33612345678" @blur="handleLookup" />
-          <p v-if="fieldErrors.phone" class="mt-2 text-sm text-red-700 dark:text-red-300">{{ fieldErrors.phone[0] }}</p>
+          <input
+            id="phone"
+            v-model="form.phone"
+            type="tel"
+            class="mt-2 input-field"
+            placeholder="+33612345678"
+            @blur="handleLookup"
+          />
+          <p v-if="fieldErrors.phone" class="mt-2 text-sm text-red-700 dark:text-red-300">
+            {{ fieldErrors.phone[0] }}
+          </p>
         </div>
 
         <div>
           <label for="scheduled_at" class="text-label dark:text-slate-200">Date et heure</label>
-          <input id="scheduled_at" v-model="form.scheduled_at" type="datetime-local" class="mt-2 input-field" />
-          <p v-if="fieldErrors.scheduled_at" class="mt-2 text-sm text-red-700 dark:text-red-300">{{ fieldErrors.scheduled_at[0] }}</p>
+          <input
+            id="scheduled_at"
+            v-model="form.scheduled_at"
+            type="datetime-local"
+            class="mt-2 input-field"
+          />
+          <p v-if="fieldErrors.scheduled_at" class="mt-2 text-sm text-red-700 dark:text-red-300">
+            {{ fieldErrors.scheduled_at[0] }}
+          </p>
         </div>
 
         <div>
@@ -117,11 +141,21 @@ async function handleSubmit() {
 
       <div>
         <label for="notes" class="text-label dark:text-slate-200">Notes</label>
-        <textarea id="notes" v-model="form.notes" rows="4" class="mt-2 input-field" placeholder="Allergies, table, occasion spéciale..." />
+        <textarea
+          id="notes"
+          v-model="form.notes"
+          rows="4"
+          class="mt-2 input-field"
+          placeholder="Allergies, table, occasion spéciale..."
+        />
       </div>
 
-      <div class="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-950">
-        <label class="flex items-center gap-3 text-sm font-medium text-slate-700 dark:text-slate-200">
+      <div
+        class="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-950"
+      >
+        <label
+          class="flex items-center gap-3 text-sm font-medium text-slate-700 dark:text-slate-200"
+        >
           <input
             id="phone_verified"
             v-model="form.phone_verified"
@@ -142,7 +176,10 @@ async function handleSubmit() {
         </span>
       </div>
 
-      <p v-if="generalError" class="rounded-2xl bg-red-100 px-4 py-3 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-300">
+      <p
+        v-if="generalError"
+        class="rounded-2xl bg-red-100 px-4 py-3 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-300"
+      >
         {{ generalError }}
       </p>
 

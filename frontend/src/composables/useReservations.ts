@@ -98,9 +98,7 @@ export function useReservations() {
     errors.lookup.value = null
 
     try {
-      return await apiClient.get<CustomerLookupResponse>(
-        `/customers/lookup?${toQuery({ phone })}`,
-      )
+      return await apiClient.get<CustomerLookupResponse>(`/customers/lookup?${toQuery({ phone })}`)
     } catch (error) {
       errors.lookup.value = normalizeError(error)
       throw error

@@ -24,7 +24,8 @@ const daysUntilTrialEnd = computed(() => {
       v-if="daysUntilTrialEnd !== null && daysUntilTrialEnd < 3"
       class="border-b border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm font-medium text-amber-800 dark:border-amber-900/60 dark:bg-amber-900/20 dark:text-amber-300"
     >
-      Essai gratuit: {{ daysUntilTrialEnd }} jour<span v-if="daysUntilTrialEnd > 1">s</span> restant<span v-if="daysUntilTrialEnd > 1">s</span>.
+      Essai gratuit: {{ daysUntilTrialEnd }} jour<span v-if="daysUntilTrialEnd > 1">s</span>
+      restant<span v-if="daysUntilTrialEnd > 1">s</span>.
     </div>
 
     <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">

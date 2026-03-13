@@ -40,8 +40,12 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <main class="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 dark:bg-slate-950">
-    <div class="w-full max-w-md rounded-[32px] border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/50 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/20">
+  <main
+    class="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 dark:bg-slate-950"
+  >
+    <div
+      class="w-full max-w-md rounded-[32px] border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/50 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/20"
+    >
       <p class="text-overline">Backoffice client</p>
       <h1 class="text-heading-2 mt-2 dark:text-slate-50">Connexion</h1>
       <p class="text-body-sm mt-3 dark:text-slate-400">
@@ -52,27 +56,40 @@ async function handleSubmit() {
         <div>
           <label for="email" class="text-label dark:text-slate-200">Email</label>
           <input id="email" v-model="form.email" type="email" class="mt-2 input-field" />
-          <p v-if="fieldErrors.email" class="mt-2 text-sm text-red-700 dark:text-red-300">{{ fieldErrors.email[0] }}</p>
+          <p v-if="fieldErrors.email" class="mt-2 text-sm text-red-700 dark:text-red-300">
+            {{ fieldErrors.email[0] }}
+          </p>
         </div>
 
         <div>
           <label for="password" class="text-label dark:text-slate-200">Mot de passe</label>
           <input id="password" v-model="form.password" type="password" class="mt-2 input-field" />
-          <p v-if="fieldErrors.password" class="mt-2 text-sm text-red-700 dark:text-red-300">{{ fieldErrors.password[0] }}</p>
+          <p v-if="fieldErrors.password" class="mt-2 text-sm text-red-700 dark:text-red-300">
+            {{ fieldErrors.password[0] }}
+          </p>
         </div>
 
-        <p v-if="generalError" class="rounded-2xl bg-red-100 px-4 py-3 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-300">
+        <p
+          v-if="generalError"
+          class="rounded-2xl bg-red-100 px-4 py-3 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-300"
+        >
           {{ generalError }}
         </p>
 
-        <button type="submit" class="inline-flex w-full items-center justify-center rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600">
+        <button
+          type="submit"
+          class="inline-flex w-full items-center justify-center rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600"
+        >
           Se connecter
         </button>
       </form>
 
       <p class="text-body-sm mt-6 dark:text-slate-400">
         Pas encore de compte ?
-        <RouterLink to="/register" class="font-semibold text-emerald-700 transition hover:text-emerald-900 dark:text-emerald-400 dark:hover:text-emerald-300">
+        <RouterLink
+          to="/register"
+          class="font-semibold text-emerald-700 transition hover:text-emerald-900 dark:text-emerald-400 dark:hover:text-emerald-300"
+        >
           Créer un compte
         </RouterLink>
       </p>
