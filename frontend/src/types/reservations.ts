@@ -41,6 +41,7 @@ export interface ReservationRecord {
   scheduled_at: string
   guests: number
   notes: string | null
+  source: 'manual' | 'widget'
   status: ReservationStatus
   phone_verified: boolean
   reminder_2h_sent: boolean

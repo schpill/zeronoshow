@@ -101,6 +101,21 @@ const router = createRouter({
       path: '/join/:token',
       component: () => import('@/views/public/PublicWaitlistView.vue'),
     },
+    {
+      path: '/widget/:businessToken',
+      name: 'booking-widget',
+      component: () => import('@/views/public/BookingWidgetView.vue'),
+    },
+    {
+      path: '/widget/:businessToken/success',
+      name: 'booking-success',
+      component: () => import('@/views/public/BookingSuccessView.vue'),
+    },
+    {
+      path: '/widget/:businessToken/embed',
+      name: 'booking-iframe',
+      component: () => import('@/views/public/WidgetIframeEntrypoint.vue'),
+    },
   ],
 })
 

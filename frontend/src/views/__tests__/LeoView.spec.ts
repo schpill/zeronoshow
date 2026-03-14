@@ -67,6 +67,29 @@ vi.mock('@/composables/useVoiceCredits', () => ({
   }),
 }))
 
+vi.mock('@/composables/useWhatsAppCredits', () => ({
+  useWhatsAppCredits: () => ({
+    status: ref(null),
+    loading: ref(false),
+    error: ref(null),
+    fetchStatus: vi.fn(),
+    topUp: vi.fn(),
+    saveCap: vi.fn(),
+  }),
+}))
+
+vi.mock('@/composables/useWidgetSettings', () => ({
+  useWidgetSettings: () => ({
+    settings: ref(null),
+    stats: ref(null),
+    loading: ref(false),
+    error: ref(null),
+    fetch: vi.fn(),
+    update: vi.fn(),
+    fetchStats: vi.fn(),
+  }),
+}))
+
 vi.mock('@/stores/auth', () => ({
   useAuthStore: () => ({
     get user() {
@@ -111,6 +134,16 @@ function mountLeoView() {
           props: ['to'],
           template: '<a :href="to" data-test="router-link"><slot /></a>',
         },
+        WhatsAppCreditCard: { template: '<div data-test="whatsapp-credit-card" />' },
+        WhatsAppTopUpModal: { template: '<div />' },
+        WhatsAppCapEditForm: { template: '<div />' },
+        VoiceCreditCard: { template: '<div data-test="voice-credit-card" />' },
+        VoiceTopUpModal: { template: '<div />' },
+        VoiceCapEditForm: { template: '<div />' },
+        WidgetSettingsCard: { template: '<div data-test="widget-settings-card" />' },
+        WidgetSettingsModal: { template: '<div />' },
+        WidgetEmbedCard: { template: '<div />' },
+        WidgetStatsCard: { template: '<div />' },
       },
     },
   })

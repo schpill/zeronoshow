@@ -62,6 +62,13 @@ async function submit(status: 'show' | 'no_show') {
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
+        <span
+          v-if="reservation.source === 'widget'"
+          class="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-semibold text-indigo-800"
+          data-test="source-badge"
+        >
+          Widget
+        </span>
         <ReliabilityBadge
           v-if="reservation.customer"
           :score="reservation.customer.reliability_score"

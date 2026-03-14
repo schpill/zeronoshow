@@ -104,14 +104,19 @@ class ReservationController extends Controller
         $business = $request->user();
         $date = $request->query('date');
         $week = $request->query('week');
+        $sourceFilter = $request->query('source');
         $cacheKey = sprintf('dashboard:%s:%s:%s', $business->id, $date ?? 'none', $week ?? 'none');
 
-        $payload = Cache::remember($cacheKey, 30, function () use ($business, $date, $week): array {
+        $payload = Cache::remember($cacheKey, 30, function () use ($business, $date, $week, $sourceFilter): array {
             $query = Reservation::query()
                 ->with('customer')
                 ->withCount('smsLogs')
                 ->where('business_id', $business->id)
                 ->orderBy('scheduled_at');
+
+            if ($sourceFilter !== null && in_array($sourceFilter, ['manual', 'widget'], true)) {
+                $query->where('source', $sourceFilter);
+            }
 
             if ($week) {
                 [$year, $weekNumber] = explode('-W', (string) $week);

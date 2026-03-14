@@ -71,7 +71,7 @@ export function useReservations() {
     }
   }
 
-  async function fetchReservations(params: { date?: string; week?: string }) {
+  async function fetchReservations(params: { date?: string; week?: string; source?: string }) {
     loading.fetch.value = true
     errors.fetch.value = null
 

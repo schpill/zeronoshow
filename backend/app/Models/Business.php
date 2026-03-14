@@ -52,6 +52,7 @@ class Business extends Authenticatable
         'review_delay_hours',
         'google_place_id',
         'tripadvisor_location_id',
+        'public_token',
     ];
 
     protected $hidden = [
@@ -95,6 +96,22 @@ class Business extends Authenticatable
     public function leoChannel(): HasOne
     {
         return $this->hasOne(LeoChannel::class);
+    }
+
+    public function widgetSetting(): HasOne
+    {
+        return $this->hasOne(WidgetSetting::class);
+    }
+
+    public function resolveRouteBinding($value, $field = null): ?static
+    {
+        if ($field === 'public_token') {
+            /** @var static|null */
+            return static::query()->where('public_token', $value)->first();
+        }
+
+        /** @var static|null */
+        return parent::resolveRouteBinding($value, $field);
     }
 
     public function isOnActivePlan(): bool
