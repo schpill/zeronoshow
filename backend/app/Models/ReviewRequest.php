@@ -10,6 +10,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property Reservation|null $reservation
+ * @property Business|null $business
+ * @property Customer|null $customer
+ * @property ReviewPlatformEnum|string $platform
+ * @property ReviewRequestStatusEnum|string $status
+ */
 class ReviewRequest extends Model
 {
     use HasFactory;

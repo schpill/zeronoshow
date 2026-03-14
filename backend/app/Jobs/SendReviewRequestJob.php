@@ -43,18 +43,26 @@ class SendReviewRequestJob implements ShouldQueue
             return;
         }
 
+        $reservation = $reviewRequest->reservation;
+        $business = $reservation?->business;
+        $customer = $reservation?->customer;
+
+        if (! $reservation || ! $business || ! $customer) {
+            return;
+        }
+
         $shortUrl = rtrim((string) config('app.url'), '/').'/r/'.$reviewRequest->short_code;
         $body = sprintf(
             'Bonjour %s, merci pour votre visite chez %s ! Votre avis compte beaucoup : %s',
-            $reviewRequest->reservation->customer_name,
-            $reviewRequest->reservation->business->name,
+            $reservation->customer_name,
+            $business->name,
             $shortUrl,
         );
 
         $log = SmsLog::query()->create([
             'reservation_id' => $reviewRequest->reservation_id,
             'business_id' => $reviewRequest->business_id,
-            'phone' => $reviewRequest->reservation->customer->phone,
+            'phone' => $customer->phone,
             'type' => 'review_request',
             'body' => $body,
             'status' => 'queued',

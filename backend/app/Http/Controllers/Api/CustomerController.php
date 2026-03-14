@@ -52,7 +52,7 @@ class CustomerController extends Controller
             'reliability_score' => $customer?->reliability_score,
             'score_tier' => $customer?->getScoreTier(),
             'opted_out' => $customer?->opted_out,
-            'is_blacklisted' => $customer?->is_blacklisted ?? false,
+            'is_blacklisted' => $customer ? $customer->is_blacklisted : false,
         ]);
     }
 }
