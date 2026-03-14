@@ -9,7 +9,7 @@ use App\Models\WaitlistEntry;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\WaitlistEntry>
+ * @extends Factory<WaitlistEntry>
  */
 class WaitlistEntryFactory extends Factory
 {
@@ -27,7 +27,7 @@ class WaitlistEntryFactory extends Factory
             'slot_date' => now()->addDays(1)->format('Y-m-d'),
             'slot_time' => '19:30:00',
             'client_name' => $this->faker->name(),
-            'client_phone' => '+336' . $this->faker->numerify('########'),
+            'client_phone' => '+336'.$this->faker->numerify('########'),
             'party_size' => rand(1, 4),
             'priority_order' => 0,
             'status' => WaitlistStatusEnum::Pending,

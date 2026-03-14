@@ -127,18 +127,18 @@ class ReservationObserver
             return;
         }
 
-        $hasWaitlist = \App\Models\WaitlistEntry::query()
+        $hasWaitlist = WaitlistEntry::query()
             ->where('business_id', $reservation->business_id)
             ->whereDate('slot_date', $reservation->scheduled_at->format('Y-m-d'))
             ->whereTime('slot_time', $reservation->scheduled_at->format('H:i:00'))
-            ->where('status', \App\Enums\WaitlistStatusEnum::Pending)
+            ->where('status', WaitlistStatusEnum::Pending)
             ->exists();
 
         if (! $hasWaitlist) {
             return;
         }
 
-        \App\Jobs\NotifyWaitlistJob::dispatch(
+        NotifyWaitlistJob::dispatch(
             $reservation->business_id,
             $reservation->scheduled_at->format('Y-m-d'),
             $reservation->scheduled_at->format('H:i:00')

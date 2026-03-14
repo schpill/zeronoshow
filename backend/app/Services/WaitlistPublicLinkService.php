@@ -11,6 +11,7 @@ class WaitlistPublicLinkService
     {
         $token = Str::random(32);
         $business->update(['waitlist_public_token' => $token]);
+
         return $token;
     }
 
@@ -25,6 +26,6 @@ class WaitlistPublicLinkService
             return null;
         }
 
-        return config('app.frontend_url') . "/join/{$business->waitlist_public_token}";
+        return config('app.frontend_url')."/join/{$business->waitlist_public_token}";
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Services\Leo;
 
+use App\Enums\WaitlistStatusEnum;
 use App\Models\Reservation;
+use App\Models\WaitlistEntry;
 
 class GetPendingReservationsTool
 {
@@ -21,11 +23,11 @@ class GetPendingReservationsTool
                 'time' => $reservation->scheduled_at->format('H:i'),
                 'name' => $reservation->customer_name,
                 'guests' => $reservation->guests,
-                'waitlist_count' => \App\Models\WaitlistEntry::query()
+                'waitlist_count' => WaitlistEntry::query()
                     ->where('business_id', $reservation->business_id)
                     ->whereDate('slot_date', $reservation->scheduled_at->format('Y-m-d'))
                     ->whereTime('slot_time', $reservation->scheduled_at->format('H:i:00'))
-                    ->where('status', \App\Enums\WaitlistStatusEnum::Pending)
+                    ->where('status', WaitlistStatusEnum::Pending)
                     ->count(),
             ])
             ->all();

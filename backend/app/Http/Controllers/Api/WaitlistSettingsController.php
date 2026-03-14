@@ -33,7 +33,7 @@ class WaitlistSettingsController extends Controller
             'settings' => [
                 'waitlist_enabled' => $business->waitlist_enabled,
                 'waitlist_notification_window_minutes' => $business->waitlist_notification_window_minutes,
-            ]
+            ],
         ]);
     }
 

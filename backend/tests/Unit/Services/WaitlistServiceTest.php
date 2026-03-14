@@ -4,7 +4,6 @@ namespace Tests\Unit\Services;
 
 use App\Enums\WaitlistStatusEnum;
 use App\Models\Business;
-use App\Models\Customer;
 use App\Models\WaitlistEntry;
 use App\Services\WaitlistService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -15,12 +14,13 @@ class WaitlistServiceTest extends TestCase
     use RefreshDatabase;
 
     private WaitlistService $service;
+
     private Business $business;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new WaitlistService();
+        $this->service = new WaitlistService;
         $this->business = Business::factory()->create([
             'waitlist_enabled' => true,
             'waitlist_notification_window_minutes' => 15,
@@ -56,7 +56,7 @@ class WaitlistServiceTest extends TestCase
 
         if ($result === null) {
             $all = WaitlistEntry::all();
-            fwrite(STDERR, "Entries in DB: " . json_encode($all->toArray()) . "\n");
+            fwrite(STDERR, 'Entries in DB: '.json_encode($all->toArray())."\n");
             fwrite(STDERR, "Searching for: business_id={$this->business->id}, slot_date={$date}, slot_time=19:30:00\n");
         }
 
@@ -82,8 +82,8 @@ class WaitlistServiceTest extends TestCase
 
         $this->assertEquals($this->business->id, $reservation->business_id);
         $this->assertEquals($entry->client_name, $reservation->customer_name);
-        $this->assertEquals($date . ' 19:30:00', $reservation->scheduled_at->format('Y-m-d H:i:s'));
-        
+        $this->assertEquals($date.' 19:30:00', $reservation->scheduled_at->format('Y-m-d H:i:s'));
+
         $this->assertEquals(WaitlistStatusEnum::Confirmed, $entry->fresh()->status);
         $this->assertNotNull($entry->fresh()->confirmed_at);
     }

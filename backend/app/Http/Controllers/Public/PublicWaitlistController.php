@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Public;
 
+use App\Enums\WaitlistStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PublicStoreWaitlistRequest;
 use App\Http\Resources\WaitlistEntryResource;
 use App\Models\Business;
 use App\Models\WaitlistEntry;
-use App\Enums\WaitlistStatusEnum;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class PublicWaitlistController extends Controller
 {
@@ -64,6 +63,7 @@ class PublicWaitlistController extends Controller
                 'times' => ['12:00', '12:30', '13:00', '19:00', '19:30', '20:00', '20:30', '21:00'],
             ];
         }
+
         return $slots;
     }
 }
