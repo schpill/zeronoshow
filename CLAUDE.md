@@ -82,7 +82,7 @@ make tinker       # php artisan tinker
 | 3 | Analytics Dashboard, Billing & Dark Mode | **Complete** (merged 2026-03-13) | docs/phases/phase3.md | docs/dev/phase3.md |
 | 4 | Hardening & Launch | **Complete** (merged 2026-03-13) | docs/phases/phase4.md | docs/dev/phase4.md |
 | 5 | Léo — AI Assistant (Telegram-first) | **Complete** (merged 2026-03-13) | docs/phases/phase5.md | docs/dev/phase5.md |
-| 6 | Léo WhatsApp — Prepaid Credit Wallet | **Not started** | docs/phases/phase6.md | docs/dev/phase6.md |
+| 6 | Léo WhatsApp — Prepaid Credit Wallet | **Complete** (merged 2026-03-14) | docs/phases/phase6.md | docs/dev/phase6.md |
 
 ## Team
 

@@ -147,7 +147,7 @@ class LeoWebhookController extends Controller
             LeoMessageLog::query()->create([
                 'channel_id' => $channel->id,
                 'direction' => 'inbound',
-                'sender_identifier' => $inbound->senderId,
+                'sender_identifier' => $this->maskIdentifier($inbound->senderId),
                 'raw_message' => $inbound->messageText,
                 'created_at' => now(),
             ]);
@@ -157,7 +157,7 @@ class LeoWebhookController extends Controller
             LeoMessageLog::query()->create([
                 'channel_id' => $channel->id,
                 'direction' => 'outbound',
-                'sender_identifier' => $inbound->senderId,
+                'sender_identifier' => $this->maskIdentifier($inbound->senderId),
                 'raw_message' => $responseText,
                 'response_preview' => mb_substr($responseText, 0, 120),
                 'created_at' => now(),
@@ -171,5 +171,15 @@ class LeoWebhookController extends Controller
         }
 
         return response()->json(['received' => true]);
+    }
+
+    private function maskIdentifier(string $identifier): string
+    {
+        $length = mb_strlen($identifier);
+        if ($length <= 6) {
+            return str_repeat('*', $length);
+        }
+
+        return mb_substr($identifier, 0, 3).str_repeat('*', $length - 7).mb_substr($identifier, -4);
     }
 }
