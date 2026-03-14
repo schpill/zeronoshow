@@ -26,7 +26,9 @@ describe('useWaitlist', () => {
       data: [{ id: '1', client_name: 'Test' }],
       meta: { current_page: 1, last_page: 1, total: 1 },
     }
-    vi.mocked(waitlistApi.getWaitlistEntries).mockResolvedValue(mockEntries /* eslint-disable-line @typescript-eslint/no-explicit-any */ as any)
+    vi.mocked(waitlistApi.getWaitlistEntries).mockResolvedValue(
+      mockEntries /* eslint-disable-line @typescript-eslint/no-explicit-any */ as any,
+    )
 
     const { entries, fetchEntries, loading } = useWaitlist()
     await fetchEntries()
@@ -38,7 +40,9 @@ describe('useWaitlist', () => {
 
   it('adds an entry successfully', async () => {
     const newEntry = { data: { id: '2', client_name: 'New' } }
-    vi.mocked(waitlistApi.addWaitlistEntry).mockResolvedValue(newEntry /* eslint-disable-line @typescript-eslint/no-explicit-any */ as any)
+    vi.mocked(waitlistApi.addWaitlistEntry).mockResolvedValue(
+      newEntry /* eslint-disable-line @typescript-eslint/no-explicit-any */ as any,
+    )
 
     const { entries, addEntry } = useWaitlist()
     await addEntry({
@@ -55,7 +59,12 @@ describe('useWaitlist', () => {
 
   it('removes an entry', async () => {
     const { entries, removeEntry } = useWaitlist()
-    entries.value = [{ id: '1', client_name: 'Test' } /* eslint-disable-line @typescript-eslint/no-explicit-any */ as any]
+    entries.value = [
+      {
+        id: '1',
+        client_name: 'Test',
+      } /* eslint-disable-line @typescript-eslint/no-explicit-any */ as any,
+    ]
 
     vi.mocked(waitlistApi.removeWaitlistEntry).mockResolvedValue(undefined)
 
