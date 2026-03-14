@@ -7,7 +7,6 @@ import BookingStepDate from '@/components/booking/BookingStepDate.vue'
 import BookingStepGuest from '@/components/booking/BookingStepGuest.vue'
 import BookingStepOtp from '@/components/booking/BookingStepOtp.vue'
 import BookingStepConfirm from '@/components/booking/BookingStepConfirm.vue'
-import type { WidgetConfig } from '@/api/widget'
 
 const route = useRoute()
 const router = useRouter()
