@@ -83,7 +83,9 @@ describe('BookingStepDate', () => {
     await todayBtn!.trigger('click')
     await wrapper.vm.$nextTick()
 
-    const slotButtons = wrapper.findAll('button[type="button"]').filter((btn) => btn.text() === '10:00')
+    const slotButtons = wrapper
+      .findAll('button[type="button"]')
+      .filter((btn) => btn.text() === '10:00')
     expect(slotButtons.length).toBeGreaterThan(0)
 
     await slotButtons[0]!.trigger('click')

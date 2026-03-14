@@ -240,10 +240,7 @@ onMounted(() => {
             :loading="widgetSettings.loading.value"
             @edit="showWidgetSettingsModal = true"
           />
-          <WidgetStatsCard
-            :stats="widgetSettings.stats.value"
-            :loading="false"
-          />
+          <WidgetStatsCard :stats="widgetSettings.stats.value" :loading="false" />
           <WidgetEmbedCard
             :embed-url="widgetSettings.settings.value.embed_url"
             :booking-url="widgetSettings.settings.value.booking_url"

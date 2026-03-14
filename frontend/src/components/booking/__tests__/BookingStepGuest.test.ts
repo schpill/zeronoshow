@@ -62,10 +62,12 @@ describe('BookingStepGuest', () => {
     await wrapper.find('form').trigger('submit')
 
     expect(wrapper.emitted('submit')).toBeTruthy()
-    expect(wrapper.emitted('submit')![0]).toEqual([{
-      guest_name: 'Jean Dupont',
-      guest_phone: '+33612345678',
-      party_size: 4,
-    }])
+    expect(wrapper.emitted('submit')![0]).toEqual([
+      {
+        guest_name: 'Jean Dupont',
+        guest_phone: '+33612345678',
+        party_size: 4,
+      },
+    ])
   })
 })

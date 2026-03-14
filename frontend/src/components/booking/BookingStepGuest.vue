@@ -15,10 +15,12 @@ const guestPhone = ref('')
 const partySize = ref(1)
 
 const isValid = computed(() => {
-  return guestName.value.trim().length > 0
-    && /^\+[1-9]\d{7,14}$/.test(guestPhone.value)
-    && partySize.value >= 1
-    && partySize.value <= props.maxPartySize
+  return (
+    guestName.value.trim().length > 0 &&
+    /^\+[1-9]\d{7,14}$/.test(guestPhone.value) &&
+    partySize.value >= 1 &&
+    partySize.value <= props.maxPartySize
+  )
 })
 
 function submit() {

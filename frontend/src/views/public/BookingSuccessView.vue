@@ -12,8 +12,16 @@ const party = route.query.party as string | undefined
   <div class="min-h-screen bg-slate-50 px-4 py-8">
     <div class="mx-auto max-w-lg text-center">
       <div class="rounded-[32px] border border-slate-200 bg-white p-8 shadow-sm">
-        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
-          <svg class="h-8 w-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <div
+          class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100"
+        >
+          <svg
+            class="h-8 w-8 text-emerald-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         </div>
@@ -39,9 +47,7 @@ const party = route.query.party as string | undefined
           </div>
         </div>
 
-        <p class="mt-6 text-sm text-slate-500">
-          Vous recevrez un SMS de confirmation.
-        </p>
+        <p class="mt-6 text-sm text-slate-500">Vous recevrez un SMS de confirmation.</p>
       </div>
     </div>
   </div>

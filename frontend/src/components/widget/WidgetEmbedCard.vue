@@ -34,7 +34,10 @@ function copyLink() {
       <div>
         <p class="text-sm font-medium text-slate-700 mb-1">Lien direct</p>
         <div class="flex items-center gap-2">
-          <code class="flex-1 truncate rounded-xl bg-slate-50 px-3 py-2 text-xs font-mono text-slate-600">{{ bookingUrl }}</code>
+          <code
+            class="flex-1 truncate rounded-xl bg-slate-50 px-3 py-2 text-xs font-mono text-slate-600"
+            >{{ bookingUrl }}</code
+          >
           <button
             type="button"
             class="shrink-0 rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
@@ -48,7 +51,10 @@ function copyLink() {
       <div>
         <p class="text-sm font-medium text-slate-700 mb-1">Code iframe</p>
         <div class="flex items-center gap-2">
-          <code class="flex-1 truncate rounded-xl bg-slate-50 px-3 py-2 text-xs font-mono text-slate-600">{{ iframeCode }}</code>
+          <code
+            class="flex-1 truncate rounded-xl bg-slate-50 px-3 py-2 text-xs font-mono text-slate-600"
+            >{{ iframeCode }}</code
+          >
           <button
             type="button"
             class="shrink-0 rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"

@@ -102,17 +102,29 @@ function onTimeClick(time: string) {
     <h3 class="text-heading-4 mb-4">Choisissez une date</h3>
 
     <div class="flex items-center justify-between mb-4">
-      <button type="button" class="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100" @click="prevMonth">
+      <button
+        type="button"
+        class="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100"
+        @click="prevMonth"
+      >
         &larr;
       </button>
       <span class="text-sm font-semibold text-slate-800 capitalize">{{ monthName }}</span>
-      <button type="button" class="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100" @click="nextMonth">
+      <button
+        type="button"
+        class="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100"
+        @click="nextMonth"
+      >
         &rarr;
       </button>
     </div>
 
     <div class="grid grid-cols-7 gap-1 mb-2">
-      <span v-for="d in ['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di']" :key="d" class="text-center text-xs font-medium text-slate-400">
+      <span
+        v-for="d in ['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di']"
+        :key="d"
+        class="text-center text-xs font-medium text-slate-400"
+      >
         {{ d }}
       </span>
     </div>
@@ -127,7 +139,9 @@ function onTimeClick(time: string) {
         :class="[
           !day.inMonth ? 'text-slate-300 cursor-default' : '',
           day.inMonth && day.disabled ? 'text-slate-300 cursor-not-allowed' : '',
-          day.inMonth && !day.disabled && day.date !== selectedDate ? 'text-slate-700 hover:bg-slate-100 cursor-pointer' : '',
+          day.inMonth && !day.disabled && day.date !== selectedDate
+            ? 'text-slate-700 hover:bg-slate-100 cursor-pointer'
+            : '',
           day.date === selectedDate ? 'text-white cursor-pointer' : '',
         ]"
         :style="day.date === selectedDate ? { background: accentColour } : {}"

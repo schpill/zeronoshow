@@ -47,7 +47,10 @@ async function widgetFetch<T>(path: string, options: RequestInit = {}): Promise<
   const data = await response.json()
 
   if (!response.ok) {
-    const error = new Error(data?.error?.message ?? 'Une erreur est survenue.') as Error & { status: number; data: unknown }
+    const error = new Error(data?.error?.message ?? 'Une erreur est survenue.') as Error & {
+      status: number
+      data: unknown
+    }
     error.status = response.status
     error.data = data
     throw error
@@ -61,7 +64,9 @@ export async function getWidgetConfig(token: string): Promise<WidgetConfigRespon
 }
 
 export async function getSlots(token: string, date: string): Promise<SlotsResponse> {
-  return widgetFetch<SlotsResponse>(`/public/widget/${token}/slots?date=${encodeURIComponent(date)}`)
+  return widgetFetch<SlotsResponse>(
+    `/public/widget/${token}/slots?date=${encodeURIComponent(date)}`,
+  )
 }
 
 export async function sendOtp(token: string, phone: string): Promise<OtpSendResponse> {
@@ -71,14 +76,21 @@ export async function sendOtp(token: string, phone: string): Promise<OtpSendResp
   })
 }
 
-export async function verifyOtp(token: string, phone: string, code: string): Promise<OtpVerifyResponse> {
+export async function verifyOtp(
+  token: string,
+  phone: string,
+  code: string,
+): Promise<OtpVerifyResponse> {
   return widgetFetch<OtpVerifyResponse>(`/public/widget/${token}/otp/verify`, {
     method: 'POST',
     body: JSON.stringify({ phone, code }),
   })
 }
 
-export async function createReservation(token: string, payload: ReservationPayload): Promise<{ reservation: unknown }> {
+export async function createReservation(
+  token: string,
+  payload: ReservationPayload,
+): Promise<{ reservation: unknown }> {
   return widgetFetch<{ reservation: unknown }>(`/public/widget/${token}/reservations`, {
     method: 'POST',
     body: JSON.stringify(payload),

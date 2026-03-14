@@ -96,15 +96,17 @@ async function verify() {
 <template>
   <div>
     <h3 class="text-heading-4 mb-2">Vérification</h3>
-    <p class="text-body-sm mb-6">
-      Un code a été envoyé par SMS au {{ phone }}.
-    </p>
+    <p class="text-body-sm mb-6">Un code a été envoyé par SMS au {{ phone }}.</p>
 
     <div class="flex justify-center gap-2 mb-4">
       <input
         v-for="(_, i) in digits"
         :key="i"
-        :ref="(el) => { if (el) inputs[i] = el as HTMLInputElement }"
+        :ref="
+          (el) => {
+            if (el) inputs[i] = el as HTMLInputElement
+          }
+        "
         type="text"
         inputmode="numeric"
         maxlength="1"

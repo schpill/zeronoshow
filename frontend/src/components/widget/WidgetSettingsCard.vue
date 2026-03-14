@@ -37,7 +37,10 @@ const emit = defineEmits<{
       <div class="text-sm">
         <span class="text-slate-500">Couleur</span>
         <p class="flex items-center gap-1 font-medium text-slate-800">
-          <span class="inline-block h-4 w-4 rounded-full border border-slate-200" :style="{ background: settings.accent_colour }" />
+          <span
+            class="inline-block h-4 w-4 rounded-full border border-slate-200"
+            :style="{ background: settings.accent_colour }"
+          />
           {{ settings.accent_colour }}
         </p>
       </div>

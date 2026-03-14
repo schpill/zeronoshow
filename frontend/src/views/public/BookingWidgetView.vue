@@ -31,7 +31,7 @@ onMounted(async () => {
       disabled.value = true
       disabledMessage.value = e.data?.error?.message ?? 'Widget désactivé.'
     } else {
-      disabledMessage.value = "Impossible de charger le widget de réservation."
+      disabledMessage.value = 'Impossible de charger le widget de réservation.'
     }
   } finally {
     loading.value = false
@@ -73,10 +73,17 @@ function onConflict() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 px-4 py-8" :style="{ '--widget-accent': widget.widgetConfig.value?.accent_colour ?? '#6366f1' }">
+  <div
+    class="min-h-screen bg-slate-50 px-4 py-8"
+    :style="{ '--widget-accent': widget.widgetConfig.value?.accent_colour ?? '#6366f1' }"
+  >
     <div class="mx-auto max-w-lg">
       <div v-if="widget.widgetConfig.value?.logo_url" class="mb-6 text-center">
-        <img :src="widget.widgetConfig.value.logo_url" alt="Logo" class="mx-auto h-12 object-contain" />
+        <img
+          :src="widget.widgetConfig.value.logo_url"
+          alt="Logo"
+          class="mx-auto h-12 object-contain"
+        />
       </div>
 
       <div class="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm">
