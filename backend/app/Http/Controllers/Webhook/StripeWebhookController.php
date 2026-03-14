@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\PaymentFailedStub;
 use App\Models\Business;
 use App\Models\LeoChannel;
+use App\Services\Leo\LeoWhatsAppCreditService;
 use App\Services\StripeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,6 +20,7 @@ class StripeWebhookController extends Controller
 {
     public function __construct(
         private readonly StripeService $stripeService,
+        private readonly LeoWhatsAppCreditService $waCredits,
     ) {}
 
     public function handle(Request $request): JsonResponse
@@ -53,22 +55,31 @@ class StripeWebhookController extends Controller
      */
     private function handleCheckoutCompleted(array $payload): void
     {
+        $businessId = $payload['client_reference_id'] ?? $payload['metadata']['business_id'] ?? null;
+
         $business = Business::query()
             ->when(
-                isset($payload['client_reference_id']),
-                fn ($query) => $query->where('id', $payload['client_reference_id'])
+                $businessId,
+                fn ($query) => $query->where('id', $businessId)
             )
             ->when(
-                ! isset($payload['client_reference_id']) && isset($payload['customer_email']),
+                ! $businessId && isset($payload['customer_email']),
                 fn ($query) => $query->where('email', $payload['customer_email'])
             )
             ->when(
-                ! isset($payload['client_reference_id']) && ! isset($payload['customer_email']) && isset($payload['customer']),
+                ! $businessId && ! isset($payload['customer_email']) && isset($payload['customer']),
                 fn ($query) => $query->where('stripe_customer_id', $payload['customer'])
             )
             ->first();
 
         if (! $business) {
+            return;
+        }
+
+        // WhatsApp Credit Top-up
+        if (($payload['metadata']['type'] ?? null) === 'whatsapp_credit') {
+            $this->waCredits->topUp($business, (int) $payload['amount_total']);
+
             return;
         }
 

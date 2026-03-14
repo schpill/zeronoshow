@@ -2,15 +2,23 @@
 
 namespace App\Providers;
 
+use App\Events\LeoWhatsAppCreditExhaustedEvent;
+use App\Events\LeoWhatsAppLowBalanceEvent;
+use App\Listeners\SendCreditExhaustedNotification;
+use App\Listeners\SendLowBalanceNotification;
 use App\Models\Reservation;
 use App\Observers\ReservationObserver;
 use App\Services\Contracts\SmsServiceInterface;
+use App\Services\Leo\LeoWhatsAppConversationTracker;
+use App\Services\Leo\LeoWhatsAppCreditService;
 use App\Services\Leo\TelegramChannel;
 use App\Services\Leo\TwilioSmsChannel;
+use App\Services\Leo\WhatsAppChannel;
 use App\Services\StripeService;
 use App\Services\TwilioSmsService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
@@ -25,6 +33,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(StripeService::class);
         $this->app->singleton(TelegramChannel::class);
         $this->app->singleton(TwilioSmsChannel::class);
+        $this->app->singleton(WhatsAppChannel::class);
+        $this->app->singleton(LeoWhatsAppCreditService::class);
+        $this->app->singleton(LeoWhatsAppConversationTracker::class);
     }
 
     /**
@@ -33,6 +44,16 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Reservation::observe(ReservationObserver::class);
+
+        Event::listen(
+            LeoWhatsAppCreditExhaustedEvent::class,
+            SendCreditExhaustedNotification::class
+        );
+
+        Event::listen(
+            LeoWhatsAppLowBalanceEvent::class,
+            SendLowBalanceNotification::class
+        );
 
         RateLimiter::for('login', fn (Request $request) => Limit::perMinutes(15, 10)->by($request->ip()));
         RateLimiter::for('register', fn (Request $request) => Limit::perHour(5)->by($request->ip()));

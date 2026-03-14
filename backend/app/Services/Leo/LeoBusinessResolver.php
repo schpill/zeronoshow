@@ -20,7 +20,7 @@ class LeoBusinessResolver
             ->with('business')
             ->where('channel', $channelType)
             ->where('external_identifier', $senderId)
-            ->where('is_active', true)
+            ->when($channelType !== 'whatsapp', fn ($query) => $query->where('is_active', true))
             ->whereHas('business', fn ($query) => $query->where('leo_addon_active', true))
             ->get();
 

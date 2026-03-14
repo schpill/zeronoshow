@@ -13,4 +13,10 @@ return [
         'bot_token' => env('TELEGRAM_BOT_TOKEN'),
         'webhook_secret' => env('TELEGRAM_WEBHOOK_SECRET'),
     ],
+
+    'whatsapp' => [
+        'cost_service_cents' => (int) env('LEO_WHATSAPP_COST_SERVICE_CENTS', 5),
+        'cost_utility_cents' => (int) env('LEO_WHATSAPP_COST_UTILITY_CENTS', 10),
+        'low_balance_threshold_cents' => (int) env('LEO_WHATSAPP_LOW_BALANCE_THRESHOLD_CENTS', 100),
+    ],
 ];

@@ -166,4 +166,6 @@ Schedule::command('trial:expiry-emails')->hourly()->withoutOverlapping(10);
 Schedule::command('billing:sync-sms-cost')->monthlyOn(1, '06:00')->withoutOverlapping(60);
 Schedule::command(PurgeSmsLogs::class)->dailyAt('03:30');
 Schedule::command(PurgeLeoMessageLogs::class)->monthly()->withoutOverlapping(60);
+Schedule::command('whatsapp:purge-windows')->daily()->withoutOverlapping(10);
+Schedule::command('leo:renew-whatsapp-credits')->monthlyOn(1, '06:00')->withoutOverlapping(60);
 Schedule::command(RunSmokeTests::class)->dailyAt('04:00')->environments(['production']);

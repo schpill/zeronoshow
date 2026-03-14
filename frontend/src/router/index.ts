@@ -16,7 +16,14 @@ const router = createRouter({
     },
     {
       path: '/leo',
+      name: 'leo',
       component: () => import('@/views/LeoView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/leo/whatsapp/topup/return',
+      name: 'leo-whatsapp-return',
+      component: () => import('@/views/WhatsAppReturnView.vue'),
       meta: { requiresAuth: true },
     },
     {

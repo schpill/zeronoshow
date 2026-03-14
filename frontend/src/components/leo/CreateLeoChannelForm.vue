@@ -10,7 +10,15 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  created: [{ channel: LeoChannelType; bot_name: string; external_identifier: string }]
+  created: [
+    payload: {
+      channel: LeoChannelType
+      bot_name: string
+      external_identifier: string
+      monthly_cap_cents?: number
+      auto_renew?: boolean
+    },
+  ]
   cancel: []
 }>()
 
@@ -18,11 +26,14 @@ const form = reactive({
   bot_name: 'Léo',
   channel: 'telegram' as LeoChannelType,
   external_identifier: '',
+  monthly_cap_euros: 5,
+  auto_renew: true,
 })
 
 const error = ref<string | null>(null)
 
 const types: LeoChannelType[] = ['telegram', 'whatsapp', 'sms', 'slack', 'discord']
+const isEnabled = (type: LeoChannelType) => ['telegram', 'whatsapp'].includes(type)
 const channelCopy: Record<
   LeoChannelType,
   { label: string; placeholder: string; setupTitle: string }
@@ -70,10 +81,17 @@ function submit() {
     return
   }
 
+  if (form.channel === 'whatsapp' && form.monthly_cap_euros <= 0) {
+    error.value = 'Un budget mensuel WhatsApp est requis.'
+    return
+  }
+
   emit('created', {
     channel: form.channel,
     bot_name: form.bot_name.trim(),
     external_identifier: form.external_identifier.trim(),
+    monthly_cap_cents: Math.round(form.monthly_cap_euros * 100),
+    auto_renew: form.auto_renew,
   })
 }
 </script>
@@ -118,10 +136,12 @@ function submit() {
         <label
           v-for="type in types"
           :key="type"
-          class="flex items-center justify-between rounded-2xl border px-4 py-3"
+          class="flex items-center justify-between rounded-2xl border px-4 py-3 transition"
           :class="
-            type === 'telegram'
-              ? 'border-emerald-300 bg-emerald-50'
+            isEnabled(type)
+              ? form.channel === type
+                ? 'border-emerald-300 bg-emerald-50'
+                : 'border-slate-200 bg-white hover:border-slate-300 cursor-pointer'
               : 'cursor-not-allowed border-slate-200 bg-slate-50 opacity-70'
           "
         >
@@ -131,7 +151,7 @@ function submit() {
               type="radio"
               name="leo-channel-type"
               :value="type"
-              :disabled="type !== 'telegram'"
+              :disabled="!isEnabled(type)"
               class="h-4 w-4 text-emerald-600"
             />
             <span class="text-sm font-semibold capitalize">{{ type }}</span>
@@ -141,14 +161,65 @@ function submit() {
       </div>
     </div>
 
+    <div
+      v-if="form.channel === 'whatsapp'"
+      class="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-6"
+    >
+      <div class="flex items-center justify-between">
+        <h4 class="text-sm font-bold text-emerald-900">Budget mensuel WhatsApp</h4>
+        <div class="flex items-center gap-2">
+          <input
+            id="whatsapp-budget"
+            v-model="form.monthly_cap_euros"
+            type="number"
+            min="1"
+            max="100"
+            class="w-20 rounded-xl border border-emerald-200 bg-white px-3 py-2 text-sm font-bold text-emerald-900 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+          />
+          <span class="text-sm font-bold text-emerald-900">€ / mois</span>
+        </div>
+      </div>
+      <p class="mt-2 text-xs text-emerald-700 leading-relaxed">
+        Ce montant sera prélevé immédiatement via Stripe, puis chaque 1er du mois. Les crédits non
+        utilisés sont reportés sans limite.
+      </p>
+      <label class="mt-4 flex cursor-pointer items-center gap-3">
+        <input
+          v-model="form.auto_renew"
+          type="checkbox"
+          class="h-4 w-4 rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500"
+        />
+        <span class="text-xs font-semibold text-emerald-900"
+          >Renouvellement automatique activé</span
+        >
+      </label>
+    </div>
+
     <details class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
       <summary class="cursor-pointer text-sm font-semibold text-slate-900">
         {{ setupTitle }}
       </summary>
-      <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-600">
+      <ol
+        v-if="form.channel === 'telegram'"
+        class="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-600"
+      >
         <li>Ouvrez Telegram et démarrez une conversation avec `@userinfobot`.</li>
         <li>Envoyez n’importe quel message.</li>
         <li>Copiez la valeur `Id` affichée par le bot.</li>
+      </ol>
+      <ol
+        v-else-if="form.channel === 'whatsapp'"
+        class="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-600"
+      >
+        <li>
+          Renseignez votre numéro de téléphone personnel (celui avec lequel vous souhaitez parler à
+          Léo).
+        </li>
+        <li>Le format doit être international (ex: +33612345678).</li>
+        <li>
+          Une fois configuré, vous pourrez initier la conversation avec le numéro WhatsApp de
+          ZeroNoShow.
+        </li>
       </ol>
     </details>
 
