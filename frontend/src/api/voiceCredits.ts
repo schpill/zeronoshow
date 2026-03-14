@@ -16,7 +16,9 @@ export interface VoiceCreditStatus {
 }
 
 export async function getVoiceCreditStatus(): Promise<VoiceCreditStatus> {
-  return apiClient.get<{ data: VoiceCreditStatus }>('/voice/credits').then((response) => response.data)
+  return apiClient
+    .get<{ data: VoiceCreditStatus }>('/voice/credits')
+    .then((response) => response.data)
 }
 
 export async function initiateVoiceTopUp(amountCents: number): Promise<{ checkout_url: string }> {

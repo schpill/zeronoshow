@@ -101,11 +101,7 @@ async function save() {
       </div>
       <div>
         <label class="text-label" for="voice-retry-delay">Délai entre tentatives</label>
-        <select
-          id="voice-retry-delay"
-          v-model="form.retry_delay_minutes"
-          class="mt-2 input-field"
-        >
+        <select id="voice-retry-delay" v-model="form.retry_delay_minutes" class="mt-2 input-field">
           <option :value="5">5 min</option>
           <option :value="10">10 min</option>
           <option :value="15">15 min</option>
@@ -114,7 +110,10 @@ async function save() {
       </div>
     </div>
 
-    <p v-if="validationError || voiceSettings.error.value" class="mt-4 text-sm font-semibold text-red-600">
+    <p
+      v-if="validationError || voiceSettings.error.value"
+      class="mt-4 text-sm font-semibold text-red-600"
+    >
       {{ validationError ?? voiceSettings.error.value }}
     </p>
 

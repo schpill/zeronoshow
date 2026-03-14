@@ -17,7 +17,10 @@ defineProps<{
       <p v-if="loading" class="text-sm text-slate-500">Chargement…</p>
     </div>
 
-    <div v-if="logs.length === 0" class="mt-4 rounded-2xl border border-dashed border-slate-200 px-4 py-6 text-sm text-slate-500">
+    <div
+      v-if="logs.length === 0"
+      class="mt-4 rounded-2xl border border-dashed border-slate-200 px-4 py-6 text-sm text-slate-500"
+    >
       Aucun appel vocal pour cette réservation.
     </div>
 

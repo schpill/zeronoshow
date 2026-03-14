@@ -58,7 +58,9 @@ const barColorClass = computed(() => {
     </p>
 
     <div class="mt-6">
-      <div class="mb-2 flex items-center justify-between text-xs font-semibold uppercase text-slate-500">
+      <div
+        class="mb-2 flex items-center justify-between text-xs font-semibold uppercase text-slate-500"
+      >
         <span>Utilisation du budget mensuel</span>
         <span>{{ Math.round(balancePercent) }}%</span>
       </div>

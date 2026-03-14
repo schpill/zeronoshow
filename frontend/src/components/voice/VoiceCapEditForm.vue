@@ -48,7 +48,14 @@ function submit() {
     <div class="mt-6 grid gap-6 md:grid-cols-2">
       <div>
         <label class="text-label" for="voice-cap">Budget mensuel</label>
-        <input id="voice-cap" v-model="capEuros" type="number" min="0" max="100" class="mt-2 input-field" />
+        <input
+          id="voice-cap"
+          v-model="capEuros"
+          type="number"
+          min="0"
+          max="100"
+          class="mt-2 input-field"
+        />
       </div>
       <label class="flex items-center gap-3 text-sm font-semibold text-slate-700">
         <input v-model="autoRenew" type="checkbox" />

@@ -1,10 +1,6 @@
 import { ref } from 'vue'
 
-import {
-  getVoiceSettings,
-  updateVoiceSettings,
-  type VoiceSettingsPayload,
-} from '@/api/voiceCalls'
+import { getVoiceSettings, updateVoiceSettings, type VoiceSettingsPayload } from '@/api/voiceCalls'
 import type { VoiceCreditStatus } from '@/api/voiceCredits'
 
 function normalizeError(error: unknown): string {

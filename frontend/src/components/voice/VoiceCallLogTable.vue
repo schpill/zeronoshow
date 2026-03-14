@@ -13,7 +13,10 @@ defineProps<{
       <h2 class="text-heading-3">Historique des appels</h2>
     </div>
 
-    <p v-if="logs.length === 0" class="rounded-2xl border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-500">
+    <p
+      v-if="logs.length === 0"
+      class="rounded-2xl border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-500"
+    >
       Aucun appel vocal envoyé pour cette réservation.
     </p>
 
@@ -31,7 +34,9 @@ defineProps<{
           <td class="py-3">{{ log.attempt_number }}</td>
           <td class="py-3">{{ log.status }}</td>
           <td class="py-3">{{ log.duration_seconds ?? '—' }} s</td>
-          <td class="py-3">{{ log.cost_cents ? `${(log.cost_cents / 100).toFixed(2)} €` : '—' }}</td>
+          <td class="py-3">
+            {{ log.cost_cents ? `${(log.cost_cents / 100).toFixed(2)} €` : '—' }}
+          </td>
         </tr>
       </tbody>
     </table>

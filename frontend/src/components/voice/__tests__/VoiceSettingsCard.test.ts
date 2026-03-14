@@ -70,7 +70,9 @@ describe('VoiceSettingsCard', () => {
     await wrapper.get('[data-test="auto-call-toggle"]').setValue(true)
     await wrapper.get('[data-test="save-settings"]').trigger('click')
 
-    expect(wrapper.text()).toContain('Définissez au moins un critère pour activer les appels automatiques.')
+    expect(wrapper.text()).toContain(
+      'Définissez au moins un critère pour activer les appels automatiques.',
+    )
     expect(updateSettings).not.toHaveBeenCalled()
   })
 

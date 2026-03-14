@@ -87,9 +87,10 @@ function submit() {
   }
 
   if (['whatsapp', 'voice'].includes(form.channel) && form.monthly_cap_euros <= 0) {
-    error.value = form.channel === 'voice'
-      ? 'Un budget mensuel Appels est requis.'
-      : 'Un budget mensuel WhatsApp est requis.'
+    error.value =
+      form.channel === 'voice'
+        ? 'Un budget mensuel Appels est requis.'
+        : 'Un budget mensuel WhatsApp est requis.'
     return
   }
 
@@ -191,8 +192,8 @@ function submit() {
       <p class="mt-2 text-xs text-emerald-700 leading-relaxed">
         {{
           form.channel === 'voice'
-            ? "Ce budget alimente les appels sortants Twilio et peut être renouvelé automatiquement."
-            : "Ce montant sera prélevé immédiatement via Stripe, puis chaque 1er du mois. Les crédits non utilisés sont reportés sans limite."
+            ? 'Ce budget alimente les appels sortants Twilio et peut être renouvelé automatiquement.'
+            : 'Ce montant sera prélevé immédiatement via Stripe, puis chaque 1er du mois. Les crédits non utilisés sont reportés sans limite.'
         }}
       </p>
       <label class="mt-4 flex cursor-pointer items-center gap-3">
