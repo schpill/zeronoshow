@@ -46,6 +46,27 @@ const router = createRouter({
       component: () => import('@/pages/ReservationDetailPage.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/waitlist',
+      component: () => import('@/views/WaitlistView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/waitlist/confirmed',
+      component: () => import('@/views/public/WaitlistConfirmedView.vue'),
+    },
+    {
+      path: '/waitlist/expired',
+      component: () => import('@/views/public/WaitlistExpiredView.vue'),
+    },
+    {
+      path: '/waitlist/declined',
+      component: () => import('@/views/public/WaitlistDeclinedView.vue'),
+    },
+    {
+      path: '/join/:token',
+      component: () => import('@/views/public/PublicWaitlistView.vue'),
+    },
   ],
 })
 

@@ -21,6 +21,12 @@ class GetPendingReservationsTool
                 'time' => $reservation->scheduled_at->format('H:i'),
                 'name' => $reservation->customer_name,
                 'guests' => $reservation->guests,
+                'waitlist_count' => \App\Models\WaitlistEntry::query()
+                    ->where('business_id', $reservation->business_id)
+                    ->whereDate('slot_date', $reservation->scheduled_at->format('Y-m-d'))
+                    ->whereTime('slot_time', $reservation->scheduled_at->format('H:i:00'))
+                    ->where('status', \App\Enums\WaitlistStatusEnum::Pending)
+                    ->count(),
             ])
             ->all();
     }
