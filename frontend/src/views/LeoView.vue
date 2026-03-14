@@ -5,31 +5,38 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import CreateLeoChannelForm from '@/components/leo/CreateLeoChannelForm.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import LeoChannelCard from '@/components/leo/LeoChannelCard.vue'
+import WhatsAppCreditCard from '@/components/leo/WhatsAppCreditCard.vue'
+import WhatsAppTopUpModal from '@/components/leo/WhatsAppTopUpModal.vue'
+import WhatsAppCapEditForm from '@/components/leo/WhatsAppCapEditForm.vue'
 import LeoUpgradeBanner from '@/components/leo/LeoUpgradeBanner.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { useLeo } from '@/composables/useLeo'
+import { useWhatsAppCredits } from '@/composables/useWhatsAppCredits'
 import { useToast } from '@/composables/useToast'
 import { useAuthStore } from '@/stores/auth'
-import type { LeoChannelType } from '@/types/leo'
+import type { LeoChannelPayload } from '@/api/leo'
 
 const auth = useAuthStore()
 const toast = useToast()
 const leo = useLeo()
+const waCredits = useWhatsAppCredits()
 const showCreateModal = ref(false)
+const showTopUpModal = ref(false)
+const showCapEdit = ref(false)
 
 async function loadLeo() {
   await leo.refresh()
+  if (leo.channel.value?.channel === 'whatsapp') {
+    void waCredits.fetchStatus()
+  }
 }
 
-async function handleCreate(payload: {
-  channel: LeoChannelType
-  bot_name: string
-  external_identifier: string
-}) {
+async function handleCreate(payload: LeoChannelPayload) {
   try {
     await leo.createChannel(payload)
     showCreateModal.value = false
     toast.success('Canal Léo créé.')
+    void loadLeo()
   } catch {
     // handled by composable
   }
@@ -62,6 +69,16 @@ async function handleActivateAddon() {
   } catch {
     // handled by composable
   }
+}
+
+async function handleTopUp(amountCents: number) {
+  await waCredits.topUp(amountCents)
+}
+
+async function handleSaveCap(cents: number, autoRenew: boolean) {
+  await waCredits.setCap(cents, autoRenew)
+  showCapEdit.value = false
+  toast.success('Budget mis à jour.')
 }
 
 onMounted(() => {
@@ -137,6 +154,23 @@ onMounted(() => {
         @delete="handleDelete"
       />
 
+      <template v-if="leo.channel.value?.channel === 'whatsapp' && waCredits.status.value">
+        <WhatsAppCapEditForm
+          v-if="showCapEdit"
+          :initial-cap-cents="waCredits.status.value.monthly_cap_cents"
+          :initial-auto-renew="waCredits.status.value.auto_renew"
+          :loading="waCredits.loading.value"
+          @save="handleSaveCap"
+          @cancel="showCapEdit = false"
+        />
+        <WhatsAppCreditCard
+          v-else
+          :status="waCredits.status.value"
+          @topup="showTopUpModal = true"
+          @edit-cap="showCapEdit = true"
+        />
+      </template>
+
       <div
         v-if="showCreateModal"
         class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4"
@@ -149,6 +183,12 @@ onMounted(() => {
           />
         </div>
       </div>
+
+      <WhatsAppTopUpModal
+        v-model="showTopUpModal"
+        :loading="waCredits.loading.value"
+        @submit="handleTopUp"
+      />
     </template>
   </AppLayout>
 </template>

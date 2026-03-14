@@ -576,7 +576,7 @@
                   Add-on optionnel
                 </p>
                 <h3 class="mt-2 text-2xl font-bold text-slate-900">
-                  Léo — Votre assistant Telegram
+                  Léo — Votre assistant Telegram + WhatsApp
                 </h3>
               </div>
               <span class="rounded-full bg-white px-3 py-1 text-xs font-semibold text-emerald-800">
@@ -584,29 +584,29 @@
               </span>
             </div>
             <p class="mt-4 text-slate-600">
-              Activez un copilote conversationnel pour suivre votre journée sur Telegram sans ouvrir
-              le dashboard.
+              Activez un copilote conversationnel pour piloter votre établissement. Telegram inclus,
+              WhatsApp via crédits prépayés.
             </p>
             <div class="mt-6 space-y-3">
               <div
                 class="rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm text-slate-700"
               >
-                Résumé du jour en conversation naturelle
+                Canal Telegram inclus sans frais supplémentaires
               </div>
               <div
                 class="rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm text-slate-700"
               >
-                Liste des clients en attente et des prochains services
+                Canal WhatsApp avec crédits (à partir de 1€ / mois)
               </div>
               <div
                 class="rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm text-slate-700"
               >
-                Notifications d’annulation et de no-show
+                Notifications d’annulation et résumés en temps réel
               </div>
             </div>
             <p class="mt-6 text-sm text-slate-500">
-              Un seul canal par établissement pour le MVP. Changement de canal possible via
-              suppression puis recréation.
+              Le canal WhatsApp utilise un portefeuille prépayé pour couvrir les frais Meta. Pas de
+              mauvaise surprise.
             </p>
           </article>
         </div>

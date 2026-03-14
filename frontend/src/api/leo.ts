@@ -5,6 +5,8 @@ export interface LeoChannelPayload {
   channel: LeoChannelRecord['channel']
   external_identifier: string
   bot_name: string
+  monthly_cap_cents?: number
+  auto_renew?: boolean
 }
 
 export interface LeoChannelUpdatePayload {

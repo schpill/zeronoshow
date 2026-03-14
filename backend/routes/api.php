@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\LeoAddonController;
 use App\Http\Controllers\Api\LeoChannelController;
+use App\Http\Controllers\Api\LeoWhatsAppCreditController;
 use App\Http\Controllers\Api\ReservationController;
 use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Auth\AuthController;
@@ -20,6 +21,8 @@ Route::prefix('v1')->group(function (): void {
     Route::post('/webhooks/twilio', [TwilioWebhookController::class, 'handle'])->middleware('throttle:webhook');
     Route::post('/webhooks/stripe', [StripeWebhookController::class, 'handle']);
     Route::post('/webhooks/leo/telegram', [LeoWebhookController::class, 'telegram'])->middleware(['telegram.allowlist', 'throttle:webhook']);
+    Route::get('/webhooks/leo/whatsapp', [LeoWebhookController::class, 'whatsapp'])->middleware('throttle:webhook');
+    Route::post('/webhooks/leo/whatsapp', [LeoWebhookController::class, 'whatsapp'])->middleware('throttle:webhook');
 
     Route::middleware('auth:sanctum')->group(function (): void {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
@@ -28,6 +31,11 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/leo/addon-status', [LeoAddonController::class, 'status']);
         Route::post('/leo/addon/activate', [LeoAddonController::class, 'activate']);
         Route::post('/leo/addon/deactivate', [LeoAddonController::class, 'deactivate']);
+
+        Route::get('/leo/whatsapp/credits', [LeoWhatsAppCreditController::class, 'status']);
+        Route::post('/leo/whatsapp/credits/topup', [LeoWhatsAppCreditController::class, 'topup']);
+        Route::patch('/leo/whatsapp/credits/cap', [LeoWhatsAppCreditController::class, 'setCap']);
+
         Route::get('/subscription', [SubscriptionController::class, 'show']);
         Route::post('/subscription/checkout', [SubscriptionController::class, 'checkout']);
         Route::get('/customers/lookup', [CustomerController::class, 'lookup']);

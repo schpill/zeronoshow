@@ -33,6 +33,14 @@ class LeoChannelController extends Controller
             ], 409);
         }
 
+        if ($request->string('channel')->toString() === 'whatsapp') {
+            if ($business->whatsapp_monthly_cap_cents <= 0) {
+                return response()->json([
+                    'message' => 'Veuillez définir un budget mensuel WhatsApp avant de créer ce canal.',
+                ], 422);
+            }
+        }
+
         $channel = LeoChannel::query()->create([
             'business_id' => $business->id,
             'channel' => $request->string('channel')->toString(),

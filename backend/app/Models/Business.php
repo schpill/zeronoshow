@@ -31,6 +31,10 @@ class Business extends Authenticatable
         'stripe_subscription_id',
         'leo_addon_active',
         'leo_addon_stripe_item_id',
+        'whatsapp_credit_cents',
+        'whatsapp_monthly_cap_cents',
+        'whatsapp_auto_renew',
+        'whatsapp_last_renewed_at',
     ];
 
     protected $hidden = [
@@ -41,6 +45,8 @@ class Business extends Authenticatable
     protected $casts = [
         'trial_ends_at' => 'datetime',
         'leo_addon_active' => 'boolean',
+        'whatsapp_auto_renew' => 'boolean',
+        'whatsapp_last_renewed_at' => 'datetime',
     ];
 
     public function reservations(): HasMany

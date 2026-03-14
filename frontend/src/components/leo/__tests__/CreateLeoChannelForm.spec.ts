@@ -41,7 +41,6 @@ describe('CreateLeoChannelForm', () => {
     await submitButton!.trigger('click')
 
     expect(wrapper.text()).toContain('Identifiant du canal est obligatoire.')
-    expect(wrapper.text()).not.toContain('Chat ID Telegram est obligatoire.')
   })
 
   it('emits a trimmed payload for telegram channel creation', async () => {
@@ -66,12 +65,14 @@ describe('CreateLeoChannelForm', () => {
           channel: 'telegram',
           bot_name: 'Léo Bastille',
           external_identifier: '123456789',
+          monthly_cap_cents: 500,
+          auto_renew: true,
         },
       ],
     ])
   })
 
-  it('keeps non-telegram channel options disabled', () => {
+  it('emits a trimmed payload for whatsapp channel creation', async () => {
     const wrapper = mount(CreateLeoChannelForm, {
       props: {
         loading: false,
@@ -79,10 +80,38 @@ describe('CreateLeoChannelForm', () => {
     })
 
     const radios = wrapper.findAll('input[type="radio"]')
+    await radios[1].setValue(true) // Switch to WhatsApp
 
+    await wrapper.get('#leo-bot-name').setValue('Bot WA')
+    await wrapper.get('#leo-chat-id').setValue(' +33612345678 ')
+    await wrapper.get('#whatsapp-budget').setValue(10)
+
+    const buttons = wrapper.findAll('button')
+    const submitButton = buttons[buttons.length - 1]
+    await submitButton!.trigger('click')
+
+    expect(wrapper.emitted('created')).toEqual([
+      [
+        {
+          channel: 'whatsapp',
+          bot_name: 'Bot WA',
+          external_identifier: '+33612345678',
+          monthly_cap_cents: 1000,
+          auto_renew: true,
+        },
+      ],
+    ])
+  })
+
+  it('keeps non-enabled channel options disabled', () => {
+    const wrapper = mount(CreateLeoChannelForm, {
+      props: { loading: false },
+    })
+
+    const radios = wrapper.findAll('input[type="radio"]')
     expect(radios).toHaveLength(5)
-    expect(radios[0]!.attributes('disabled')).toBeUndefined()
-    expect(radios[1]!.attributes('disabled')).toBeDefined()
-    expect(wrapper.text()).toContain('Comment obtenir votre Chat ID Telegram')
+    expect(radios[0]!.attributes('disabled')).toBeUndefined() // Telegram
+    expect(radios[1]!.attributes('disabled')).toBeUndefined() // WhatsApp
+    expect(radios[2]!.attributes('disabled')).toBeDefined() // SMS
   })
 })
