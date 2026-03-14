@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Business;
+use App\Models\SmsLog;
 use App\Services\Contracts\SmsServiceInterface;
 use App\Services\WaitlistService;
 use Illuminate\Bus\Queueable;
@@ -36,22 +37,28 @@ class NotifyWaitlistJob implements ShouldQueue
 
         if (! $entry) {
             Log::info("No pending waitlist entries for business {$this->businessId} on {$this->slotDate} at {$this->slotTime}");
-
             return;
         }
 
         $business = Business::findOrFail($this->businessId);
-        $confirmUrl = config('app.url')."/waitlist/confirm/{$entry->confirmation_token}";
+        $confirmUrl = config('app.url') . "/waitlist/confirm/{$entry->confirmation_token}";
         $window = $business->waitlist_notification_window_minutes;
 
-        $message = "Une table est disponible chez {$business->name} le {$entry->slot_date->format('d/m')} à ".substr($entry->slot_time, 0, 5).'. ';
+        $message = "Une table est disponible chez {$business->name} le {$entry->slot_date->format('d/m')} à " . substr($entry->slot_time, 0, 5) . ". ";
         $message .= "Confirmez dans {$window} minutes ici : {$confirmUrl}";
 
         try {
-            $smsService->sendSms($entry->client_phone, $message);
+            $smsLog = SmsLog::create([
+                'business_id' => $this->businessId,
+                'recipient' => $entry->client_phone,
+                'body' => $message,
+                'status' => 'pending',
+            ]);
+
+            $smsService->send($smsLog);
             Log::info("Waitlist notification sent to client for business {$this->businessId}");
         } catch (\Exception $e) {
-            Log::error('Failed to send waitlist SMS: '.$e->getMessage());
+            Log::error("Failed to send waitlist SMS: " . $e->getMessage());
             throw $e;
         }
     }
