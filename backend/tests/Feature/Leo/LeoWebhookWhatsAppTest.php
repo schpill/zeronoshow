@@ -4,7 +4,7 @@ namespace Tests\Feature\Leo;
 
 use App\Models\Business;
 use App\Models\LeoChannel;
-use App\Services\Leo\LeoGeminiService;
+use App\Leo\Tools\LeoGeminiService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;

@@ -5,7 +5,7 @@ namespace Tests\Feature\Leo;
 use App\Models\Business;
 use App\Models\Customer;
 use App\Models\Reservation;
-use App\Services\Leo\LeoGeminiService;
+use App\Leo\Tools\LeoGeminiService;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;

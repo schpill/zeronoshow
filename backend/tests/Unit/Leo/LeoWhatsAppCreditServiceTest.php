@@ -6,7 +6,7 @@ use App\Events\LeoWhatsAppCreditExhaustedEvent;
 use App\Events\LeoWhatsAppLowBalanceEvent;
 use App\Models\Business;
 use App\Models\LeoChannel;
-use App\Services\Leo\LeoWhatsAppCreditService;
+use App\Leo\Tools\LeoWhatsAppCreditService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;

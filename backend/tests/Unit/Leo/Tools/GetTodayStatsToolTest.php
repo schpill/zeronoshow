@@ -5,7 +5,7 @@ namespace Tests\Unit\Leo\Tools;
 use App\Models\Business;
 use App\Models\Customer;
 use App\Models\Reservation;
-use App\Services\Leo\GetTodayStatsTool;
+use App\Leo\Tools\GetTodayStatsTool;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

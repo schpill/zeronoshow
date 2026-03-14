@@ -5,7 +5,7 @@ namespace Tests\Unit\Jobs;
 use App\Jobs\RenewWhatsAppCreditJob;
 use App\Mail\WhatsAppCreditRenewedMail;
 use App\Models\Business;
-use App\Services\Leo\LeoWhatsAppCreditService;
+use App\Leo\Tools\LeoWhatsAppCreditService;
 use App\Services\StripeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;

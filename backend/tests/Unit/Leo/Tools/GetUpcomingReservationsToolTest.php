@@ -4,7 +4,7 @@ namespace Tests\Unit\Leo\Tools;
 
 use App\Models\Business;
 use App\Models\Reservation;
-use App\Services\Leo\GetUpcomingReservationsTool;
+use App\Leo\Tools\GetUpcomingReservationsTool;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

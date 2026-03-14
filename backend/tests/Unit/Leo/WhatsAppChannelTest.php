@@ -3,7 +3,7 @@
 namespace Tests\Unit\Leo;
 
 use App\Exceptions\LeoChannelException;
-use App\Services\Leo\WhatsAppChannel;
+use App\Leo\Tools\WhatsAppChannel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
