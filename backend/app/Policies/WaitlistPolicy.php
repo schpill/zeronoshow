@@ -7,7 +7,7 @@ use App\Models\Business;
 use App\Models\WaitlistEntry;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class WaitlistEntryPolicy
+class WaitlistPolicy
 {
     use HandlesAuthorization;
 

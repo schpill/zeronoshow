@@ -2,11 +2,11 @@
 
 namespace App\Jobs;
 
+use App\Leo\Tools\LeoThrottleService;
+use App\Leo\Tools\TelegramChannel;
 use App\Models\LeoChannel;
 use App\Models\LeoMessageLog;
 use App\Models\Reservation;
-use App\Services\Leo\LeoThrottleService;
-use App\Services\Leo\TelegramChannel;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;

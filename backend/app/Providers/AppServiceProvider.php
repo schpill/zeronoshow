@@ -4,21 +4,24 @@ namespace App\Providers;
 
 use App\Events\LeoWhatsAppCreditExhaustedEvent;
 use App\Events\LeoWhatsAppLowBalanceEvent;
+use App\Leo\Tools\LeoWhatsAppConversationTracker;
+use App\Leo\Tools\LeoWhatsAppCreditService;
+use App\Leo\Tools\TelegramChannel;
+use App\Leo\Tools\TwilioSmsChannel;
+use App\Leo\Tools\WhatsAppChannel;
 use App\Listeners\SendCreditExhaustedNotification;
 use App\Listeners\SendLowBalanceNotification;
 use App\Models\Reservation;
+use App\Models\WaitlistEntry;
 use App\Observers\ReservationObserver;
+use App\Policies\WaitlistPolicy;
 use App\Services\Contracts\SmsServiceInterface;
-use App\Services\Leo\LeoWhatsAppConversationTracker;
-use App\Services\Leo\LeoWhatsAppCreditService;
-use App\Services\Leo\TelegramChannel;
-use App\Services\Leo\TwilioSmsChannel;
-use App\Services\Leo\WhatsAppChannel;
 use App\Services\StripeService;
 use App\Services\TwilioSmsService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
@@ -43,6 +46,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::policy(WaitlistEntry::class, WaitlistPolicy::class);
+
         Reservation::observe(ReservationObserver::class);
 
         Event::listen(

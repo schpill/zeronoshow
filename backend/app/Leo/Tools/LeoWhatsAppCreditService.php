@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Leo;
+namespace App\Leo\Tools;
 
 use App\Events\LeoWhatsAppCreditExhaustedEvent;
 use App\Events\LeoWhatsAppLowBalanceEvent;

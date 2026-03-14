@@ -2,9 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Leo\Tools\LeoWhatsAppCreditService;
 use App\Mail\WhatsAppCreditRenewedMail;
 use App\Models\Business;
-use App\Services\Leo\LeoWhatsAppCreditService;
 use App\Services\StripeService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

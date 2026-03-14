@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Public;
 
+use App\Enums\ChannelTypeEnum;
 use App\Enums\WaitlistStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PublicStoreWaitlistRequest;
@@ -43,6 +44,7 @@ class PublicWaitlistController extends Controller
             'business_id' => $business->id,
             'priority_order' => $maxPriority + 1,
             'status' => WaitlistStatusEnum::Pending,
+            'channel' => ChannelTypeEnum::Sms,
         ]);
 
         return (new WaitlistEntryResource($entry))

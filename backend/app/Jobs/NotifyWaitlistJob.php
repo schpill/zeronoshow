@@ -51,9 +51,11 @@ class NotifyWaitlistJob implements ShouldQueue
         try {
             $smsLog = SmsLog::create([
                 'business_id' => $this->businessId,
-                'recipient' => $entry->client_phone,
+                'phone' => $entry->client_phone,
+                'type' => 'waitlist_notification',
                 'body' => $message,
-                'status' => 'pending',
+                'status' => 'queued',
+                'queued_at' => now(),
             ]);
 
             $smsService->send($smsLog);

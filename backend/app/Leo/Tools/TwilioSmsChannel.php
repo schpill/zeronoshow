@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Leo;
+namespace App\Leo\Tools;
 
 use Illuminate\Http\Request;
 use RuntimeException;
