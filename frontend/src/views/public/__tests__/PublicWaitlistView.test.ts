@@ -3,7 +3,6 @@ import { mount } from '@vue/test-utils'
 import PublicWaitlistView from '../PublicWaitlistView.vue'
 import { useWaitlist } from '@/composables/useWaitlist'
 import { useRoute } from 'vue-router'
-import { ref } from 'vue'
 
 vi.mock('@/composables/useWaitlist', () => ({
   useWaitlist: vi.fn(),

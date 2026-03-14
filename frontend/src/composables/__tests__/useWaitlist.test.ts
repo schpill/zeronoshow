@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useWaitlist } from '../useWaitlist'
 import * as waitlistApi from '@/api/waitlist'
-import { nextTick } from 'vue'
 
 vi.mock('@/api/waitlist', () => ({
   getWaitlistEntries: vi.fn(),
