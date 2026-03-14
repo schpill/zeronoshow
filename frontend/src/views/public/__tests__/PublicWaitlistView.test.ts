@@ -17,7 +17,7 @@ describe('PublicWaitlistView', () => {
   beforeEach(() => {
     vi.mocked(useRoute).mockReturnValue({
       params: { token: 'test-token' },
-    } as any)
+    } /* eslint-disable-line @typescript-eslint/no-explicit-any */ as any)
 
     vi.mocked(useWaitlist).mockReturnValue({
       getPublicWaitlistInfo: vi.fn().mockResolvedValue({
@@ -25,7 +25,7 @@ describe('PublicWaitlistView', () => {
         slots_available: [{ date: '2026-03-30', times: ['19:30'] }],
       }),
       joinWaitlistPublic: vi.fn(),
-    } as any)
+    } /* eslint-disable-line @typescript-eslint/no-explicit-any */ as any)
   })
 
   it('renders business name and available slots', async () => {
@@ -46,7 +46,7 @@ describe('PublicWaitlistView', () => {
         slots_available: [{ date: '2026-03-30', times: ['19:30'] }],
       }),
       joinWaitlistPublic,
-    } as any)
+    } /* eslint-disable-line @typescript-eslint/no-explicit-any */ as any)
 
     const wrapper = mount(PublicWaitlistView)
     await new Promise((resolve) => setTimeout(resolve, 0))

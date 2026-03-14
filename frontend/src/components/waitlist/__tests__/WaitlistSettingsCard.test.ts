@@ -21,7 +21,7 @@ describe('WaitlistSettingsCard', () => {
       fetchSettings: vi.fn(),
       updateSettings: vi.fn(),
       regenerateLink: vi.fn(),
-    } as any)
+    } /* eslint-disable-line @typescript-eslint/no-explicit-any */ as any)
   })
 
   it('renders settings values correctly', () => {
@@ -39,7 +39,7 @@ describe('WaitlistSettingsCard', () => {
       fetchSettings: vi.fn(),
       updateSettings,
       regenerateLink: vi.fn(),
-    } as any)
+    } /* eslint-disable-line @typescript-eslint/no-explicit-any */ as any)
 
     const wrapper = mount(WaitlistSettingsCard)
     await wrapper.find('button.relative').trigger('click')
