@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Leo;
 
-use App\Services\Leo\TelegramChannel;
+use App\Leo\Tools\TelegramChannel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;

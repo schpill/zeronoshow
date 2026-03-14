@@ -35,6 +35,9 @@ class Business extends Authenticatable
         'whatsapp_monthly_cap_cents',
         'whatsapp_auto_renew',
         'whatsapp_last_renewed_at',
+        'waitlist_enabled',
+        'waitlist_notification_window_minutes',
+        'waitlist_public_token',
     ];
 
     protected $hidden = [
@@ -47,6 +50,8 @@ class Business extends Authenticatable
         'leo_addon_active' => 'boolean',
         'whatsapp_auto_renew' => 'boolean',
         'whatsapp_last_renewed_at' => 'datetime',
+        'waitlist_enabled' => 'boolean',
+        'waitlist_notification_window_minutes' => 'integer',
     ];
 
     public function reservations(): HasMany

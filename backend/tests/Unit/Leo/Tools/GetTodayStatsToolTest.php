@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Leo\Tools;
 
+use App\Leo\Tools\GetTodayStatsTool;
 use App\Models\Business;
 use App\Models\Customer;
 use App\Models\Reservation;
-use App\Services\Leo\GetTodayStatsTool;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

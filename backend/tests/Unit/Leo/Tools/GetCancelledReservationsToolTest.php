@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Leo\Tools;
 
+use App\Leo\Tools\GetCancelledReservationsTool;
 use App\Models\Business;
 use App\Models\Reservation;
-use App\Services\Leo\GetCancelledReservationsTool;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

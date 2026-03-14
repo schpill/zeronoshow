@@ -3,11 +3,14 @@
 use App\Console\Commands\PurgeLeoMessageLogs;
 use App\Console\Commands\PurgeSmsLogs;
 use App\Console\Commands\RunSmokeTests;
+use App\Enums\WaitlistStatusEnum;
+use App\Jobs\ExpireWaitlistNotificationsJob;
 use App\Jobs\SendReminderSms;
 use App\Mail\TrialExpiryWarning;
 use App\Models\Business;
 use App\Models\Reservation;
 use App\Models\SmsLog;
+use App\Models\WaitlistEntry;
 use App\Services\StripeService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Inspiring;
@@ -94,6 +97,19 @@ Artisan::command('reservations:auto-cancel', function () {
     $this->info("Cancelled {$expiredTokens} token expired reservations and {$expiredPendingReminders} pending reminder reservations.");
 })->purpose('Auto-cancel expired unconfirmed reservations');
 
+Artisan::command('waitlist:expire-notifications', function () {
+    ExpireWaitlistNotificationsJob::dispatch();
+    $this->info('Dispatched ExpireWaitlistNotificationsJob.');
+})->purpose('Expire waitlist notifications and cascade to next entries');
+
+Artisan::command('waitlist:purge-expired', function () {
+    $count = WaitlistEntry::query()
+        ->whereIn('status', [WaitlistStatusEnum::Expired, WaitlistStatusEnum::Declined])
+        ->where('created_at', '<', now()->subDays(30))
+        ->delete();
+    $this->info("Purged {$count} old waitlist entries.");
+})->purpose('Purge old expired or declined waitlist entries');
+
 $sendTrialExpiryWarnings = function () {
     $windowStart = now()->addHours(47)->subMinute();
     $windowEnd = now()->addHours(49)->addMinute();
@@ -162,6 +178,8 @@ Artisan::command('billing:sync-sms-cost {--month=}', $syncMonthlySmsCost)
 
 Schedule::command('reminders:process')->everyMinute()->withoutOverlapping(10);
 Schedule::command('reservations:auto-cancel')->everyMinute()->withoutOverlapping(10);
+Schedule::command('waitlist:expire-notifications')->everyMinute()->withoutOverlapping(10);
+Schedule::command('waitlist:purge-expired')->daily()->withoutOverlapping(10);
 Schedule::command('trial:expiry-emails')->hourly()->withoutOverlapping(10);
 Schedule::command('billing:sync-sms-cost')->monthlyOn(1, '06:00')->withoutOverlapping(60);
 Schedule::command(PurgeSmsLogs::class)->dailyAt('03:30');

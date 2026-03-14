@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Leo;
 
+use App\Leo\Tools\LeoMultiBusinessSelectionService;
 use App\Models\Business;
 use App\Models\LeoChannel;
-use App\Services\Leo\LeoMultiBusinessSelectionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Tests\TestCase;

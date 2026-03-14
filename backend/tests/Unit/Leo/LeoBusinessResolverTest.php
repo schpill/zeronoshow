@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Leo;
 
+use App\Leo\Tools\LeoBusinessResolver;
+use App\Leo\Tools\LeoSessionService;
 use App\Models\Business;
 use App\Models\LeoChannel;
-use App\Services\Leo\LeoBusinessResolver;
-use App\Services\Leo\LeoSessionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
