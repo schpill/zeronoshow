@@ -8,8 +8,8 @@ describe('WaitlistStatusBadge', () => {
     const wrapper = mount(WaitlistStatusBadge, {
       props: {
         status: 'pending',
-        label: 'En attente'
-      }
+        label: 'En attente',
+      },
     })
     expect(wrapper.text()).toContain('En attente')
     expect(wrapper.find('span').classes()).toContain('bg-gray-100')
@@ -21,8 +21,8 @@ describe('WaitlistStatusBadge', () => {
       props: {
         status: 'notified',
         label: 'Notifié',
-        expiresAt
-      }
+        expiresAt,
+      },
     })
     await nextTick()
     expect(wrapper.text()).toContain('Notifié')

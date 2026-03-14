@@ -33,22 +33,33 @@ const copyToClipboard = () => {
 }
 
 const handleRegenerate = () => {
-  if (confirm('L\'ancien lien ne fonctionnera plus. Voulez-vous vraiment régénérer le lien public ?')) {
+  if (
+    confirm("L'ancien lien ne fonctionnera plus. Voulez-vous vraiment régénérer le lien public ?")
+  ) {
     regenerateLink()
   }
 }
 </script>
 
 <template>
-  <div v-if="settings" class="bg-white dark:bg-gray-900 shadow-sm border border-gray-200 dark:border-gray-700 rounded-xl p-6">
-    <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-6">Paramètres de la liste d'attente</h2>
+  <div
+    v-if="settings"
+    class="bg-white dark:bg-gray-900 shadow-sm border border-gray-200 dark:border-gray-700 rounded-xl p-6"
+  >
+    <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-6">
+      Paramètres de la liste d'attente
+    </h2>
 
     <div class="space-y-8">
       <!-- Enable Toggle -->
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-sm font-semibold text-gray-900 dark:text-white">Activer la liste d'attente</p>
-          <p class="text-xs text-gray-500 dark:text-gray-400">Autorise les clients à s'inscrire et active les notifications automatiques.</p>
+          <p class="text-sm font-semibold text-gray-900 dark:text-white">
+            Activer la liste d'attente
+          </p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            Autorise les clients à s'inscrire et active les notifications automatiques.
+          </p>
         </div>
         <button
           @click="handleToggle"
@@ -66,8 +77,12 @@ const handleRegenerate = () => {
       <!-- Window Slider -->
       <div>
         <div class="flex justify-between items-center mb-2">
-          <label class="text-sm font-semibold text-gray-900 dark:text-white">Délai de confirmation</label>
-          <span class="text-sm font-bold text-indigo-600 dark:text-indigo-400">{{ settings.waitlist_notification_window_minutes }} minutes</span>
+          <label class="text-sm font-semibold text-gray-900 dark:text-white"
+            >Délai de confirmation</label
+          >
+          <span class="text-sm font-bold text-indigo-600 dark:text-indigo-400"
+            >{{ settings.waitlist_notification_window_minutes }} minutes</span
+          >
         </div>
         <input
           type="range"
@@ -78,12 +93,16 @@ const handleRegenerate = () => {
           @change="handleWindowChange"
           class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-600"
         />
-        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Temps accordé au client pour confirmer son créneau avant de passer au suivant.</p>
+        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+          Temps accordé au client pour confirmer son créneau avant de passer au suivant.
+        </p>
       </div>
 
       <!-- Public Link -->
       <div v-if="settings.waitlist_enabled">
-        <label class="text-sm font-semibold text-gray-900 dark:text-white block mb-2">Lien d'inscription public</label>
+        <label class="text-sm font-semibold text-gray-900 dark:text-white block mb-2"
+          >Lien d'inscription public</label
+        >
         <div class="flex gap-2">
           <input
             type="text"

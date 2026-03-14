@@ -17,7 +17,7 @@ const {
   removeEntry,
   notify,
   pendingCount,
-  notifiedCount
+  notifiedCount,
 } = useWaitlist()
 
 const slotDate = ref(new Date().toISOString().split('T')[0])
@@ -72,10 +72,16 @@ const handleRemove = async (id: string) => {
     <div class="mt-8 flex flex-col gap-6">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2">
-          <div class="flex flex-wrap items-center justify-between gap-4 bg-white dark:bg-gray-900 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm mb-6">
+          <div
+            class="flex flex-wrap items-center justify-between gap-4 bg-white dark:bg-gray-900 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm mb-6"
+          >
             <div class="flex items-center gap-4">
               <div>
-                <label for="slot_date" class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date du créneau</label>
+                <label
+                  for="slot_date"
+                  class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >Date du créneau</label
+                >
                 <input
                   v-model="slotDate"
                   type="date"
@@ -86,12 +92,22 @@ const handleRemove = async (id: string) => {
             </div>
             <div class="flex gap-4">
               <div class="text-center">
-                <span class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">En attente</span>
-                <span class="mt-1 block text-lg font-bold text-gray-900 dark:text-gray-100">{{ pendingCount }}</span>
+                <span
+                  class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >En attente</span
+                >
+                <span class="mt-1 block text-lg font-bold text-gray-900 dark:text-gray-100">{{
+                  pendingCount
+                }}</span>
               </div>
               <div class="text-center">
-                <span class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Notifiés</span>
-                <span class="mt-1 block text-lg font-bold text-yellow-600 dark:text-yellow-400">{{ notifiedCount }}</span>
+                <span
+                  class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >Notifiés</span
+                >
+                <span class="mt-1 block text-lg font-bold text-yellow-600 dark:text-yellow-400">{{
+                  notifiedCount
+                }}</span>
               </div>
             </div>
           </div>
@@ -102,15 +118,43 @@ const handleRemove = async (id: string) => {
 
           <ErrorMessage v-else-if="error" title="Erreur" :message="error" />
 
-          <div v-else class="bg-white dark:bg-gray-900 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+          <div
+            v-else
+            class="bg-white dark:bg-gray-900 shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
+          >
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead class="bg-gray-50 dark:bg-gray-800">
                 <tr>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Client</th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Téléphone</th>
-                  <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Couverts</th>
-                  <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Statut</th>
-                  <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Heure</th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Client
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Téléphone
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Couverts
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Statut
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                  >
+                    Heure
+                  </th>
                   <th scope="col" class="relative px-6 py-3">
                     <span class="sr-only">Actions</span>
                   </th>
@@ -125,7 +169,10 @@ const handleRemove = async (id: string) => {
                   @notify="notify"
                 />
                 <tr v-if="!entries.length">
-                  <td colspan="6" class="px-6 py-12 text-center text-sm text-gray-500 dark:text-gray-400">
+                  <td
+                    colspan="6"
+                    class="px-6 py-12 text-center text-sm text-gray-500 dark:text-gray-400"
+                  >
                     Aucun client en attente pour cette date.
                   </td>
                 </tr>

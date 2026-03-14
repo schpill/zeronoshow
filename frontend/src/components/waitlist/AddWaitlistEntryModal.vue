@@ -26,15 +26,34 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div v-if="show" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" @click="emit('close')"></div>
+  <div
+    v-if="show"
+    class="fixed inset-0 z-50 overflow-y-auto"
+    aria-labelledby="modal-title"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+    >
+      <div
+        class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+        aria-hidden="true"
+        @click="emit('close')"
+      ></div>
 
-      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true"
+        >&#8203;</span
+      >
 
-      <div class="inline-block align-bottom bg-white dark:bg-gray-900 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 border border-gray-200 dark:border-gray-700">
+      <div
+        class="inline-block align-bottom bg-white dark:bg-gray-900 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 border border-gray-200 dark:border-gray-700"
+      >
         <div>
-          <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100" id="modal-title">
+          <h3
+            class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
+            id="modal-title"
+          >
             Ajouter à la liste d'attente
           </h3>
           <form @submit.prevent="handleSubmit" class="mt-4 space-y-4">
@@ -48,7 +67,9 @@ const handleSubmit = () => {
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Heure</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Heure</label
+              >
               <input
                 v-model="form.slot_time"
                 type="time"
@@ -57,7 +78,9 @@ const handleSubmit = () => {
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nom du client</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Nom du client</label
+              >
               <input
                 v-model="form.client_name"
                 type="text"
@@ -67,7 +90,9 @@ const handleSubmit = () => {
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Téléphone (E.164)</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Téléphone (E.164)</label
+              >
               <input
                 v-model="form.client_phone"
                 type="tel"
@@ -77,7 +102,9 @@ const handleSubmit = () => {
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre de personnes</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Nombre de personnes</label
+              >
               <input
                 v-model="form.party_size"
                 type="number"

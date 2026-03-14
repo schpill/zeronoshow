@@ -13,7 +13,7 @@ import {
   type WaitlistEntry,
   type WaitlistFilter,
   type CreateWaitlistEntryPayload,
-  type WaitlistSettings
+  type WaitlistSettings,
 } from '@/api/waitlist'
 import { useToast } from './useToast'
 
@@ -24,7 +24,7 @@ export function useWaitlist() {
   const pagination = ref({
     current_page: 1,
     last_page: 1,
-    total: 0
+    total: 0,
   })
 
   const { success, error: errorToast } = useToast()
@@ -50,11 +50,11 @@ export function useWaitlist() {
     try {
       const newEntry = (await addWaitlistEntry(payload)) as any
       entries.value.push(newEntry.data)
-      success('Client ajouté à la liste d\'attente')
+      success("Client ajouté à la liste d'attente")
       return newEntry.data
     } catch (e: unknown) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const msg = (e as any).response?.data?.message || 'Erreur lors de l\'ajout'
+      const msg = (e as any).response?.data?.message || "Erreur lors de l'ajout"
       errorToast(msg)
       throw e
     } finally {
@@ -92,7 +92,7 @@ export function useWaitlist() {
         entry.status_label = 'Notifié'
       }
     } catch {
-      errorToast('Erreur lors de l\'envoi de la notification')
+      errorToast("Erreur lors de l'envoi de la notification")
     }
   }
 
@@ -128,7 +128,7 @@ export function useWaitlist() {
         settings.value = {
           ...settings.value,
           waitlist_public_token: response.waitlist_public_token,
-          public_registration_url: response.public_registration_url
+          public_registration_url: response.public_registration_url,
         }
       }
       success('Lien régénéré')
@@ -154,6 +154,6 @@ export function useWaitlist() {
     getPublicWaitlistInfo,
     joinWaitlistPublic,
     pendingCount,
-    notifiedCount
+    notifiedCount,
   }
 }
