@@ -39,7 +39,10 @@ export interface ReviewSettings {
 export type ReviewSettingsPayload = ReviewSettings
 
 export async function updateCustomerCrm(customerId: string, payload: UpdateCustomerCrmPayload) {
-  const response = await apiClient.patch<{ data: ReservationCustomer }>(`/customers/${customerId}/crm`, payload)
+  const response = await apiClient.patch<{ data: ReservationCustomer }>(
+    `/customers/${customerId}/crm`,
+    payload,
+  )
   return response.data
 }
 

@@ -56,10 +56,7 @@ async function save() {
 </script>
 
 <template>
-  <div
-    v-if="open"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4"
-  >
+  <div v-if="open" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4">
     <div class="w-full max-w-2xl rounded-[32px] bg-white p-6 shadow-2xl">
       <div class="flex items-start justify-between gap-4">
         <div>

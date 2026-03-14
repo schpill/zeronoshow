@@ -57,7 +57,10 @@ describe('CustomerCrmPanel', () => {
     await wrapper.get('[data-test="crm-vip-toggle"]').setValue(true)
     await wrapper.get('[data-test="crm-save"]').trigger('click')
 
-    expect(updateCustomerCrm).toHaveBeenCalledWith('cust-1', expect.objectContaining({ is_vip: true }))
+    expect(updateCustomerCrm).toHaveBeenCalledWith(
+      'cust-1',
+      expect.objectContaining({ is_vip: true }),
+    )
     expect(wrapper.text()).toContain('Sauvegardé')
   })
 

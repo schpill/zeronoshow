@@ -211,8 +211,8 @@ onMounted(() => {
             <p class="text-overline">Phase 9</p>
             <h2 class="mt-2 text-heading-3">Réputation</h2>
             <p class="mt-3 max-w-2xl text-body-sm">
-              Configurez les demandes d’avis post-visite et suivez les clics envoyés après un
-              statut “présent”.
+              Configurez les demandes d’avis post-visite et suivez les clics envoyés après un statut
+              “présent”.
             </p>
           </div>
           <RouterLink

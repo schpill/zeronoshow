@@ -105,7 +105,12 @@ async function save() {
 
       <div v-if="form.review_platform === 'google'">
         <label for="google-place-id" class="text-label">Google Place ID</label>
-        <input id="google-place-id" v-model="form.google_place_id" type="text" class="mt-2 input-field" />
+        <input
+          id="google-place-id"
+          v-model="form.google_place_id"
+          type="text"
+          class="mt-2 input-field"
+        />
       </div>
 
       <div v-else>
