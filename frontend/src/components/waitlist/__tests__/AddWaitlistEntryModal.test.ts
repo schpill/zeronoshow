@@ -25,6 +25,7 @@ describe('AddWaitlistEntryModal', () => {
     const payload = wrapper.emitted(
       'submit',
     )?.[0][0] /* eslint-disable-line @typescript-eslint/no-explicit-any */ as any
+    )?.[0]?.[0] /* eslint-disable-line @typescript-eslint/no-explicit-any */ as any
     expect(payload.client_name).toBe('John Doe')
   })
 })

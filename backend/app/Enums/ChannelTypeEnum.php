@@ -6,4 +6,5 @@ enum ChannelTypeEnum: string
 {
     case Sms = 'sms';
     case Whatsapp = 'whatsapp';
+    case Voice = 'voice';
 }

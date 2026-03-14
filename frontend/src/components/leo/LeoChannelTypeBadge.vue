@@ -19,6 +19,11 @@ const badge = computed(() => {
       meta: 'Bientôt',
       classes: 'border-emerald-200 bg-emerald-50 text-emerald-700',
     },
+    voice: {
+      label: 'Voice',
+      meta: 'Nouveau',
+      classes: 'border-amber-200 bg-amber-50 text-amber-700',
+    },
     sms: {
       label: 'SMS',
       meta: 'Bientôt',

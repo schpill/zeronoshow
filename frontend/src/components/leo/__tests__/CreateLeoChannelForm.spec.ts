@@ -80,7 +80,7 @@ describe('CreateLeoChannelForm', () => {
     })
 
     const radios = wrapper.findAll('input[type="radio"]')
-    await radios[1].setValue(true) // Switch to WhatsApp
+    await radios[1]!.setValue(true) // Switch to WhatsApp
 
     await wrapper.get('#leo-bot-name').setValue('Bot WA')
     await wrapper.get('#leo-chat-id').setValue(' +33612345678 ')
@@ -109,9 +109,10 @@ describe('CreateLeoChannelForm', () => {
     })
 
     const radios = wrapper.findAll('input[type="radio"]')
-    expect(radios).toHaveLength(5)
+    expect(radios).toHaveLength(6)
     expect(radios[0]!.attributes('disabled')).toBeUndefined() // Telegram
     expect(radios[1]!.attributes('disabled')).toBeUndefined() // WhatsApp
-    expect(radios[2]!.attributes('disabled')).toBeDefined() // SMS
+    expect(radios[2]!.attributes('disabled')).toBeUndefined() // Voice
+    expect(radios[3]!.attributes('disabled')).toBeDefined() // SMS
   })
 })

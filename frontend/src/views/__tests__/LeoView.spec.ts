@@ -9,6 +9,7 @@ const createChannel = vi.fn()
 const patchChannel = vi.fn()
 const removeChannel = vi.fn()
 const activateAddon = vi.fn()
+const voiceFetchStatus = vi.fn()
 const toastSuccess = vi.fn()
 const toastWarning = vi.fn()
 
@@ -52,6 +53,17 @@ vi.mock('@/composables/useToast', () => ({
     error: vi.fn(),
     dismiss: vi.fn(),
     toasts: ref([]),
+  }),
+}))
+
+vi.mock('@/composables/useVoiceCredits', () => ({
+  useVoiceCredits: () => ({
+    status: ref(null),
+    loading: ref(false),
+    error: ref(null),
+    fetchStatus: voiceFetchStatus,
+    topUp: vi.fn(),
+    saveCap: vi.fn(),
   }),
 }))
 
@@ -114,6 +126,7 @@ describe('LeoView', () => {
     patchChannel.mockReset().mockResolvedValue(undefined)
     removeChannel.mockReset().mockResolvedValue(undefined)
     activateAddon.mockReset().mockResolvedValue({ activated: true, checkout_url: null })
+    voiceFetchStatus.mockReset().mockResolvedValue(undefined)
     toastSuccess.mockReset()
     toastWarning.mockReset()
     channel.value = null

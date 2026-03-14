@@ -28,6 +28,15 @@ class BusinessFactory extends Factory
             'trial_ends_at' => now()->addDays(14),
             'leo_addon_active' => false,
             'leo_addon_stripe_item_id' => null,
+            'voice_credit_cents' => 0,
+            'voice_monthly_cap_cents' => 0,
+            'voice_auto_renew' => false,
+            'voice_last_renewed_at' => null,
+            'voice_auto_call_enabled' => false,
+            'voice_auto_call_score_threshold' => null,
+            'voice_auto_call_min_party_size' => null,
+            'voice_retry_count' => 2,
+            'voice_retry_delay_minutes' => 10,
         ];
     }
 }

@@ -19,7 +19,7 @@ class StoreLeoChannelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'channel' => ['required', 'string', Rule::in(['telegram', 'whatsapp', 'sms', 'slack', 'discord'])],
+            'channel' => ['required', 'string', Rule::in(['telegram', 'whatsapp', 'voice', 'sms', 'slack', 'discord'])],
             'external_identifier' => ['required', 'string', 'max:255'],
             'bot_name' => ['nullable', 'string', 'max:100'],
         ];

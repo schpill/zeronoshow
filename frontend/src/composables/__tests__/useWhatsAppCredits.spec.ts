@@ -63,10 +63,14 @@ describe('useWhatsAppCredits', () => {
 
   it('initiates top up and redirects', async () => {
     vi.mocked(apiClient.post).mockResolvedValue({ checkout_url: 'https://stripe.com/pay' })
-    const originalLocation = window.location
+    const originalHref = window.location.href
     // @ts-expect-error - Mocking location
     delete window.location
-    window.location = { href: '' } as unknown as Location
+    Object.defineProperty(window, 'location', {
+      value: { href: '' },
+      writable: true,
+      configurable: true,
+    })
 
     const { topUp } = useWhatsAppCredits()
     await topUp(2000)
@@ -76,7 +80,11 @@ describe('useWhatsAppCredits', () => {
     })
     expect(window.location.href).toBe('https://stripe.com/pay')
 
-    window.location = originalLocation
+    Object.defineProperty(window, 'location', {
+      value: { href: originalHref },
+      writable: true,
+      configurable: true,
+    })
   })
 
   it('sets monthly cap successfully', async () => {

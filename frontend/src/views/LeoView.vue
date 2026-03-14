@@ -8,10 +8,14 @@ import LeoChannelCard from '@/components/leo/LeoChannelCard.vue'
 import WhatsAppCreditCard from '@/components/leo/WhatsAppCreditCard.vue'
 import WhatsAppTopUpModal from '@/components/leo/WhatsAppTopUpModal.vue'
 import WhatsAppCapEditForm from '@/components/leo/WhatsAppCapEditForm.vue'
+import VoiceCreditCard from '@/components/voice/VoiceCreditCard.vue'
+import VoiceTopUpModal from '@/components/voice/VoiceTopUpModal.vue'
+import VoiceCapEditForm from '@/components/voice/VoiceCapEditForm.vue'
 import LeoUpgradeBanner from '@/components/leo/LeoUpgradeBanner.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { useLeo } from '@/composables/useLeo'
 import { useWhatsAppCredits } from '@/composables/useWhatsAppCredits'
+import { useVoiceCredits } from '@/composables/useVoiceCredits'
 import { useToast } from '@/composables/useToast'
 import { useAuthStore } from '@/stores/auth'
 import type { LeoChannelPayload } from '@/api/leo'
@@ -20,14 +24,20 @@ const auth = useAuthStore()
 const toast = useToast()
 const leo = useLeo()
 const waCredits = useWhatsAppCredits()
+const voiceCredits = useVoiceCredits()
 const showCreateModal = ref(false)
 const showTopUpModal = ref(false)
+const showVoiceTopUpModal = ref(false)
 const showCapEdit = ref(false)
+const showVoiceCapEdit = ref(false)
 
 async function loadLeo() {
   await leo.refresh()
   if (leo.channel.value?.channel === 'whatsapp') {
     void waCredits.fetchStatus()
+  }
+  if (leo.channel.value?.channel === 'voice') {
+    void voiceCredits.fetchStatus()
   }
 }
 
@@ -79,6 +89,12 @@ async function handleSaveCap(cents: number, autoRenew: boolean) {
   await waCredits.setCap(cents, autoRenew)
   showCapEdit.value = false
   toast.success('Budget mis à jour.')
+}
+
+async function handleSaveVoiceCap(cents: number, autoRenew: boolean) {
+  await voiceCredits.saveCap(cents, autoRenew)
+  showVoiceCapEdit.value = false
+  toast.success('Budget appels mis à jour.')
 }
 
 onMounted(() => {
@@ -171,6 +187,23 @@ onMounted(() => {
         />
       </template>
 
+      <template v-if="leo.channel.value?.channel === 'voice' && voiceCredits.status.value">
+        <VoiceCapEditForm
+          v-if="showVoiceCapEdit"
+          :initial-cap-cents="voiceCredits.status.value.monthly_cap_cents"
+          :initial-auto-renew="voiceCredits.status.value.auto_renew"
+          :loading="voiceCredits.loading.value"
+          @save="handleSaveVoiceCap"
+          @cancel="showVoiceCapEdit = false"
+        />
+        <VoiceCreditCard
+          v-else
+          :status="voiceCredits.status.value"
+          @topup="showVoiceTopUpModal = true"
+          @edit-cap="showVoiceCapEdit = true"
+        />
+      </template>
+
       <div
         v-if="showCreateModal"
         class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4"
@@ -188,6 +221,11 @@ onMounted(() => {
         v-model="showTopUpModal"
         :loading="waCredits.loading.value"
         @submit="handleTopUp"
+      />
+      <VoiceTopUpModal
+        v-model="showVoiceTopUpModal"
+        :loading="voiceCredits.loading.value"
+        @submit="voiceCredits.topUp"
       />
     </template>
   </AppLayout>

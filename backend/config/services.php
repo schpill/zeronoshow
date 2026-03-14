@@ -39,6 +39,8 @@ return [
         'sid' => env('TWILIO_ACCOUNT_SID'),
         'token' => env('TWILIO_AUTH_TOKEN'),
         'from' => env('TWILIO_FROM'),
+        'voice_number' => env('TWILIO_VOICE_NUMBER', env('TWILIO_FROM')),
+        'voice_cost_per_call_cents' => (int) env('TWILIO_VOICE_COST_CENTS', 8),
         'webhook_secret' => env('TWILIO_WEBHOOK_SECRET'),
     ],
 

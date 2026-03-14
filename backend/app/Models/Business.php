@@ -35,6 +35,15 @@ class Business extends Authenticatable
         'whatsapp_monthly_cap_cents',
         'whatsapp_auto_renew',
         'whatsapp_last_renewed_at',
+        'voice_credit_cents',
+        'voice_monthly_cap_cents',
+        'voice_auto_renew',
+        'voice_last_renewed_at',
+        'voice_auto_call_enabled',
+        'voice_auto_call_score_threshold',
+        'voice_auto_call_min_party_size',
+        'voice_retry_count',
+        'voice_retry_delay_minutes',
         'waitlist_enabled',
         'waitlist_notification_window_minutes',
         'waitlist_public_token',
@@ -50,6 +59,13 @@ class Business extends Authenticatable
         'leo_addon_active' => 'boolean',
         'whatsapp_auto_renew' => 'boolean',
         'whatsapp_last_renewed_at' => 'datetime',
+        'voice_auto_renew' => 'boolean',
+        'voice_last_renewed_at' => 'datetime',
+        'voice_auto_call_enabled' => 'boolean',
+        'voice_auto_call_score_threshold' => 'integer',
+        'voice_auto_call_min_party_size' => 'integer',
+        'voice_retry_count' => 'integer',
+        'voice_retry_delay_minutes' => 'integer',
         'waitlist_enabled' => 'boolean',
         'waitlist_notification_window_minutes' => 'integer',
     ];
@@ -57,6 +73,11 @@ class Business extends Authenticatable
     public function reservations(): HasMany
     {
         return $this->hasMany(Reservation::class);
+    }
+
+    public function voiceCallLogs(): HasMany
+    {
+        return $this->hasMany(VoiceCallLog::class);
     }
 
     public function leoChannel(): HasOne

@@ -147,6 +147,20 @@ export function useReservations() {
     }
   }
 
+  async function initiateVoiceCall(id: string) {
+    loading.updateStatus.value = true
+    errors.updateStatus.value = null
+
+    try {
+      return await apiClient.post<{ queued: boolean }>(`/reservations/${id}/voice-call`)
+    } catch (error) {
+      errors.updateStatus.value = normalizeError(error)
+      throw error
+    } finally {
+      loading.updateStatus.value = false
+    }
+  }
+
   return {
     loading,
     errors,
@@ -155,6 +169,7 @@ export function useReservations() {
     fetchReservations,
     fetchReservation,
     lookupCustomer,
+    initiateVoiceCall,
     updateStatus,
   }
 }

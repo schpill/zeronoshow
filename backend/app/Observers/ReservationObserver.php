@@ -4,12 +4,14 @@ namespace App\Observers;
 
 use App\Enums\WaitlistStatusEnum;
 use App\Jobs\NotifyWaitlistJob;
+use App\Jobs\PlaceVoiceCallJob;
 use App\Jobs\RecalculateReliabilityScore;
 use App\Jobs\SendLeoNotificationJob;
 use App\Models\Business;
 use App\Models\LeoChannel;
 use App\Models\Reservation;
 use App\Models\WaitlistEntry;
+use App\Services\VoiceCreditService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -26,6 +28,7 @@ class ReservationObserver
     public function updated(Reservation $reservation): void
     {
         $this->bumpDashboardVersion($reservation);
+        $this->dispatchVoiceCallIfNeeded($reservation);
 
         if (! $reservation->wasChanged('status')) {
             return;
@@ -66,6 +69,7 @@ class ReservationObserver
     public function created(Reservation $reservation): void
     {
         $this->bumpDashboardVersion($reservation);
+        $this->dispatchVoiceCallIfNeeded($reservation);
     }
 
     public function deleted(Reservation $reservation): void
@@ -144,5 +148,41 @@ class ReservationObserver
             $reservation->scheduled_at->format('H:i:00')
         );
 
+    }
+
+    private function dispatchVoiceCallIfNeeded(Reservation $reservation): void
+    {
+        $reservation = Reservation::query()
+            ->with(['business', 'customer', 'voiceCallLogs'])
+            ->find($reservation->id) ?? $reservation->loadMissing(['business', 'customer', 'voiceCallLogs']);
+
+        /** @var Business|null $business */
+        $business = $reservation->business;
+
+        if (! $business?->voice_auto_call_enabled) {
+            return;
+        }
+
+        $creditService = app(VoiceCreditService::class);
+        if (! $creditService->hasSufficientCredit($business, $creditService->getCallCost())) {
+            return;
+        }
+
+        if ($reservation->voiceCallLogs->isNotEmpty()) {
+            return;
+        }
+
+        $scoreTriggered = $business->voice_auto_call_score_threshold !== null
+            && $reservation->customer->reliability_score !== null
+            && (float) $reservation->customer->reliability_score <= $business->voice_auto_call_score_threshold;
+
+        $partyTriggered = $business->voice_auto_call_min_party_size !== null
+            && $reservation->guests >= $business->voice_auto_call_min_party_size;
+
+        if (! $scoreTriggered && ! $partyTriggered) {
+            return;
+        }
+
+        PlaceVoiceCallJob::dispatch($reservation->id, 1);
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\UpdateReservationStatusRequest;
 use App\Http\Resources\ReservationResource;
 use App\Http\Resources\SmsLogResource;
+use App\Http\Resources\VoiceCallLogResource;
 use App\Jobs\SendVerificationSms;
 use App\Models\Customer;
 use App\Models\Reservation;
@@ -142,7 +143,8 @@ class ReservationController extends Controller
     {
         abort_if($reservation->business_id !== $request->user()->id, 403);
 
-        $reservation->load(['customer', 'smsLogs'])->loadCount('smsLogs');
+        $reservation->load(['customer', 'smsLogs', 'voiceCallLogs'])
+            ->loadCount(['smsLogs', 'voiceCallLogs']);
 
         return response()->json([
             'reservation' => ReservationResource::make($reservation),
@@ -156,6 +158,7 @@ class ReservationController extends Controller
                 'opted_out' => $reservation->customer->opted_out,
             ],
             'sms_logs' => SmsLogResource::collection($reservation->smsLogs),
+            'voice_call_logs' => VoiceCallLogResource::collection($reservation->voiceCallLogs),
         ]);
     }
 

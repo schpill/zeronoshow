@@ -24,7 +24,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email:rfc,dns', 'max:255', 'unique:businesses,email'],
+            'email' => ['required', 'email:rfc', 'max:255', 'unique:businesses,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'business_name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'regex:/^\+[1-9]\d{7,14}$/'],

@@ -41,6 +41,14 @@ class LeoChannelController extends Controller
             }
         }
 
+        if ($request->string('channel')->toString() === 'voice') {
+            if ($business->voice_monthly_cap_cents <= 0) {
+                return response()->json([
+                    'message' => 'Veuillez définir un budget mensuel Appels avant de créer ce canal.',
+                ], 422);
+            }
+        }
+
         $channel = LeoChannel::query()->create([
             'business_id' => $business->id,
             'channel' => $request->string('channel')->toString(),

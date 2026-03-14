@@ -1,4 +1,4 @@
-export type LeoChannelType = 'telegram' | 'whatsapp' | 'sms' | 'slack' | 'discord'
+export type LeoChannelType = 'telegram' | 'whatsapp' | 'voice' | 'sms' | 'slack' | 'discord'
 
 export interface LeoChannelRecord {
   id: string

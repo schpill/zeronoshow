@@ -32,8 +32,8 @@ const form = reactive({
 
 const error = ref<string | null>(null)
 
-const types: LeoChannelType[] = ['telegram', 'whatsapp', 'sms', 'slack', 'discord']
-const isEnabled = (type: LeoChannelType) => ['telegram', 'whatsapp'].includes(type)
+const types: LeoChannelType[] = ['telegram', 'whatsapp', 'voice', 'sms', 'slack', 'discord']
+const isEnabled = (type: LeoChannelType) => ['telegram', 'whatsapp', 'voice'].includes(type)
 const channelCopy: Record<
   LeoChannelType,
   { label: string; placeholder: string; setupTitle: string }
@@ -47,6 +47,11 @@ const channelCopy: Record<
     label: 'Identifiant du canal',
     placeholder: '+33612345678',
     setupTitle: 'Comment connecter votre numéro WhatsApp',
+  },
+  voice: {
+    label: 'Numéro à appeler',
+    placeholder: '+33612345678',
+    setupTitle: 'Comment configurer les appels automatiques',
   },
   sms: {
     label: 'Identifiant du canal',
@@ -77,12 +82,15 @@ function submit() {
   }
 
   if (!form.external_identifier.trim()) {
-    error.value = `${identifierLabel.value} est obligatoire.`
+    error.value = 'Identifiant du canal est obligatoire.'
     return
   }
 
-  if (form.channel === 'whatsapp' && form.monthly_cap_euros <= 0) {
-    error.value = 'Un budget mensuel WhatsApp est requis.'
+  if (['whatsapp', 'voice'].includes(form.channel) && form.monthly_cap_euros <= 0) {
+    error.value =
+      form.channel === 'voice'
+        ? 'Un budget mensuel Appels est requis.'
+        : 'Un budget mensuel WhatsApp est requis.'
     return
   }
 
@@ -162,11 +170,13 @@ function submit() {
     </div>
 
     <div
-      v-if="form.channel === 'whatsapp'"
+      v-if="['whatsapp', 'voice'].includes(form.channel)"
       class="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-6"
     >
       <div class="flex items-center justify-between">
-        <h4 class="text-sm font-bold text-emerald-900">Budget mensuel WhatsApp</h4>
+        <h4 class="text-sm font-bold text-emerald-900">
+          {{ form.channel === 'voice' ? 'Budget mensuel Appels' : 'Budget mensuel WhatsApp' }}
+        </h4>
         <div class="flex items-center gap-2">
           <input
             id="whatsapp-budget"
@@ -180,8 +190,11 @@ function submit() {
         </div>
       </div>
       <p class="mt-2 text-xs text-emerald-700 leading-relaxed">
-        Ce montant sera prélevé immédiatement via Stripe, puis chaque 1er du mois. Les crédits non
-        utilisés sont reportés sans limite.
+        {{
+          form.channel === 'voice'
+            ? 'Ce budget alimente les appels sortants Twilio et peut être renouvelé automatiquement.'
+            : 'Ce montant sera prélevé immédiatement via Stripe, puis chaque 1er du mois. Les crédits non utilisés sont reportés sans limite.'
+        }}
       </p>
       <label class="mt-4 flex cursor-pointer items-center gap-3">
         <input
@@ -220,6 +233,14 @@ function submit() {
           Une fois configuré, vous pourrez initier la conversation avec le numéro WhatsApp de
           ZeroNoShow.
         </li>
+      </ol>
+      <ol
+        v-else-if="form.channel === 'voice'"
+        class="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-600"
+      >
+        <li>Renseignez le numéro de téléphone sur lequel Léo doit appeler vos clients.</li>
+        <li>Le format doit être international (ex: +33612345678).</li>
+        <li>Le budget d'appels doit être configuré avant l'activation du canal.</li>
       </ol>
     </details>
 

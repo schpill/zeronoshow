@@ -89,6 +89,47 @@ class StripeService
     }
 
     /**
+     * @return array{id: string, url: string}
+     *
+     * @throws ApiErrorException
+     */
+    public function createVoiceCreditCheckoutSession(Business $business, int $amountCents): array
+    {
+        $client = new StripeClient((string) config('services.stripe.secret'));
+        $customerId = $this->resolveCustomerId($client, $business);
+
+        $frontendUrl = rtrim((string) config('app.frontend_url', config('app.url')), '/');
+
+        /** @var Session $session */
+        $session = $client->checkout->sessions->create([
+            'mode' => 'payment',
+            'customer' => $customerId,
+            'client_reference_id' => $business->id,
+            'success_url' => $frontendUrl.'/voice/topup/return?status=success&session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => $frontendUrl.'/voice/topup/return?status=cancel',
+            'line_items' => [[
+                'price_data' => [
+                    'currency' => 'eur',
+                    'product_data' => [
+                        'name' => 'Léo Voice — Crédit prépayé',
+                    ],
+                    'unit_amount' => $amountCents,
+                ],
+                'quantity' => 1,
+            ]],
+            'metadata' => [
+                'type' => 'voice_credit',
+                'business_id' => $business->id,
+            ],
+        ]);
+
+        return [
+            'id' => (string) $session->id,
+            'url' => (string) $session->url,
+        ];
+    }
+
+    /**
      * @throws ApiErrorException
      */
     public function createInvoiceItem(Business $business, int $amountInCents, string $period): void
@@ -134,6 +175,24 @@ class StripeService
             'amount' => $amountCents,
             'currency' => 'eur',
             'description' => 'Léo WhatsApp — Crédit mensuel',
+        ]);
+    }
+
+    /**
+     * @throws ApiErrorException
+     */
+    public function createVoiceInvoiceItem(Business $business, int $amountCents): void
+    {
+        if ($business->stripe_customer_id === null) {
+            return;
+        }
+
+        $client = new StripeClient((string) config('services.stripe.secret'));
+        $client->invoiceItems->create([
+            'customer' => $business->stripe_customer_id,
+            'amount' => $amountCents,
+            'currency' => 'eur',
+            'description' => 'Léo Voice — Crédit mensuel',
         ]);
     }
 

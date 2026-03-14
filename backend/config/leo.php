@@ -19,4 +19,8 @@ return [
         'cost_utility_cents' => (int) env('LEO_WHATSAPP_COST_UTILITY_CENTS', 10),
         'low_balance_threshold_cents' => (int) env('LEO_WHATSAPP_LOW_BALANCE_THRESHOLD_CENTS', 100),
     ],
+    'voice' => [
+        'cost_call_cents' => (int) env('TWILIO_VOICE_COST_CENTS', 8),
+        'low_balance_threshold_cents' => (int) env('LEO_VOICE_LOW_BALANCE_THRESHOLD_CENTS', 100),
+    ],
 ];
