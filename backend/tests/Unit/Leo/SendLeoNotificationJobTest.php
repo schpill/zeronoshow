@@ -3,11 +3,11 @@
 namespace Tests\Unit\Leo;
 
 use App\Jobs\SendLeoNotificationJob;
+use App\Leo\Tools\LeoThrottleService;
+use App\Leo\Tools\TelegramChannel;
 use App\Models\Business;
 use App\Models\LeoMessageLog;
 use App\Models\Reservation;
-use App\Leo\Tools\LeoThrottleService;
-use App\Leo\Tools\TelegramChannel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;

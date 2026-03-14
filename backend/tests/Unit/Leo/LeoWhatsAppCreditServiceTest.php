@@ -4,9 +4,9 @@ namespace Tests\Unit\Leo;
 
 use App\Events\LeoWhatsAppCreditExhaustedEvent;
 use App\Events\LeoWhatsAppLowBalanceEvent;
+use App\Leo\Tools\LeoWhatsAppCreditService;
 use App\Models\Business;
 use App\Models\LeoChannel;
-use App\Leo\Tools\LeoWhatsAppCreditService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;

@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Leo\Tools;
 
+use App\Leo\Tools\GetPendingReservationsTool;
 use App\Models\Business;
 use App\Models\Reservation;
-use App\Leo\Tools\GetPendingReservationsTool;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
