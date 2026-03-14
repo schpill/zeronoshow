@@ -27,6 +27,30 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/leo/voice/topup/return',
+      name: 'leo-voice-return',
+      component: () => import('@/views/VoiceReturnView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/voice',
+      name: 'voice',
+      component: () => import('@/views/VoiceView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/voice',
+      name: 'voice',
+      component: () => import('@/views/VoiceView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/voice/topup/return',
+      name: 'voice-return',
+      component: () => import('@/views/VoiceReturnView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/login',
       component: () => import('@/pages/LoginPage.vue'),
       meta: { guestOnly: true },

@@ -43,6 +43,7 @@ export interface ReservationRecord {
   status_changed_at?: string | null
   customer?: ReservationCustomer
   sms_count?: number
+  voice_call_count?: number
 }
 
 export interface SmsLogRecord {
@@ -55,6 +56,18 @@ export interface SmsLogRecord {
   queued_at?: string | null
   sent_at?: string | null
   delivered_at?: string | null
+}
+
+export interface VoiceCallLogRecord {
+  id: string
+  reservation_id?: string
+  attempt_number: number
+  status: string
+  status_label?: string | null
+  dtmf_response?: string | null
+  duration_seconds?: number | null
+  cost_cents?: number | null
+  created_at?: string | null
 }
 
 export interface DashboardStats {
@@ -76,6 +89,7 @@ export interface ReservationMutationResponse {
   reservation: ReservationRecord
   customer?: ReservationCustomer
   sms_logs?: SmsLogRecord[]
+  voice_call_logs?: VoiceCallLogRecord[]
 }
 
 export interface DashboardResponse {

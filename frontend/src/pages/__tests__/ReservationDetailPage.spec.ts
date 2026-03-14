@@ -3,6 +3,11 @@ import { describe, expect, it, vi } from 'vitest'
 
 import ReservationDetailPage from '@/pages/ReservationDetailPage.vue'
 
+const voiceApi = vi.hoisted(() => ({
+  getVoiceCallLogs: vi.fn(),
+  initiateVoiceCall: vi.fn(),
+}))
+
 const updateStatus = vi.fn()
 const fetchReservation = vi.fn()
 
@@ -17,6 +22,21 @@ vi.mock('@/composables/useReservations', () => ({
     fetchReservation,
     updateStatus,
     loading: { show: { value: false }, updateStatus: { value: false } },
+  }),
+}))
+
+vi.mock('@/api/voiceCalls', () => ({
+  getVoiceCallLogs: voiceApi.getVoiceCallLogs,
+  initiateVoiceCall: voiceApi.initiateVoiceCall,
+}))
+
+vi.mock('@/composables/useToast', () => ({
+  useToast: () => ({
+    success: vi.fn(),
+    warning: vi.fn(),
+    error: vi.fn(),
+    dismiss: vi.fn(),
+    toasts: [],
   }),
 }))
 
@@ -58,6 +78,7 @@ function makeReservationResponse() {
 describe('ReservationDetailPage', () => {
   it('renders reservation details and sms logs', async () => {
     fetchReservation.mockResolvedValue(makeReservationResponse())
+    voiceApi.getVoiceCallLogs.mockResolvedValue([])
 
     const wrapper = mount(ReservationDetailPage, {
       global: {
@@ -85,6 +106,7 @@ describe('ReservationDetailPage', () => {
 
   it('shows an error state when the reservation cannot be loaded', async () => {
     fetchReservation.mockRejectedValue(new Error('API down'))
+    voiceApi.getVoiceCallLogs.mockResolvedValue([])
 
     const wrapper = mount(ReservationDetailPage, {
       global: {

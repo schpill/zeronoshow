@@ -13,13 +13,13 @@ describe('WhatsAppTopUpModal', () => {
     const wrapper = mount(WhatsAppTopUpModal, { props: defaultProps })
     const presets = wrapper.findAll('button.rounded-2xl.border.py-3')
     expect(presets).toHaveLength(5)
-    expect(presets[0].text()).toBe('2 €')
+    expect(presets[0]!.text()).toBe('2 €')
   })
 
   it('selects a preset', async () => {
     const wrapper = mount(WhatsAppTopUpModal, { props: defaultProps })
     const presets = wrapper.findAll('button.rounded-2xl.border.py-3')
-    await presets[2].trigger('click') // 10€
+    await presets[2]!.trigger('click') // 10€
 
     expect(wrapper.text()).toContain('10,00 €')
   })
@@ -32,7 +32,7 @@ describe('WhatsAppTopUpModal', () => {
     expect(wrapper.text()).toContain('15,00 €')
     // Preset should be deselected (not having emerald class)
     const presets = wrapper.findAll('button.rounded-2xl.border.py-3')
-    expect(presets[1].classes()).not.toContain('bg-emerald-50')
+    expect(presets[1]!.classes()).not.toContain('bg-emerald-50')
   })
 
   it('emits submit event with correct cents', async () => {

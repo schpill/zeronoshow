@@ -8,12 +8,18 @@ use App\Http\Controllers\Api\LeoChannelController;
 use App\Http\Controllers\Api\LeoWhatsAppCreditController;
 use App\Http\Controllers\Api\ReservationController;
 use App\Http\Controllers\Api\SubscriptionController;
+use App\Http\Controllers\Api\VoiceCallController;
+use App\Http\Controllers\Api\VoiceCreditController;
+use App\Http\Controllers\Api\VoiceSettingsController;
 use App\Http\Controllers\Api\WaitlistController;
 use App\Http\Controllers\Api\WaitlistSettingsController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Webhook\LeoWebhookController;
 use App\Http\Controllers\Webhook\StripeWebhookController;
 use App\Http\Controllers\Webhook\TwilioWebhookController;
+use App\Http\Controllers\Webhook\VoiceGatherController;
+use App\Http\Controllers\Webhook\VoiceStatusController;
+use App\Http\Controllers\Webhook\VoiceTwimlController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function (): void {
@@ -25,6 +31,12 @@ Route::prefix('v1')->group(function (): void {
     Route::post('/webhooks/leo/telegram', [LeoWebhookController::class, 'telegram'])->middleware(['telegram.allowlist', 'throttle:webhook']);
     Route::get('/webhooks/leo/whatsapp', [LeoWebhookController::class, 'whatsapp'])->middleware('throttle:webhook');
     Route::post('/webhooks/leo/whatsapp', [LeoWebhookController::class, 'whatsapp'])->middleware('throttle:webhook');
+    Route::get('/webhooks/voice/twiml/{voiceCallLog}', [VoiceTwimlController::class, 'twiml'])->name('voice.twiml')->middleware('throttle:webhook');
+    Route::post('/webhooks/voice/gather/{voiceCallLog}', [VoiceGatherController::class, 'gather'])->name('voice.gather')->middleware('throttle:webhook');
+    Route::post('/webhooks/voice/status/{voiceCallLog}', [VoiceStatusController::class, 'status'])->name('voice.status')->middleware('throttle:webhook');
+    Route::get('/webhooks/leo/voice/twiml/{voiceCallLog}', [VoiceTwimlController::class, 'twiml'])->middleware('throttle:webhook');
+    Route::post('/webhooks/leo/voice/gather/{voiceCallLog}', [VoiceGatherController::class, 'gather'])->middleware('throttle:webhook');
+    Route::post('/webhooks/leo/voice/status/{voiceCallLog}', [VoiceStatusController::class, 'status'])->middleware('throttle:webhook');
 
     Route::middleware('auth:sanctum')->group(function (): void {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
@@ -37,12 +49,20 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/leo/whatsapp/credits', [LeoWhatsAppCreditController::class, 'status']);
         Route::post('/leo/whatsapp/credits/topup', [LeoWhatsAppCreditController::class, 'topup']);
         Route::patch('/leo/whatsapp/credits/cap', [LeoWhatsAppCreditController::class, 'setCap']);
+        Route::get('/voice/credits', [VoiceCreditController::class, 'status']);
+        Route::post('/voice/credits/topup', [VoiceCreditController::class, 'topup']);
+        Route::patch('/voice/credits/cap', [VoiceCreditController::class, 'setCap']);
+        Route::get('/voice/settings', [VoiceSettingsController::class, 'show']);
+        Route::patch('/voice/settings', [VoiceSettingsController::class, 'update']);
 
         Route::get('/subscription', [SubscriptionController::class, 'show']);
         Route::post('/subscription/checkout', [SubscriptionController::class, 'checkout']);
         Route::get('/customers/lookup', [CustomerController::class, 'lookup']);
         Route::get('/reservations', [ReservationController::class, 'index']);
         Route::get('/reservations/{reservation}', [ReservationController::class, 'show']);
+        Route::get('/reservations/{reservation}/calls', [VoiceCallController::class, 'logs']);
+        Route::post('/reservations/{reservation}/call', [VoiceCallController::class, 'initiate']);
+        Route::post('/reservations/{reservation}/voice-call', [VoiceCallController::class, 'queue']);
         Route::patch('/reservations/{reservation}/status', [ReservationController::class, 'updateStatus']);
 
         Route::prefix('waitlist')->group(function (): void {

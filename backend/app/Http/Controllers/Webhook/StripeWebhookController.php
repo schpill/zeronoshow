@@ -8,6 +8,7 @@ use App\Mail\PaymentFailedStub;
 use App\Models\Business;
 use App\Models\LeoChannel;
 use App\Services\StripeService;
+use App\Services\VoiceCreditService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -21,6 +22,7 @@ class StripeWebhookController extends Controller
     public function __construct(
         private readonly StripeService $stripeService,
         private readonly LeoWhatsAppCreditService $waCredits,
+        private readonly VoiceCreditService $voiceCredits,
     ) {}
 
     public function handle(Request $request): JsonResponse
@@ -79,6 +81,12 @@ class StripeWebhookController extends Controller
         // WhatsApp Credit Top-up
         if (($payload['metadata']['type'] ?? null) === 'whatsapp_credit') {
             $this->waCredits->topUp($business, (int) $payload['amount_total']);
+
+            return;
+        }
+
+        if (($payload['metadata']['type'] ?? null) === 'voice_credit') {
+            $this->voiceCredits->topUp($business, (int) $payload['amount_total']);
 
             return;
         }

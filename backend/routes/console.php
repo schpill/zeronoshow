@@ -2,6 +2,7 @@
 
 use App\Console\Commands\PurgeLeoMessageLogs;
 use App\Console\Commands\PurgeSmsLogs;
+use App\Console\Commands\RenewVoiceCredits;
 use App\Console\Commands\RunSmokeTests;
 use App\Enums\WaitlistStatusEnum;
 use App\Jobs\ExpireWaitlistNotificationsJob;
@@ -186,4 +187,5 @@ Schedule::command(PurgeSmsLogs::class)->dailyAt('03:30');
 Schedule::command(PurgeLeoMessageLogs::class)->monthly()->withoutOverlapping(60);
 Schedule::command('whatsapp:purge-windows')->daily()->withoutOverlapping(10);
 Schedule::command('leo:renew-whatsapp-credits')->monthlyOn(1, '06:00')->withoutOverlapping(60);
+Schedule::command(RenewVoiceCredits::class)->monthlyOn(1, '06:05')->withoutOverlapping(60);
 Schedule::command(RunSmokeTests::class)->dailyAt('04:00')->environments(['production']);
