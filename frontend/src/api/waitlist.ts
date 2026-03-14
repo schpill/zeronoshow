@@ -61,7 +61,9 @@ export interface RegenerateLinkResponse {
   public_registration_url: string
 }
 
-export const getWaitlistEntries = async (params?: WaitlistFilter): Promise<WaitlistEntriesResponse> => {
+export const getWaitlistEntries = async (
+  params?: WaitlistFilter,
+): Promise<WaitlistEntriesResponse> => {
   let path = '/waitlist'
   if (params) {
     const query = new URLSearchParams()
@@ -118,7 +120,9 @@ export const updateWaitlistSettings = async (
 }
 
 export const regeneratePublicLink = async (): Promise<RegenerateLinkResponse> => {
-  const response = await apiClient.post<RegenerateLinkResponse>('/waitlist/settings/regenerate-link')
+  const response = await apiClient.post<RegenerateLinkResponse>(
+    '/waitlist/settings/regenerate-link',
+  )
   return response
 }
 

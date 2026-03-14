@@ -50,18 +50,17 @@ export function useWaitlist() {
     try {
       const newEntry = await addWaitlistEntry(payload)
       entries.value.push(newEntry.data)
-      success('Client ajouté à la liste d\'attente')
+      success("Client ajouté à la liste d'attente")
       return newEntry.data
     } catch (e: unknown) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const msg = (e as any).response?.data?.message || 'Erreur lors de l\'ajout'
+      const msg = (e as any).response?.data?.message || "Erreur lors de l'ajout"
       errorToast(msg)
       throw e
     } finally {
       loading.value = false
     }
   }
-
 
   const removeEntry = async (id: string) => {
     try {
@@ -137,7 +136,6 @@ export function useWaitlist() {
       errorToast('Erreur lors de la régénération du lien')
     }
   }
-
 
   return {
     entries,
