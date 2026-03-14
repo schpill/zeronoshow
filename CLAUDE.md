@@ -84,7 +84,7 @@ make tinker       # php artisan tinker
 | 5 | Léo — AI Assistant (Telegram-first) | **Complete** (merged 2026-03-13) | docs/phases/phase5.md | docs/dev/phase5.md |
 | 6 | Léo WhatsApp — Prepaid Credit Wallet | **Complete** (merged 2026-03-14) | docs/phases/phase6.md | docs/dev/phase6.md |
 | 7 | Waitlist Intelligent | **Complete** (merged 2026-03-14) | docs/phases/phase7.md | docs/dev/phase7.md |
-| 8 | Voice Calls — Rappel Vocal Automatique | **Not started** | docs/phases/phase8.md | docs/dev/phase8.md |
+| 8 | Voice Calls — Rappel Vocal Automatique | **Complete** (merged 2026-03-14) | docs/phases/phase8.md | docs/dev/phase8.md |
 | 9 | CRM Client + Réputation | **Not started** | docs/phases/phase9.md | docs/dev/phase9.md |
 | 10 | Booking Widget — Réservation en Ligne | **Not started** | docs/phases/phase10.md | docs/dev/phase10.md |
 
