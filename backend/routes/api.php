@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\CustomerCrmController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\LeoAddonController;
 use App\Http\Controllers\Api\LeoChannelController;
 use App\Http\Controllers\Api\LeoWhatsAppCreditController;
 use App\Http\Controllers\Api\ReservationController;
+use App\Http\Controllers\Api\ReviewRequestController;
+use App\Http\Controllers\Api\ReviewSettingsController;
 use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\VoiceCallController;
 use App\Http\Controllers\Api\VoiceCreditController;
@@ -57,7 +60,13 @@ Route::prefix('v1')->group(function (): void {
 
         Route::get('/subscription', [SubscriptionController::class, 'show']);
         Route::post('/subscription/checkout', [SubscriptionController::class, 'checkout']);
+        Route::get('/customers', [CustomerController::class, 'index']);
         Route::get('/customers/lookup', [CustomerController::class, 'lookup']);
+        Route::patch('/customers/{customer}/crm', [CustomerCrmController::class, 'update']);
+        Route::get('/review-requests', [ReviewRequestController::class, 'index']);
+        Route::get('/review-requests/stats', [ReviewRequestController::class, 'stats']);
+        Route::get('/review-settings', [ReviewSettingsController::class, 'show']);
+        Route::patch('/review-settings', [ReviewSettingsController::class, 'update']);
         Route::get('/reservations', [ReservationController::class, 'index']);
         Route::get('/reservations/{reservation}', [ReservationController::class, 'show']);
         Route::get('/reservations/{reservation}/calls', [VoiceCallController::class, 'logs']);

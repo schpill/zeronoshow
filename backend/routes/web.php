@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ConfirmationController;
 use App\Http\Controllers\Public\PublicWaitlistController;
+use App\Http\Controllers\Public\ReviewRedirectController;
 use App\Http\Controllers\Public\WaitlistConfirmController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,3 +17,4 @@ Route::middleware('throttle:confirmation')->group(function (): void {
 
 Route::get('/join/{token}', [PublicWaitlistController::class, 'show'])->name('waitlist.join.show');
 Route::post('/join/{token}', [PublicWaitlistController::class, 'store'])->name('waitlist.join.store')->middleware('throttle:register');
+Route::get('/r/{shortCode}', [ReviewRedirectController::class, 'redirect'])->name('review.redirect');

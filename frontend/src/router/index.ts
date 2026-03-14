@@ -76,6 +76,16 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/customers',
+      component: () => import('@/views/CustomersView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/reputation',
+      component: () => import('@/views/ReputationView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/waitlist/confirmed',
       component: () => import('@/views/public/WaitlistConfirmedView.vue'),
     },

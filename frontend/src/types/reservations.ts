@@ -15,6 +15,7 @@ export interface CustomerLookupResponse {
   reliability_score: number | null
   score_tier: ReliabilityTier
   opted_out?: boolean | null
+  is_blacklisted?: boolean
 }
 
 export interface ReservationCustomer {
@@ -26,6 +27,12 @@ export interface ReservationCustomer {
   shows_count: number
   no_shows_count: number
   opted_out?: boolean
+  notes?: string | null
+  is_vip?: boolean
+  is_blacklisted?: boolean
+  birthday_month?: number | null
+  birthday_day?: number | null
+  preferred_table_notes?: string | null
 }
 
 export interface ReservationRecord {
@@ -41,6 +48,7 @@ export interface ReservationRecord {
   token_expires_at?: string | null
   created_at?: string | null
   status_changed_at?: string | null
+  customer_blacklisted?: boolean
   customer?: ReservationCustomer
   sms_count?: number
   voice_call_count?: number

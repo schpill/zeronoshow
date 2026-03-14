@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 
+import BlacklistWarningBanner from '@/components/crm/BlacklistWarningBanner.vue'
 import ReliabilityBadge from '@/components/ReliabilityBadge.vue'
 import { useReservations } from '@/composables/useReservations'
 import type { CustomerLookupResponse, ReservationRecord } from '@/types/reservations'
@@ -175,6 +176,8 @@ async function handleSubmit() {
           Recherche du score...
         </span>
       </div>
+
+      <BlacklistWarningBanner :visible="Boolean(customerLookup?.is_blacklisted)" />
 
       <p
         v-if="generalError"

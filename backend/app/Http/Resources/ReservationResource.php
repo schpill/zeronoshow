@@ -32,6 +32,7 @@ class ReservationResource extends JsonResource
             'token_expires_at' => optional($reservation->token_expires_at)->toIso8601String(),
             'status_changed_at' => optional($reservation->status_changed_at)->toIso8601String(),
             'created_at' => optional($reservation->created_at)->toIso8601String(),
+            'customer_blacklisted' => (bool) optional($reservation->customer)->is_blacklisted,
             'customer' => $this->whenLoaded('customer', fn () => [
                 'id' => $reservation->customer->id,
                 'phone' => $reservation->customer->phone,
@@ -41,6 +42,12 @@ class ReservationResource extends JsonResource
                 'shows_count' => $reservation->customer->shows_count,
                 'no_shows_count' => $reservation->customer->no_shows_count,
                 'opted_out' => $reservation->customer->opted_out,
+                'notes' => $reservation->customer->notes,
+                'is_vip' => $reservation->customer->is_vip,
+                'is_blacklisted' => $reservation->customer->is_blacklisted,
+                'birthday_month' => $reservation->customer->birthday_month,
+                'birthday_day' => $reservation->customer->birthday_day,
+                'preferred_table_notes' => $reservation->customer->preferred_table_notes,
             ]),
             'sms_count' => $this->whenCounted('smsLogs', $reservation->sms_logs_count),
         ];
