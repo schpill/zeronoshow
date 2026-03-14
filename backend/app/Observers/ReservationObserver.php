@@ -11,6 +11,7 @@ use App\Models\Business;
 use App\Models\LeoChannel;
 use App\Models\Reservation;
 use App\Models\WaitlistEntry;
+use App\Services\ReviewRequestService;
 use App\Services\VoiceCreditService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -64,6 +65,7 @@ class ReservationObserver
         RecalculateReliabilityScore::dispatch($reservation->customer_id);
         $this->dispatchLeoNotificationIfNeeded($reservation, $status);
         $this->triggerWaitlistIfNeeded($reservation, $status);
+        $this->dispatchReviewRequestIfNeeded($reservation, $previousStatus, $status);
     }
 
     public function created(Reservation $reservation): void
@@ -184,5 +186,14 @@ class ReservationObserver
         }
 
         PlaceVoiceCallJob::dispatch($reservation->id, 1);
+    }
+
+    private function dispatchReviewRequestIfNeeded(Reservation $reservation, string $previousStatus, string $status): void
+    {
+        if ($previousStatus === 'show' || $status !== 'show') {
+            return;
+        }
+
+        app(ReviewRequestService::class)->createAndSend($reservation);
     }
 }

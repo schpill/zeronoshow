@@ -37,6 +37,11 @@ class BusinessFactory extends Factory
             'voice_auto_call_min_party_size' => null,
             'voice_retry_count' => 2,
             'voice_retry_delay_minutes' => 10,
+            'review_requests_enabled' => false,
+            'review_platform' => 'google',
+            'review_delay_hours' => 2,
+            'google_place_id' => null,
+            'tripadvisor_location_id' => null,
         ];
     }
 }

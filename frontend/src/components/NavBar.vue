@@ -72,10 +72,22 @@ const statusDotClass = computed(() =>
           Waitlist
         </RouterLink>
         <RouterLink
+          to="/customers"
+          class="inline-flex items-center rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-800"
+        >
+          Clients
+        </RouterLink>
+        <RouterLink
           to="/leo"
           class="inline-flex items-center rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-800"
         >
           Léo
+        </RouterLink>
+        <RouterLink
+          to="/reputation"
+          class="inline-flex items-center rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-800"
+        >
+          Réputation
         </RouterLink>
         <RouterLink
           to="/voice"
@@ -139,10 +151,22 @@ const statusDotClass = computed(() =>
           Waitlist
         </RouterLink>
         <RouterLink
+          to="/customers"
+          class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200"
+        >
+          Clients
+        </RouterLink>
+        <RouterLink
           to="/leo"
           class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200"
         >
           Léo
+        </RouterLink>
+        <RouterLink
+          to="/reputation"
+          class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200"
+        >
+          Réputation
         </RouterLink>
         <RouterLink
           to="/voice"

@@ -3,6 +3,8 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import AppLayout from '@/layouts/AppLayout.vue'
+import BlacklistWarningBanner from '@/components/crm/BlacklistWarningBanner.vue'
+import CustomerCrmPanel from '@/components/crm/CustomerCrmPanel.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import ReservationRow from '@/components/ReservationRow.vue'
@@ -27,6 +29,7 @@ const smsLogs = ref<SmsLogRecord[]>([])
 const voiceLogs = ref<VoiceCallLogRecord[]>([])
 const voiceLoading = ref(false)
 const pageError = ref<string | null>(null)
+const showCrmPanel = ref(false)
 
 async function loadReservation() {
   pageError.value = null
@@ -105,15 +108,30 @@ function handleUpdated(updatedReservation: ReservationRecord) {
         <p v-if="customer" class="mt-4 text-body dark:text-slate-300">
           Téléphone: <span class="font-mono">{{ customer.phone }}</span>
         </p>
-        <button
-          type="button"
-          class="mt-4 rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-60"
-          :disabled="voiceLoading"
-          @click="handleVoiceCall"
-        >
-          Lancer un appel vocal
-        </button>
+        <div class="mt-4 flex flex-wrap gap-3">
+          <button
+            data-test="open-crm"
+            type="button"
+            class="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300"
+            @click="showCrmPanel = true"
+          >
+            Fiche client
+          </button>
+          <button
+            type="button"
+            class="rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-60"
+            :disabled="voiceLoading"
+            @click="handleVoiceCall"
+          >
+            Lancer un appel vocal
+          </button>
+        </div>
       </section>
+
+      <BlacklistWarningBanner
+        :visible="Boolean(reservation?.customer_blacklisted || customer?.is_blacklisted)"
+        class="mb-6"
+      />
 
       <ReservationRow
         v-if="reservationWithCustomer"
@@ -127,6 +145,14 @@ function handleUpdated(updatedReservation: ReservationRecord) {
       <div class="mt-6">
         <VoiceCallLogView :logs="voiceLogs" :loading="voiceLoading" />
       </div>
+
+      <CustomerCrmPanel
+        v-if="customer"
+        :customer="customer"
+        :open="showCrmPanel"
+        @close="showCrmPanel = false"
+        @updated="customer = $event"
+      />
     </template>
   </AppLayout>
 </template>

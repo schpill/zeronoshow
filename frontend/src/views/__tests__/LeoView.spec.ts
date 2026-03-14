@@ -107,6 +107,10 @@ function mountLeoView() {
           template:
             '<div data-test="create-form"><button data-test="create" @click="$emit(`created`, { channel: `telegram`, bot_name: `Léo`, external_identifier: `123456789` })">create</button><button data-test="cancel" @click="$emit(`cancel`)">cancel</button></div>',
         },
+        RouterLink: {
+          props: ['to'],
+          template: '<a :href="to" data-test="router-link"><slot /></a>',
+        },
       },
     },
   })
@@ -249,5 +253,17 @@ describe('LeoView', () => {
     await wrapper.get('[data-test="error"]').trigger('click')
 
     expect(refresh).toHaveBeenCalled()
+  })
+
+  it('shows a link to the reputation section', async () => {
+    addonStatus.value = { active: true, stripe_item_id: null }
+
+    const wrapper = mountLeoView()
+
+    await Promise.resolve()
+    await nextTick()
+
+    expect(wrapper.text()).toContain('Réputation')
+    expect(wrapper.html()).toContain('/reputation')
   })
 })

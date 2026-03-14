@@ -27,6 +27,12 @@ class CustomerFactory extends Factory
             'opted_out' => false,
             'opted_out_at' => null,
             'last_calculated_at' => null,
+            'notes' => null,
+            'is_vip' => false,
+            'is_blacklisted' => false,
+            'birthday_month' => null,
+            'birthday_day' => null,
+            'preferred_table_notes' => null,
         ];
     }
 }

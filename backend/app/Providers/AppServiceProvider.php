@@ -15,9 +15,11 @@ use App\Listeners\SendCreditExhaustedNotification;
 use App\Listeners\SendLowBalanceNotification;
 use App\Listeners\SendVoiceCreditExhaustedNotification;
 use App\Listeners\SendVoiceLowBalanceNotification;
+use App\Models\Customer;
 use App\Models\Reservation;
 use App\Models\WaitlistEntry;
 use App\Observers\ReservationObserver;
+use App\Policies\CustomerPolicy;
 use App\Policies\WaitlistPolicy;
 use App\Services\Contracts\SmsServiceInterface;
 use App\Services\StripeService;
@@ -53,6 +55,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(WaitlistEntry::class, WaitlistPolicy::class);
+        Gate::policy(Customer::class, CustomerPolicy::class);
 
         Reservation::observe(ReservationObserver::class);
 

@@ -74,6 +74,7 @@ describe('ReservationForm', () => {
       found: true,
       reliability_score: 94,
       score_tier: 'reliable',
+      is_blacklisted: false,
     })
 
     const wrapper = mount(ReservationForm)
@@ -84,6 +85,23 @@ describe('ReservationForm', () => {
 
     expect(lookupCustomer).toHaveBeenCalledWith('+33612345678')
     expect(wrapper.text()).toContain('Fiable 94%')
+  })
+
+  it('shows a blacklist warning when the looked up customer is blacklisted', async () => {
+    lookupCustomer.mockResolvedValueOnce({
+      found: true,
+      reliability_score: 42,
+      score_tier: 'at_risk',
+      is_blacklisted: true,
+    })
+
+    const wrapper = mount(ReservationForm)
+
+    await wrapper.get('#phone').setValue('+33612345678')
+    await wrapper.get('#phone').trigger('blur')
+    await nextTick()
+
+    expect(wrapper.text()).toContain('liste noire')
   })
 
   it('toggles phone_verified in payload', async () => {

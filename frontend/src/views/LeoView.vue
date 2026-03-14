@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { RouterLink } from 'vue-router'
 
 import AppLayout from '@/layouts/AppLayout.vue'
 import CreateLeoChannelForm from '@/components/leo/CreateLeoChannelForm.vue'
@@ -203,6 +204,25 @@ onMounted(() => {
           @edit-cap="showVoiceCapEdit = true"
         />
       </template>
+
+      <section class="mt-6 rounded-[32px] border border-slate-200 bg-white p-6">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p class="text-overline">Phase 9</p>
+            <h2 class="mt-2 text-heading-3">Réputation</h2>
+            <p class="mt-3 max-w-2xl text-body-sm">
+              Configurez les demandes d’avis post-visite et suivez les clics envoyés après un
+              statut “présent”.
+            </p>
+          </div>
+          <RouterLink
+            to="/reputation"
+            class="rounded-2xl bg-amber-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-amber-600"
+          >
+            Ouvrir Réputation
+          </RouterLink>
+        </div>
+      </section>
 
       <div
         v-if="showCreateModal"

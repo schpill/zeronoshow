@@ -34,7 +34,7 @@ describe('useWaitlist', () => {
 
     expect(loading.value).toBe(false)
     expect(entries.value).toHaveLength(1)
-    expect(entries.value[0].client_name).toBe('Test')
+    expect(entries.value[0]!.client_name).toBe('Test')
   })
 
   it('adds an entry successfully', async () => {
@@ -53,7 +53,7 @@ describe('useWaitlist', () => {
     })
 
     expect(entries.value).toHaveLength(1)
-    expect(entries.value[0].client_name).toBe('New')
+    expect(entries.value[0]!.client_name).toBe('New')
   })
 
   it('removes an entry', async () => {

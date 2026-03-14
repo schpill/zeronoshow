@@ -35,6 +35,8 @@ class ReservationController extends Controller
                 'no_shows_count' => 0,
                 'score_tier' => 'at_risk',
                 'opted_out' => false,
+                'is_blacklisted' => false,
+                'is_vip' => false,
             ],
         );
 
@@ -91,6 +93,7 @@ class ReservationController extends Controller
                 'reliability_score' => $customer->reliability_score,
                 'score_tier' => $customer->getScoreTier(),
                 'opted_out' => $customer->opted_out,
+                'is_blacklisted' => $customer->is_blacklisted,
             ],
             'warning' => $warning,
         ], 201);
@@ -156,6 +159,12 @@ class ReservationController extends Controller
                 'shows_count' => $reservation->customer->shows_count,
                 'no_shows_count' => $reservation->customer->no_shows_count,
                 'opted_out' => $reservation->customer->opted_out,
+                'is_blacklisted' => $reservation->customer->is_blacklisted,
+                'notes' => $reservation->customer->notes,
+                'is_vip' => $reservation->customer->is_vip,
+                'birthday_month' => $reservation->customer->birthday_month,
+                'birthday_day' => $reservation->customer->birthday_day,
+                'preferred_table_notes' => $reservation->customer->preferred_table_notes,
             ],
             'sms_logs' => SmsLogResource::collection($reservation->smsLogs),
             'voice_call_logs' => VoiceCallLogResource::collection($reservation->voiceCallLogs),

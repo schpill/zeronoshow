@@ -66,6 +66,11 @@ class Reservation extends Model
         return $this->hasMany(VoiceCallLog::class);
     }
 
+    public function reviewRequests(): HasMany
+    {
+        return $this->hasMany(ReviewRequest::class);
+    }
+
     public function scopeNeedingReminder(Builder $query): Builder
     {
         return $query

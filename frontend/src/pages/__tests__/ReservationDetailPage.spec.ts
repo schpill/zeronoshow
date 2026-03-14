@@ -1,4 +1,5 @@
 import { flushPromises, mount } from '@vue/test-utils'
+import { ref } from 'vue'
 import { describe, expect, it, vi } from 'vitest'
 
 import ReservationDetailPage from '@/pages/ReservationDetailPage.vue'
@@ -10,6 +11,7 @@ const voiceApi = vi.hoisted(() => ({
 
 const updateStatus = vi.fn()
 const fetchReservation = vi.fn()
+const updateCustomerCrm = vi.fn()
 
 vi.mock('vue-router', () => ({
   useRoute: () => ({
@@ -40,6 +42,14 @@ vi.mock('@/composables/useToast', () => ({
   }),
 }))
 
+vi.mock('@/composables/useCustomerCrm', () => ({
+  useCustomerCrm: () => ({
+    loading: ref(false),
+    error: ref(null),
+    updateCustomerCrm,
+  }),
+}))
+
 function makeReservationResponse() {
   return {
     reservation: {
@@ -48,6 +58,7 @@ function makeReservationResponse() {
       status: 'confirmed',
       guests: 2,
       scheduled_at: '2026-03-13T19:00:00Z',
+      customer_blacklisted: true,
       phone_verified: true,
       reminder_2h_sent: false,
       reminder_30m_sent: false,
@@ -61,6 +72,12 @@ function makeReservationResponse() {
       reservations_count: 2,
       shows_count: 2,
       no_shows_count: 0,
+      is_blacklisted: true,
+      is_vip: false,
+      notes: 'Client régulier',
+      birthday_month: 3,
+      birthday_day: 14,
+      preferred_table_notes: 'Fenêtre',
     },
     sms_logs: [
       {
@@ -84,6 +101,7 @@ describe('ReservationDetailPage', () => {
       global: {
         stubs: {
           AppLayout: { template: '<div><slot /></div>' },
+          CustomerCrmPanel: { template: '<div data-test="crm-panel">crm panel</div>' },
           ErrorMessage: {
             props: ['message'],
             template: '<div data-test="detail-error">{{ message }}</div>',
@@ -102,6 +120,26 @@ describe('ReservationDetailPage', () => {
     expect(wrapper.text()).toContain('reminder')
     expect(wrapper.text()).toContain('Présent')
     expect(wrapper.text()).toContain('No-show')
+    expect(wrapper.text()).toContain('liste noire')
+  })
+
+  it('opens the crm panel from the customer button', async () => {
+    fetchReservation.mockResolvedValue(makeReservationResponse())
+    voiceApi.getVoiceCallLogs.mockResolvedValue([])
+
+    const wrapper = mount(ReservationDetailPage, {
+      global: {
+        stubs: {
+          AppLayout: { template: '<div><slot /></div>' },
+          CustomerCrmPanel: { template: '<div data-test="crm-panel">crm panel</div>' },
+        },
+      },
+    })
+
+    await flushPromises()
+    await wrapper.get('[data-test="open-crm"]').trigger('click')
+
+    expect(wrapper.find('[data-test="crm-panel"]').exists()).toBe(true)
   })
 
   it('shows an error state when the reservation cannot be loaded', async () => {

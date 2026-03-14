@@ -47,6 +47,11 @@ class Business extends Authenticatable
         'waitlist_enabled',
         'waitlist_notification_window_minutes',
         'waitlist_public_token',
+        'review_requests_enabled',
+        'review_platform',
+        'review_delay_hours',
+        'google_place_id',
+        'tripadvisor_location_id',
     ];
 
     protected $hidden = [
@@ -68,6 +73,8 @@ class Business extends Authenticatable
         'voice_retry_delay_minutes' => 'integer',
         'waitlist_enabled' => 'boolean',
         'waitlist_notification_window_minutes' => 'integer',
+        'review_requests_enabled' => 'boolean',
+        'review_delay_hours' => 'integer',
     ];
 
     public function reservations(): HasMany
@@ -78,6 +85,11 @@ class Business extends Authenticatable
     public function voiceCallLogs(): HasMany
     {
         return $this->hasMany(VoiceCallLog::class);
+    }
+
+    public function reviewRequests(): HasMany
+    {
+        return $this->hasMany(ReviewRequest::class);
     }
 
     public function leoChannel(): HasOne
