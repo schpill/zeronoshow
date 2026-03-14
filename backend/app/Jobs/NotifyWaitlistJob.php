@@ -37,14 +37,15 @@ class NotifyWaitlistJob implements ShouldQueue
 
         if (! $entry) {
             Log::info("No pending waitlist entries for business {$this->businessId} on {$this->slotDate} at {$this->slotTime}");
+
             return;
         }
 
         $business = Business::findOrFail($this->businessId);
-        $confirmUrl = config('app.url') . "/waitlist/confirm/{$entry->confirmation_token}";
+        $confirmUrl = config('app.url')."/waitlist/confirm/{$entry->confirmation_token}";
         $window = $business->waitlist_notification_window_minutes;
 
-        $message = "Une table est disponible chez {$business->name} le {$entry->slot_date->format('d/m')} à " . substr($entry->slot_time, 0, 5) . ". ";
+        $message = "Une table est disponible chez {$business->name} le {$entry->slot_date->format('d/m')} à ".substr($entry->slot_time, 0, 5).'. ';
         $message .= "Confirmez dans {$window} minutes ici : {$confirmUrl}";
 
         try {
@@ -58,7 +59,7 @@ class NotifyWaitlistJob implements ShouldQueue
             $smsService->send($smsLog);
             Log::info("Waitlist notification sent to client for business {$this->businessId}");
         } catch (\Exception $e) {
-            Log::error("Failed to send waitlist SMS: " . $e->getMessage());
+            Log::error('Failed to send waitlist SMS: '.$e->getMessage());
             throw $e;
         }
     }
