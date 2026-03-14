@@ -32,7 +32,36 @@ export interface CreateWaitlistEntryPayload {
   party_size: number
 }
 
-export const getWaitlistEntries = async (params?: WaitlistFilter) => {
+export interface ApiResponse<T> {
+  data: T
+}
+
+export interface WaitlistEntriesResponse {
+  data: WaitlistEntry[]
+  meta: {
+    current_page: number
+    last_page: number
+    total: number
+  }
+}
+
+export interface PublicWaitlistInfo {
+  business_name: string
+  slots_available: { date: string; times: string[] }[]
+}
+
+export interface WaitlistSettingsUpdateResponse {
+  message: string
+  settings: Partial<WaitlistSettings>
+}
+
+export interface RegenerateLinkResponse {
+  message: string
+  waitlist_public_token: string
+  public_registration_url: string
+}
+
+export const getWaitlistEntries = async (params?: WaitlistFilter): Promise<WaitlistEntriesResponse> => {
   let path = '/waitlist'
   if (params) {
     const query = new URLSearchParams()
@@ -41,12 +70,14 @@ export const getWaitlistEntries = async (params?: WaitlistFilter) => {
     if (params.page) query.append('page', params.page.toString())
     path += `?${query.toString()}`
   }
-  const response = await apiClient.get(path)
+  const response = await apiClient.get<WaitlistEntriesResponse>(path)
   return response
 }
 
-export const addWaitlistEntry = async (payload: CreateWaitlistEntryPayload) => {
-  const response = await apiClient.post('/waitlist', payload)
+export const addWaitlistEntry = async (
+  payload: CreateWaitlistEntryPayload,
+): Promise<ApiResponse<WaitlistEntry>> => {
+  const response = await apiClient.post<ApiResponse<WaitlistEntry>>('/waitlist', payload)
   return response
 }
 
@@ -71,27 +102,35 @@ export interface WaitlistSettings {
   public_registration_url?: string
 }
 
-export const getWaitlistSettings = async () => {
-  const response = await apiClient.get('/waitlist/settings')
+export const getWaitlistSettings = async (): Promise<WaitlistSettings> => {
+  const response = await apiClient.get<WaitlistSettings>('/waitlist/settings')
   return response
 }
 
-export const updateWaitlistSettings = async (payload: Partial<WaitlistSettings>) => {
-  const response = await apiClient.patch('/waitlist/settings', payload)
+export const updateWaitlistSettings = async (
+  payload: Partial<WaitlistSettings>,
+): Promise<WaitlistSettingsUpdateResponse> => {
+  const response = await apiClient.patch<WaitlistSettingsUpdateResponse>(
+    '/waitlist/settings',
+    payload,
+  )
   return response
 }
 
-export const regeneratePublicLink = async () => {
-  const response = await apiClient.post('/waitlist/settings/regenerate-link')
+export const regeneratePublicLink = async (): Promise<RegenerateLinkResponse> => {
+  const response = await apiClient.post<RegenerateLinkResponse>('/waitlist/settings/regenerate-link')
   return response
 }
 
-export const getPublicWaitlistInfo = async (token: string) => {
-  const response = await apiClient.get(`/join/${token}`)
+export const getPublicWaitlistInfo = async (token: string): Promise<PublicWaitlistInfo> => {
+  const response = await apiClient.get<PublicWaitlistInfo>(`/join/${token}`)
   return response
 }
 
-export const joinWaitlistPublic = async (token: string, payload: CreateWaitlistEntryPayload) => {
-  const response = await apiClient.post(`/join/${token}`, payload)
+export const joinWaitlistPublic = async (
+  token: string,
+  payload: CreateWaitlistEntryPayload,
+): Promise<ApiResponse<WaitlistEntry>> => {
+  const response = await apiClient.post<ApiResponse<WaitlistEntry>>(`/join/${token}`, payload)
   return response
 }

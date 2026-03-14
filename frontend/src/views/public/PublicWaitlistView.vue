@@ -26,7 +26,7 @@ const form = reactive({
 
 const fetchInfo = async () => {
   try {
-    const info = (await getPublicWaitlistInfo(token)) as any
+    const info = await getPublicWaitlistInfo(token)
     businessName.value = info.business_name
     slots.value = info.slots_available
     const firstSlot = slots.value[0]

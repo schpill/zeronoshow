@@ -33,7 +33,7 @@ export function useWaitlist() {
     loading.value = true
     error.value = null
     try {
-      const response = (await getWaitlistEntries({ ...filter, page })) as any
+      const response = await getWaitlistEntries({ ...filter, page })
       entries.value = response.data
       pagination.value = response.meta
     } catch (e: unknown) {
@@ -48,19 +48,20 @@ export function useWaitlist() {
   const addEntry = async (payload: CreateWaitlistEntryPayload) => {
     loading.value = true
     try {
-      const newEntry = (await addWaitlistEntry(payload)) as any
+      const newEntry = await addWaitlistEntry(payload)
       entries.value.push(newEntry.data)
-      success("Client ajouté à la liste d'attente")
+      success('Client ajouté à la liste d\'attente')
       return newEntry.data
     } catch (e: unknown) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const msg = (e as any).response?.data?.message || "Erreur lors de l'ajout"
+      const msg = (e as any).response?.data?.message || 'Erreur lors de l\'ajout'
       errorToast(msg)
       throw e
     } finally {
       loading.value = false
     }
   }
+
 
   const removeEntry = async (id: string) => {
     try {
@@ -103,7 +104,7 @@ export function useWaitlist() {
 
   const fetchSettings = async () => {
     try {
-      settings.value = (await getWaitlistSettings()) as WaitlistSettings
+      settings.value = await getWaitlistSettings()
     } catch {
       //
     }
@@ -111,7 +112,7 @@ export function useWaitlist() {
 
   const updateSettings = async (payload: Partial<WaitlistSettings>) => {
     try {
-      const response = (await updateWaitlistSettings(payload)) as any
+      const response = await updateWaitlistSettings(payload)
       if (settings.value) {
         settings.value = { ...settings.value, ...response.settings }
       }
@@ -123,7 +124,7 @@ export function useWaitlist() {
 
   const regenerateLink = async () => {
     try {
-      const response = (await regeneratePublicLink()) as any
+      const response = await regeneratePublicLink()
       if (settings.value) {
         settings.value = {
           ...settings.value,
@@ -136,6 +137,7 @@ export function useWaitlist() {
       errorToast('Erreur lors de la régénération du lien')
     }
   }
+
 
   return {
     entries,
