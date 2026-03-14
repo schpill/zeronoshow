@@ -84,5 +84,6 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('reservations', fn (Request $request) => Limit::perMinute(60)->by((string) optional($request->user())->id ?: $request->ip()));
         RateLimiter::for('confirmation', fn (Request $request) => Limit::perMinute(10)->by($request->route('token') ?? $request->ip()));
         RateLimiter::for('webhook', fn (Request $request) => Limit::perMinute(200)->by($request->ip()));
+        RateLimiter::for('widget', fn (Request $request) => Limit::perMinute(60)->by($request->ip()));
     }
 }

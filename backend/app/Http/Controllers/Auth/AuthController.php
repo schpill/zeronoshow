@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -22,6 +23,7 @@ class AuthController extends Controller
             'timezone' => 'Europe/Paris',
             'subscription_status' => 'trial',
             'trial_ends_at' => now()->addDays(14),
+            'public_token' => (string) Str::uuid(),
         ]);
 
         return response()->json([

@@ -14,23 +14,31 @@ import VoiceTopUpModal from '@/components/voice/VoiceTopUpModal.vue'
 import VoiceCapEditForm from '@/components/voice/VoiceCapEditForm.vue'
 import LeoUpgradeBanner from '@/components/leo/LeoUpgradeBanner.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import WidgetSettingsCard from '@/components/widget/WidgetSettingsCard.vue'
+import WidgetSettingsModal from '@/components/widget/WidgetSettingsModal.vue'
+import WidgetEmbedCard from '@/components/widget/WidgetEmbedCard.vue'
+import WidgetStatsCard from '@/components/widget/WidgetStatsCard.vue'
 import { useLeo } from '@/composables/useLeo'
 import { useWhatsAppCredits } from '@/composables/useWhatsAppCredits'
 import { useVoiceCredits } from '@/composables/useVoiceCredits'
+import { useWidgetSettings } from '@/composables/useWidgetSettings'
 import { useToast } from '@/composables/useToast'
 import { useAuthStore } from '@/stores/auth'
 import type { LeoChannelPayload } from '@/api/leo'
+import type { UpdateWidgetSettingsPayload } from '@/api/widgetSettings'
 
 const auth = useAuthStore()
 const toast = useToast()
 const leo = useLeo()
 const waCredits = useWhatsAppCredits()
 const voiceCredits = useVoiceCredits()
+const widgetSettings = useWidgetSettings()
 const showCreateModal = ref(false)
 const showTopUpModal = ref(false)
 const showVoiceTopUpModal = ref(false)
 const showCapEdit = ref(false)
 const showVoiceCapEdit = ref(false)
+const showWidgetSettingsModal = ref(false)
 
 async function loadLeo() {
   await leo.refresh()
@@ -39,6 +47,10 @@ async function loadLeo() {
   }
   if (leo.channel.value?.channel === 'voice') {
     void voiceCredits.fetchStatus()
+  }
+  if (auth.user?.id) {
+    void widgetSettings.fetch(auth.user.id)
+    void widgetSettings.fetchStats(auth.user.id)
   }
 }
 
@@ -96,6 +108,13 @@ async function handleSaveVoiceCap(cents: number, autoRenew: boolean) {
   await voiceCredits.saveCap(cents, autoRenew)
   showVoiceCapEdit.value = false
   toast.success('Budget appels mis à jour.')
+}
+
+async function handleSaveWidgetSettings(payload: UpdateWidgetSettingsPayload) {
+  if (!auth.user?.id) return
+  await widgetSettings.update(auth.user.id, payload)
+  showWidgetSettingsModal.value = false
+  toast.success('Paramètres du widget mis à jour.')
 }
 
 onMounted(() => {
@@ -208,11 +227,39 @@ onMounted(() => {
       <section class="mt-6 rounded-[32px] border border-slate-200 bg-white p-6">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
+            <p class="text-overline">Widget de réservation</p>
+            <h2 class="mt-2 text-heading-3">Réservation en ligne</h2>
+            <p class="mt-3 max-w-2xl text-body-sm">
+              Permettez à vos clients de réserver directement depuis votre site ou un lien partagé.
+            </p>
+          </div>
+        </div>
+        <div v-if="widgetSettings.settings.value" class="mt-4 space-y-4">
+          <WidgetSettingsCard
+            :settings="widgetSettings.settings.value"
+            :loading="widgetSettings.loading.value"
+            @edit="showWidgetSettingsModal = true"
+          />
+          <WidgetStatsCard
+            :stats="widgetSettings.stats.value"
+            :loading="false"
+          />
+          <WidgetEmbedCard
+            :embed-url="widgetSettings.settings.value.embed_url"
+            :booking-url="widgetSettings.settings.value.booking_url"
+            :accent-colour="widgetSettings.settings.value.accent_colour"
+          />
+        </div>
+      </section>
+
+      <section class="mt-6 rounded-[32px] border border-slate-200 bg-white p-6">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
             <p class="text-overline">Phase 9</p>
             <h2 class="mt-2 text-heading-3">Réputation</h2>
             <p class="mt-3 max-w-2xl text-body-sm">
               Configurez les demandes d’avis post-visite et suivez les clics envoyés après un statut
-              “présent”.
+              "présent".
             </p>
           </div>
           <RouterLink
@@ -247,6 +294,20 @@ onMounted(() => {
         :loading="voiceCredits.loading.value"
         @submit="voiceCredits.topUp"
       />
+
+      <div
+        v-if="showWidgetSettingsModal && widgetSettings.settings.value"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4"
+      >
+        <div class="w-full max-w-lg rounded-[32px] bg-white p-6 shadow-2xl">
+          <WidgetSettingsModal
+            :settings="widgetSettings.settings.value"
+            :loading="widgetSettings.loading.value"
+            @save="handleSaveWidgetSettings"
+            @cancel="showWidgetSettingsModal = false"
+          />
+        </div>
+      </div>
     </template>
   </AppLayout>
 </template>

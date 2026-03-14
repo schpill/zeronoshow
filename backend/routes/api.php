@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\LeoAddonController;
 use App\Http\Controllers\Api\LeoChannelController;
 use App\Http\Controllers\Api\LeoWhatsAppCreditController;
+use App\Http\Controllers\Api\PublicBookingController;
 use App\Http\Controllers\Api\ReservationController;
 use App\Http\Controllers\Api\ReviewRequestController;
 use App\Http\Controllers\Api\ReviewSettingsController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Api\VoiceCreditController;
 use App\Http\Controllers\Api\VoiceSettingsController;
 use App\Http\Controllers\Api\WaitlistController;
 use App\Http\Controllers\Api\WaitlistSettingsController;
+use App\Http\Controllers\Api\WidgetSettingController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Webhook\LeoWebhookController;
 use App\Http\Controllers\Webhook\StripeWebhookController;
@@ -26,6 +28,15 @@ use App\Http\Controllers\Webhook\VoiceTwimlController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function (): void {
+    // Public widget routes (unauthenticated)
+    Route::prefix('public/widget/{business:public_token}')->middleware('widget.allowframe')->group(function (): void {
+        Route::get('/config', [PublicBookingController::class, 'config']);
+        Route::get('/slots', [PublicBookingController::class, 'slots']);
+        Route::post('/otp/send', [PublicBookingController::class, 'sendOtp'])->middleware('throttle:widget');
+        Route::post('/otp/verify', [PublicBookingController::class, 'verifyOtp']);
+        Route::post('/reservations', [PublicBookingController::class, 'store']);
+    });
+
     Route::post('/auth/register', [AuthController::class, 'register'])->middleware('throttle:register');
     Route::post('/auth/login', [AuthController::class, 'login'])->middleware('throttle:login');
     Route::get('/health', [HealthController::class, 'check']);
@@ -73,6 +84,11 @@ Route::prefix('v1')->group(function (): void {
         Route::post('/reservations/{reservation}/call', [VoiceCallController::class, 'initiate']);
         Route::post('/reservations/{reservation}/voice-call', [VoiceCallController::class, 'queue']);
         Route::patch('/reservations/{reservation}/status', [ReservationController::class, 'updateStatus']);
+
+        // Authenticated widget settings routes
+        Route::get('/businesses/{business}/widget', [WidgetSettingController::class, 'show']);
+        Route::patch('/businesses/{business}/widget', [WidgetSettingController::class, 'update']);
+        Route::get('/businesses/{business}/widget/stats', [WidgetSettingController::class, 'stats']);
 
         Route::prefix('waitlist')->group(function (): void {
             Route::get('/', [WaitlistController::class, 'index']);

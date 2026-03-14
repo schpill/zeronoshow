@@ -19,6 +19,7 @@ import type { DashboardStats, ReservationRecord } from '@/types/reservations'
 
 const selectedDate = ref(new Date().toISOString().slice(0, 10))
 const viewMode = ref<'day' | 'week'>('day')
+const sourceFilter = ref<string | null>(null)
 const reservations = ref<ReservationRecord[]>([])
 const pageError = ref<string | null>(null)
 const stats = ref<DashboardStats>({
@@ -42,7 +43,8 @@ async function refreshReservations() {
   try {
     const date = selectedDate.value
     const week = viewMode.value === 'week' ? toIsoWeek(date) : undefined
-    const response = await fetchDashboard({ date, week })
+    const source = sourceFilter.value ?? undefined
+    const response = await fetchDashboard({ date, week, source })
     reservations.value = response.reservations
     stats.value = response.stats
     smsCostThisMonth.value = response.sms_cost_this_month
@@ -172,6 +174,19 @@ const groupedReservations = computed(() => {
       </section>
 
       <StatsBar :stats="stats" />
+
+      <div class="flex items-center gap-2">
+        <label class="text-sm text-slate-500">Source :</label>
+        <select
+          v-model="sourceFilter"
+          class="rounded-xl border border-slate-200 px-3 py-1.5 text-sm text-slate-700"
+          @change="void refreshReservations()"
+        >
+          <option :value="null">Toutes</option>
+          <option value="widget">Widget</option>
+          <option value="manual">Manuel</option>
+        </select>
+      </div>
 
       <div class="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
         <div class="grid gap-6">

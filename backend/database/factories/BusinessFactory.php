@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Business;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Business>
@@ -42,6 +43,7 @@ class BusinessFactory extends Factory
             'review_delay_hours' => 2,
             'google_place_id' => null,
             'tripadvisor_location_id' => null,
+            'public_token' => Str::uuid(),
         ];
     }
 }

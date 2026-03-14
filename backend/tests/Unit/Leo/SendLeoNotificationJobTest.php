@@ -131,6 +131,7 @@ class SendLeoNotificationJobTest extends TestCase
             'timezone' => 'Europe/Paris',
             'subscription_status' => 'trial',
             'trial_ends_at' => now()->addDays(14),
+            'public_token' => (string) Str::uuid(),
             'created_at' => now(),
             'updated_at' => now(),
         ]);

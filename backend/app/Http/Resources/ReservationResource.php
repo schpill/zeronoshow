@@ -24,6 +24,7 @@ class ReservationResource extends JsonResource
             'scheduled_at' => optional($reservation->scheduled_at)->toIso8601String(),
             'guests' => $reservation->guests,
             'notes' => $reservation->notes,
+            'source' => $reservation->source ?? 'manual',
             'status' => $reservation->status,
             'phone_verified' => $reservation->phone_verified,
             'reminder_2h_sent' => $reservation->reminder_2h_sent,

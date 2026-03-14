@@ -4,6 +4,7 @@ namespace Tests\Unit\Models;
 
 use App\Models\Business;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class BusinessTest extends TestCase
@@ -59,6 +60,7 @@ class BusinessTest extends TestCase
             'phone' => '+33612345678',
             'timezone' => 'Europe/Paris',
             'subscription_status' => 'trial',
+            'public_token' => (string) Str::uuid(),
         ]);
 
         $this->assertNotNull($business->fresh()->trial_ends_at);

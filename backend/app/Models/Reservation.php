@@ -28,6 +28,7 @@ class Reservation extends Model
         'scheduled_at',
         'guests',
         'notes',
+        'source',
         'status',
         'phone_verified',
         'confirmation_token',

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AllowIframeForWidget;
 use App\Http\Middleware\AllowTelegramWebhookIps;
 use App\Http\Middleware\LeoAddonActiveMiddleware;
 use App\Http\Middleware\RequireActiveSubscription;
@@ -24,11 +25,13 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->validateCsrfTokens(except: [
             'join/*',
+            'api/v1/public/widget/*',
         ]);
         $middleware->alias([
             'telegram.allowlist' => AllowTelegramWebhookIps::class,
             'leo.addon' => LeoAddonActiveMiddleware::class,
             'subscription' => RequireActiveSubscription::class,
+            'widget.allowframe' => AllowIframeForWidget::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
