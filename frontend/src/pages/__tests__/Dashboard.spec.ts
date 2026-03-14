@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { nextTick, ref } from 'vue'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import Dashboard from '@/pages/Dashboard.vue'
 
@@ -117,11 +117,17 @@ function mountDashboard() {
 
 describe('Dashboard', () => {
   beforeEach(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-03-13T10:00:00Z'))
     fetchDashboard.mockReset()
     updateStatus.mockReset()
     toastSuccess.mockReset()
     loadingFetch.value = false
     loadingUpdateStatus.value = false
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   it('renders stats and the daily reservation list from the dashboard payload', async () => {
