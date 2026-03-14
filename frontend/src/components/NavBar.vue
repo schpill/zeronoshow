@@ -66,6 +66,12 @@ const statusDotClass = computed(() =>
           Dashboard
         </RouterLink>
         <RouterLink
+          to="/waitlist"
+          class="inline-flex items-center rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-800"
+        >
+          Waitlist
+        </RouterLink>
+        <RouterLink
           to="/leo"
           class="inline-flex items-center rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-800"
         >
@@ -113,6 +119,12 @@ const statusDotClass = computed(() =>
           class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200"
         >
           Dashboard
+        </RouterLink>
+        <RouterLink
+          to="/waitlist"
+          class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200"
+        >
+          Waitlist
         </RouterLink>
         <RouterLink
           to="/leo"

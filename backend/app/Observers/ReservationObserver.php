@@ -2,11 +2,14 @@
 
 namespace App\Observers;
 
+use App\Enums\WaitlistStatusEnum;
+use App\Jobs\NotifyWaitlistJob;
 use App\Jobs\RecalculateReliabilityScore;
 use App\Jobs\SendLeoNotificationJob;
 use App\Models\Business;
 use App\Models\LeoChannel;
 use App\Models\Reservation;
+use App\Models\WaitlistEntry;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -57,6 +60,7 @@ class ReservationObserver
 
         RecalculateReliabilityScore::dispatch($reservation->customer_id);
         $this->dispatchLeoNotificationIfNeeded($reservation, $status);
+        $this->triggerWaitlistIfNeeded($reservation, $status);
     }
 
     public function created(Reservation $reservation): void
@@ -108,5 +112,37 @@ class ReservationObserver
         }
 
         SendLeoNotificationJob::dispatch($reservation->id, $status);
+    }
+
+    private function triggerWaitlistIfNeeded(Reservation $reservation, string $status): void
+    {
+        if (! in_array($status, ['cancelled_by_client', 'cancelled_by_business', 'no_show'], true)) {
+            return;
+        }
+
+        /** @var Business|null $business */
+        $business = $reservation->business()->first();
+
+        if (! $business?->waitlist_enabled) {
+            return;
+        }
+
+        $hasWaitlist = WaitlistEntry::query()
+            ->where('business_id', $reservation->business_id)
+            ->whereDate('slot_date', $reservation->scheduled_at->format('Y-m-d'))
+            ->whereTime('slot_time', $reservation->scheduled_at->format('H:i:00'))
+            ->where('status', WaitlistStatusEnum::Pending)
+            ->exists();
+
+        if (! $hasWaitlist) {
+            return;
+        }
+
+        NotifyWaitlistJob::dispatch(
+            $reservation->business_id,
+            $reservation->scheduled_at->format('Y-m-d'),
+            $reservation->scheduled_at->format('H:i:00')
+        );
+
     }
 }

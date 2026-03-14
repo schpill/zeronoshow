@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Webhook;
 
 use App\Http\Controllers\Controller;
+use App\Leo\Tools\LeoWhatsAppCreditService;
 use App\Mail\PaymentFailedStub;
 use App\Models\Business;
 use App\Models\LeoChannel;
-use App\Services\Leo\LeoWhatsAppCreditService;
 use App\Services\StripeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

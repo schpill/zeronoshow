@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\LeoChannelController;
 use App\Http\Controllers\Api\LeoWhatsAppCreditController;
 use App\Http\Controllers\Api\ReservationController;
 use App\Http\Controllers\Api\SubscriptionController;
+use App\Http\Controllers\Api\WaitlistController;
+use App\Http\Controllers\Api\WaitlistSettingsController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Webhook\LeoWebhookController;
 use App\Http\Controllers\Webhook\StripeWebhookController;
@@ -42,6 +44,17 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/reservations', [ReservationController::class, 'index']);
         Route::get('/reservations/{reservation}', [ReservationController::class, 'show']);
         Route::patch('/reservations/{reservation}/status', [ReservationController::class, 'updateStatus']);
+
+        Route::prefix('waitlist')->group(function (): void {
+            Route::get('/', [WaitlistController::class, 'index']);
+            Route::post('/', [WaitlistController::class, 'store']);
+            Route::delete('/{entry}', [WaitlistController::class, 'destroy']);
+            Route::post('/reorder', [WaitlistController::class, 'reorder']);
+            Route::post('/{entry}/notify', [WaitlistController::class, 'notify']);
+            Route::get('/settings', [WaitlistSettingsController::class, 'show']);
+            Route::patch('/settings', [WaitlistSettingsController::class, 'update']);
+            Route::post('/settings/regenerate-link', [WaitlistSettingsController::class, 'regenerateLink']);
+        });
 
         Route::middleware('subscription')->group(function (): void {
             Route::post('/reservations', [ReservationController::class, 'store'])->middleware('throttle:reservations');

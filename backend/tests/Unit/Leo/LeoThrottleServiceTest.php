@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Leo;
 
-use App\Services\Leo\LeoThrottleService;
+use App\Leo\Tools\LeoThrottleService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;

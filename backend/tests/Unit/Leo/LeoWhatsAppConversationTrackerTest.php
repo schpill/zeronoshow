@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Leo;
 
+use App\Leo\Tools\LeoWhatsAppConversationTracker;
 use App\Models\LeoChannel;
 use App\Models\WhatsAppConversationWindow;
-use App\Services\Leo\LeoWhatsAppConversationTracker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
