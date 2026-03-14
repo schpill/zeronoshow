@@ -22,10 +22,7 @@ describe('AddWaitlistEntryModal', () => {
     await wrapper.find('form').trigger('submit.prevent')
 
     expect(wrapper.emitted('submit')).toBeTruthy()
-    const payload = wrapper.emitted(
-      'submit',
-    )?.[0][0] /* eslint-disable-line @typescript-eslint/no-explicit-any */ as any
-    )?.[0]?.[0] /* eslint-disable-line @typescript-eslint/no-explicit-any */ as any
+    const payload = (wrapper.emitted('submit')?.[0] as any[])?.[0]
     expect(payload.client_name).toBe('John Doe')
   })
 })
