@@ -92,7 +92,7 @@ make tinker       # php artisan tinker
 | 9 | CRM Client + Réputation | **Complete** (merged 2026-03-14) | docs/phases/phase9.md | docs/dev/phase9.md |
 | 10 | Booking Widget — Réservation en Ligne | **Complete** (merged 2026-03-14) | docs/phases/phase10.md | docs/dev/phase10.md |
 | 11 | In-App Help & Onboarding | **Complete** (merged 2026-03-15) | docs/phases/phase11.md | docs/dev/phase11.md |
-| 12 | Operator Admin Backoffice | **Not started** | docs/phases/phase12.md | docs/dev/phase12.md |
+| 12 | Operator Admin Backoffice | **Complete** (merged 2026-03-15) | docs/phases/phase12.md | docs/dev/phase12.md |
 
 ## Team
 
