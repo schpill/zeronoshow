@@ -72,6 +72,10 @@ make tinker       # php artisan tinker
 - PHP Dockerfile: `8.3-fpm`, PCOV, Redis extension
 - CI: GitHub Actions — two jobs: `backend` (Pint + PHPStan + Pest) and `frontend` (Vitest + coverage)
 - No `.env.example` as live env file — use `.env` locally (gitignored)
+- **pnpm workspace**: `pnpm-workspace.yaml` at repo root declares `frontend` as a package. The CI runs `pnpm install --frozen-lockfile` against the **root** `pnpm-lock.yaml`. Whenever `frontend/package.json` gains new dependencies, the two-step update is mandatory:
+  1. `pnpm install` at repo root (updates `pnpm-lock.yaml`)
+  2. `docker compose run --rm frontend pnpm install` (restores Docker-compatible symlinks in `frontend/node_modules` — root-level install creates symlinks pointing to `../../node_modules/.pnpm/…` which are broken inside the container)
+  Skipping either step causes CI to fail with `ERR_PNPM_OUTDATED_LOCKFILE` or `MODULE_NOT_FOUND`.
 
 ## Phase Status
 
