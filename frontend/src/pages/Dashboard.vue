@@ -4,7 +4,6 @@ import { computed, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 
 import DateNavigator from '@/components/DateNavigator.vue'
-import EmptyState from '@/components/help/EmptyState.vue'
 import HelpTooltip from '@/components/help/HelpTooltip.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'

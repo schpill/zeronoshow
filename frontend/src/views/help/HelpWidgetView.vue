@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import MermaidDiagram from '@/components/help/MermaidDiagram.vue'
 </script>
 
 <template>

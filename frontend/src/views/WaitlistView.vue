@@ -6,7 +6,6 @@ import WaitlistEntryRow from '@/components/waitlist/WaitlistEntryRow.vue'
 import AddWaitlistEntryModal from '@/components/waitlist/AddWaitlistEntryModal.vue'
 import WaitlistSettingsCard from '@/components/waitlist/WaitlistSettingsCard.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
-import EmptyState from '@/components/help/EmptyState.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 
 const {
