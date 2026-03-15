@@ -10,16 +10,18 @@ class BusinessResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        /** @var Business $this */
+        /** @var Business $business */
+        $business = $this->resource;
+
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'subscription_status' => $this->subscription_status,
-            'trial_ends_at' => optional($this->trial_ends_at)->toIso8601String(),
-            'leo_addon_active' => (bool) $this->leo_addon_active,
-            'onboarding_completed_at' => optional($this->onboarding_completed_at)->toIso8601String(),
+            'id' => $business->id,
+            'name' => $business->name,
+            'email' => $business->email,
+            'phone' => $business->phone,
+            'subscription_status' => $business->subscription_status,
+            'trial_ends_at' => optional($business->trial_ends_at)->toIso8601String(),
+            'leo_addon_active' => (bool) $business->leo_addon_active,
+            'onboarding_completed_at' => optional($business->onboarding_completed_at)->toIso8601String(),
         ];
     }
 }
