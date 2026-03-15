@@ -13,11 +13,20 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Waitlist', description: 'Waitlist management endpoints')]
 class WaitlistController extends Controller
 {
     use AuthorizesRequests;
 
+    #[OA\Get(
+        path: '/api/v1/waitlist',
+        tags: ['Waitlist'],
+        summary: 'List waitlist entries',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 200, description: 'Waitlist entries')],
+    )]
     public function index(Request $request): JsonResponse
     {
         $business = $request->user();
@@ -41,6 +50,13 @@ class WaitlistController extends Controller
         return WaitlistEntryResource::collection($entries)->response();
     }
 
+    #[OA\Post(
+        path: '/api/v1/waitlist',
+        tags: ['Waitlist'],
+        summary: 'Create waitlist entry',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 201, description: 'Waitlist entry created')],
+    )]
     public function store(StoreWaitlistEntryRequest $request): JsonResponse
     {
         $business = $request->user();
@@ -64,6 +80,14 @@ class WaitlistController extends Controller
             ->setStatusCode(201);
     }
 
+    #[OA\Delete(
+        path: '/api/v1/waitlist/{entry}',
+        tags: ['Waitlist'],
+        summary: 'Delete waitlist entry',
+        security: [['bearerAuth' => []]],
+        parameters: [new OA\Parameter(name: 'entry', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid'))],
+        responses: [new OA\Response(response: 204, description: 'Deleted')],
+    )]
     public function destroy(WaitlistEntry $entry): JsonResponse
     {
         $this->authorize('delete', $entry);
@@ -77,6 +101,13 @@ class WaitlistController extends Controller
         return response()->json(null, 204);
     }
 
+    #[OA\Post(
+        path: '/api/v1/waitlist/reorder',
+        tags: ['Waitlist'],
+        summary: 'Reorder waitlist entries',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 200, description: 'Reordered')],
+    )]
     public function reorder(Request $request): JsonResponse
     {
         $business = $request->user();
@@ -99,6 +130,14 @@ class WaitlistController extends Controller
         return response()->json(['message' => 'Ordre mis à jour avec succès.']);
     }
 
+    #[OA\Post(
+        path: '/api/v1/waitlist/{entry}/notify',
+        tags: ['Waitlist'],
+        summary: 'Notify one waitlist entry',
+        security: [['bearerAuth' => []]],
+        parameters: [new OA\Parameter(name: 'entry', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid'))],
+        responses: [new OA\Response(response: 202, description: 'Notification queued')],
+    )]
     public function notify(WaitlistEntry $entry): JsonResponse
     {
         $this->authorize('notify', $entry);

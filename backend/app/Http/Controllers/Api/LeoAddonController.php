@@ -7,13 +7,22 @@ use App\Models\LeoChannel;
 use App\Services\StripeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Leo', description: 'Leo add-on endpoints')]
 class LeoAddonController extends Controller
 {
     public function __construct(
         private readonly StripeService $stripeService,
     ) {}
 
+    #[OA\Post(
+        path: '/api/v1/leo/addon/activate',
+        tags: ['Leo'],
+        summary: 'Activate Leo add-on',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 200, description: 'Leo add-on activated')],
+    )]
     public function activate(Request $request): JsonResponse
     {
         $business = $request->user();
@@ -47,6 +56,13 @@ class LeoAddonController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: '/api/v1/leo/addon/deactivate',
+        tags: ['Leo'],
+        summary: 'Deactivate Leo add-on',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 204, description: 'Leo add-on deactivated')],
+    )]
     public function deactivate(Request $request): JsonResponse
     {
         $business = $request->user();
@@ -67,6 +83,13 @@ class LeoAddonController extends Controller
         return response()->json(null, 204);
     }
 
+    #[OA\Get(
+        path: '/api/v1/leo/addon-status',
+        tags: ['Leo'],
+        summary: 'Get Leo add-on status',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 200, description: 'Leo add-on status')],
+    )]
     public function status(Request $request): JsonResponse
     {
         $business = $request->user();

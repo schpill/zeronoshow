@@ -9,9 +9,18 @@ use App\Http\Resources\LeoChannelResource;
 use App\Models\LeoChannel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Leo', description: 'Leo channel endpoints')]
 class LeoChannelController extends Controller
 {
+    #[OA\Get(
+        path: '/api/v1/leo/channels',
+        tags: ['Leo'],
+        summary: 'Get Leo channel',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 200, description: 'Leo channel')],
+    )]
     public function index(Request $request): JsonResponse
     {
         $channel = LeoChannel::query()
@@ -23,6 +32,13 @@ class LeoChannelController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: '/api/v1/leo/channels',
+        tags: ['Leo'],
+        summary: 'Create Leo channel',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 201, description: 'Leo channel created')],
+    )]
     public function store(StoreLeoChannelRequest $request): JsonResponse
     {
         $business = $request->user();
@@ -62,6 +78,14 @@ class LeoChannelController extends Controller
         ], 201);
     }
 
+    #[OA\Patch(
+        path: '/api/v1/leo/channels/{leoChannel}',
+        tags: ['Leo'],
+        summary: 'Update Leo channel',
+        security: [['bearerAuth' => []]],
+        parameters: [new OA\Parameter(name: 'leoChannel', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid'))],
+        responses: [new OA\Response(response: 200, description: 'Leo channel updated')],
+    )]
     public function update(UpdateLeoChannelRequest $request, LeoChannel $leoChannel): JsonResponse
     {
         abort_unless($leoChannel->business_id === $request->user()->id, 404);
@@ -83,6 +107,14 @@ class LeoChannelController extends Controller
         ]);
     }
 
+    #[OA\Delete(
+        path: '/api/v1/leo/channels/{leoChannel}',
+        tags: ['Leo'],
+        summary: 'Delete Leo channel',
+        security: [['bearerAuth' => []]],
+        parameters: [new OA\Parameter(name: 'leoChannel', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid'))],
+        responses: [new OA\Response(response: 204, description: 'Leo channel deleted')],
+    )]
     public function destroy(Request $request, LeoChannel $leoChannel): JsonResponse
     {
         abort_unless($leoChannel->business_id === $request->user()->id, 404);

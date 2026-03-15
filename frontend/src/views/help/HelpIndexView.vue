@@ -76,6 +76,13 @@ const HELP_MODULES: HelpModule[] = [
     description: 'Assistant Telegram/WhatsApp, notifications en direct et gestion des crédits.',
     keywords: ['leo', 'assistant', 'telegram', 'whatsapp', 'ia', 'chat', 'crédit'],
   },
+  {
+    slug: 'api-swagger',
+    icon: '🧭',
+    title: 'API Swagger',
+    description: "Documentation interactive des endpoints de l'API ZeroNoShow.",
+    keywords: ['swagger', 'api', 'openapi', 'documentation', 'endpoint'],
+  },
 ]
 
 const filteredModules = computed(() => {
@@ -146,7 +153,9 @@ const hasResults = computed(() => filteredModules.value.length > 0)
       <RouterLink
         v-for="mod in filteredModules"
         :key="mod.slug"
-        :to="`/help/${mod.slug}`"
+        :to="mod.slug === 'api-swagger' ? '/api/docs' : `/help/${mod.slug}`"
+        :target="mod.slug === 'api-swagger' ? '_blank' : undefined"
+        :rel="mod.slug === 'api-swagger' ? 'noreferrer' : undefined"
         class="group flex flex-col rounded-[28px] border border-slate-200 bg-white p-5 transition hover:border-emerald-300 hover:shadow-md dark:border-slate-700 dark:bg-slate-900 dark:hover:border-emerald-700"
       >
         <span class="text-2xl">{{ mod.icon }}</span>

@@ -81,8 +81,9 @@ tinker:
 
 # ─── Introspection ────────────────────────────────────────────────────────────
 
+# Laravel 12 route:list no longer supports --columns; keep the default table output.
 routes:
-	$(DOCKER_COMPOSE) run --rm api php artisan route:list --columns=method,uri,name,action,middleware
+	$(DOCKER_COMPOSE) run --rm api php artisan route:list --sort=uri
 
 swagger:
 	$(DOCKER_COMPOSE) run --rm api php artisan l5-swagger:generate

@@ -10,9 +10,19 @@ use App\Models\VoiceCallLog;
 use App\Services\VoiceCallService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Voice', description: 'Voice call endpoints')]
 class VoiceCallController extends Controller
 {
+    #[OA\Post(
+        path: '/api/v1/reservations/{reservation}/voice-call',
+        tags: ['Voice'],
+        summary: 'Queue a voice call',
+        security: [['bearerAuth' => []]],
+        parameters: [new OA\Parameter(name: 'reservation', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid'))],
+        responses: [new OA\Response(response: 200, description: 'Voice call queued')],
+    )]
     public function queue(Request $request, Reservation $reservation): JsonResponse
     {
         abort_unless($reservation->business_id === $request->user()->id, 404);
@@ -24,6 +34,14 @@ class VoiceCallController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: '/api/v1/reservations/{reservation}/call',
+        tags: ['Voice'],
+        summary: 'Initiate a voice call immediately',
+        security: [['bearerAuth' => []]],
+        parameters: [new OA\Parameter(name: 'reservation', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid'))],
+        responses: [new OA\Response(response: 202, description: 'Voice call initiated')],
+    )]
     public function initiate(Request $request, Reservation $reservation, VoiceCallService $voiceCallService): JsonResponse
     {
         abort_unless($reservation->business_id === $request->user()->id, 404);
@@ -35,6 +53,14 @@ class VoiceCallController extends Controller
         ], 202);
     }
 
+    #[OA\Get(
+        path: '/api/v1/reservations/{reservation}/calls',
+        tags: ['Voice'],
+        summary: 'List voice call logs',
+        security: [['bearerAuth' => []]],
+        parameters: [new OA\Parameter(name: 'reservation', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid'))],
+        responses: [new OA\Response(response: 200, description: 'Voice call logs')],
+    )]
     public function logs(Request $request, Reservation $reservation): JsonResponse
     {
         abort_unless($reservation->business_id === $request->user()->id, 404);

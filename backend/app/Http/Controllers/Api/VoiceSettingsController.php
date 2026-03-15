@@ -7,9 +7,18 @@ use App\Http\Requests\VoiceSettingsRequest;
 use App\Http\Resources\VoiceCreditResource;
 use App\Models\Business;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Voice', description: 'Voice settings endpoints')]
 class VoiceSettingsController extends Controller
 {
+    #[OA\Get(
+        path: '/api/v1/voice/settings',
+        tags: ['Voice'],
+        summary: 'Get voice settings',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 200, description: 'Voice settings')],
+    )]
     public function show(Request $request): VoiceCreditResource
     {
         /** @var Business $business */
@@ -18,6 +27,13 @@ class VoiceSettingsController extends Controller
         return new VoiceCreditResource($business->load('leoChannel'));
     }
 
+    #[OA\Patch(
+        path: '/api/v1/voice/settings',
+        tags: ['Voice'],
+        summary: 'Update voice settings',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 200, description: 'Voice settings updated')],
+    )]
     public function update(VoiceSettingsRequest $request): VoiceCreditResource
     {
         /** @var Business $business */

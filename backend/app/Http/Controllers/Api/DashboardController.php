@@ -11,9 +11,22 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Dashboard', description: 'Business dashboard endpoints')]
 class DashboardController extends Controller
 {
+    #[OA\Get(
+        path: '/api/v1/dashboard',
+        tags: ['Dashboard'],
+        summary: 'Get dashboard metrics and reservations',
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(name: 'date', in: 'query', schema: new OA\Schema(type: 'string', format: 'date')),
+            new OA\Parameter(name: 'week', in: 'query', schema: new OA\Schema(type: 'string')),
+        ],
+        responses: [new OA\Response(response: 200, description: 'Dashboard payload')],
+    )]
     public function index(Request $request): JsonResponse
     {
         $business = $request->user();

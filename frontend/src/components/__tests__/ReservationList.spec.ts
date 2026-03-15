@@ -11,6 +11,7 @@ function makeReservation(id: string, scheduledAt: string): ReservationRecord {
     scheduled_at: scheduledAt,
     guests: 2,
     notes: null,
+    source: 'manual',
     status: 'pending_reminder',
     phone_verified: false,
     reminder_2h_sent: false,

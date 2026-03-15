@@ -17,9 +17,18 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Reservations', description: 'Reservation management endpoints')]
 class ReservationController extends Controller
 {
+    #[OA\Post(
+        path: '/api/v1/reservations',
+        tags: ['Reservations'],
+        summary: 'Create a reservation',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 201, description: 'Reservation created')],
+    )]
     public function store(StoreReservationRequest $request): JsonResponse
     {
         $business = $request->user();
@@ -99,6 +108,18 @@ class ReservationController extends Controller
         ], 201);
     }
 
+    #[OA\Get(
+        path: '/api/v1/reservations',
+        tags: ['Reservations'],
+        summary: 'List reservations',
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(name: 'date', in: 'query', schema: new OA\Schema(type: 'string', format: 'date')),
+            new OA\Parameter(name: 'week', in: 'query', schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(name: 'source', in: 'query', schema: new OA\Schema(type: 'string')),
+        ],
+        responses: [new OA\Response(response: 200, description: 'Reservation list')],
+    )]
     public function index(Request $request): JsonResponse
     {
         $business = $request->user();
@@ -147,6 +168,16 @@ class ReservationController extends Controller
         return response()->json($payload);
     }
 
+    #[OA\Get(
+        path: '/api/v1/reservations/{reservation}',
+        tags: ['Reservations'],
+        summary: 'Show one reservation',
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(name: 'reservation', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [new OA\Response(response: 200, description: 'Reservation detail')],
+    )]
     public function show(Request $request, Reservation $reservation): JsonResponse
     {
         abort_if($reservation->business_id !== $request->user()->id, 403);
@@ -176,6 +207,16 @@ class ReservationController extends Controller
         ]);
     }
 
+    #[OA\Patch(
+        path: '/api/v1/reservations/{reservation}/status',
+        tags: ['Reservations'],
+        summary: 'Update reservation status',
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(name: 'reservation', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid')),
+        ],
+        responses: [new OA\Response(response: 200, description: 'Reservation updated')],
+    )]
     public function updateStatus(
         UpdateReservationStatusRequest $request,
         Reservation $reservation,

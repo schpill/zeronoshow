@@ -7,9 +7,18 @@ use App\Http\Resources\CustomerResource;
 use App\Models\Customer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Customers', description: 'Customer and CRM endpoints')]
 class CustomerController extends Controller
 {
+    #[OA\Get(
+        path: '/api/v1/customers',
+        tags: ['Customers'],
+        summary: 'List customers',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 200, description: 'Customers list')],
+    )]
     public function index(Request $request)
     {
         $query = Customer::query()
@@ -31,6 +40,14 @@ class CustomerController extends Controller
         return CustomerResource::collection($query->distinct()->get());
     }
 
+    #[OA\Get(
+        path: '/api/v1/customers/lookup',
+        tags: ['Customers'],
+        summary: 'Lookup customer by phone',
+        security: [['bearerAuth' => []]],
+        parameters: [new OA\Parameter(name: 'phone', in: 'query', required: true, schema: new OA\Schema(type: 'string'))],
+        responses: [new OA\Response(response: 200, description: 'Lookup result')],
+    )]
     public function lookup(Request $request): JsonResponse
     {
         $rawPhone = (string) $request->input('phone');

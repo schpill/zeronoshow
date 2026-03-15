@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Admin;
 use App\Models\Business;
 
 return [
@@ -42,6 +43,10 @@ return [
             'driver' => 'session',
             'provider' => 'businesses',
         ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
     ],
 
     /*
@@ -65,6 +70,10 @@ return [
         'businesses' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', Business::class),
+        ],
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => Admin::class,
         ],
     ],
 
