@@ -1,1 +1,55 @@
-/node_modules/
+# Node
+node_modules/
+.npm/
+
+# pnpm
+.pnpm-store/
+# NOTE: pnpm-lock.yaml doit rester committé (CI utilise --frozen-lockfile)
+
+# PHP — couverts par backend/.gitignore mais répétés ici pour clarté
+backend/vendor/
+backend/.env
+backend/storage/*.key
+backend/storage/debugbar/
+backend/public/storage
+backend/public/hot
+backend/public/build
+backend/database/*.sqlite
+
+# Frontend — couverts par frontend/.gitignore
+frontend/dist/
+frontend/dist-ssr/
+frontend/coverage/
+frontend/.pnpm-store/
+frontend/playwright-report/
+frontend/test-results/
+frontend/__screenshots__/
+
+# Docker
+.docker-data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.claude/
+.idea/
+*.swp
+*.swo
+
+# Env (tous niveaux)
+.env
+.env.local
+.env.*.local
+
+# Husky
+.husky/_/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
