@@ -25,7 +25,9 @@ watch(
 async function handleTourComplete() {
   showTour.value = false
   try {
-    const response = await apiClient.patch<{ onboarding_completed_at: string }>('/business/onboarding-complete')
+    const response = await apiClient.patch<{ onboarding_completed_at: string }>(
+      '/business/onboarding-complete',
+    )
     if (auth.user) {
       auth.user = { ...auth.user, onboarding_completed_at: response.onboarding_completed_at }
     }

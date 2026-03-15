@@ -29,22 +29,26 @@ const pipelineDiagram = `flowchart TD
 
     <section class="mt-8">
       <h2 class="text-heading-3">1. Types de SMS</h2>
-      <p class="text-body-sm mt-3 dark:text-slate-400">
-        ZeroNoShow envoie deux types de SMS :
-      </p>
+      <p class="text-body-sm mt-3 dark:text-slate-400">ZeroNoShow envoie deux types de SMS :</p>
       <div class="mt-4 grid gap-3 sm:grid-cols-2">
-        <div class="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
-          <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">SMS de vérification</p>
+        <div
+          class="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900"
+        >
+          <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">
+            SMS de vérification
+          </p>
           <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
-            Envoyé lors de la création d'une réservation avec un numéro non vérifié.
-            Contient un lien de confirmation.
+            Envoyé lors de la création d'une réservation avec un numéro non vérifié. Contient un
+            lien de confirmation.
           </p>
         </div>
-        <div class="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+        <div
+          class="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900"
+        >
           <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">SMS de rappel</p>
           <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
-            Envoyé selon le score de fiabilité du client.
-            1 ou 2 rappels selon le tier (Moyen ou À risque).
+            Envoyé selon le score de fiabilité du client. 1 ou 2 rappels selon le tier (Moyen ou À
+            risque).
           </p>
         </div>
       </div>
@@ -58,8 +62,8 @@ const pipelineDiagram = `flowchart TD
     <section class="mt-8">
       <h2 class="text-heading-3">3. Coût par SMS</h2>
       <p class="text-body-sm mt-3 dark:text-slate-400">
-        Le coût mensuel des SMS est affiché sur le Dashboard. Chaque SMS coûte environ
-        0,07 €. Les rappels sont inclus dans le coût total.
+        Le coût mensuel des SMS est affiché sur le Dashboard. Chaque SMS coûte environ 0,07 €. Les
+        rappels sont inclus dans le coût total.
       </p>
       <p class="text-body-sm mt-2 dark:text-slate-400">
         Consultez le Dashboard pour voir le récapitulatif mensuel.

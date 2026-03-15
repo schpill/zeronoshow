@@ -13,7 +13,7 @@ const modules = [
   { slug: 'sms', label: 'SMS', icon: '📱' },
   { slug: 'scoring', label: 'Score de fiabilité', icon: '📊' },
   { slug: 'widget', label: 'Widget', icon: '🌐' },
-  { slug: 'waitlist', label: 'Liste d\'attente', icon: '⏳' },
+  { slug: 'waitlist', label: "Liste d'attente", icon: '⏳' },
   { slug: 'customers', label: 'Clients', icon: '👥' },
   { slug: 'reputation', label: 'Réputation', icon: '⭐' },
   { slug: 'leo', label: 'Léo', icon: '🤖' },
@@ -25,8 +25,12 @@ const currentModule = computed(() => route.params.module as string | undefined)
 <template>
   <div class="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50">
     <!-- Top bar -->
-    <header class="border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95">
-      <div class="mx-auto flex min-h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header
+      class="border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95"
+    >
+      <div
+        class="mx-auto flex min-h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
+      >
         <div class="flex items-center gap-3">
           <div
             class="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-xs font-extrabold text-white shadow-lg shadow-emerald-500/20"
@@ -34,7 +38,10 @@ const currentModule = computed(() => route.params.module as string | undefined)
             ZN
           </div>
           <div>
-            <RouterLink to="/help" class="text-overline hover:text-emerald-600 dark:hover:text-emerald-400">
+            <RouterLink
+              to="/help"
+              class="text-overline hover:text-emerald-600 dark:hover:text-emerald-400"
+            >
               ZeroNoShow
             </RouterLink>
             <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">Centre d'aide</p>

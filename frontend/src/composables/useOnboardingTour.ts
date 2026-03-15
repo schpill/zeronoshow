@@ -15,19 +15,19 @@ export const TOUR_STEPS: TourStep[] = [
   },
   {
     title: 'Score de fiabilité',
-    body: "Ce badge indique la fiabilité du client : Fiable (≥90%), Moyen (70-89%) ou À risque (<70%). Il détermine le nombre de rappels envoyés.",
+    body: 'Ce badge indique la fiabilité du client : Fiable (≥90%), Moyen (70-89%) ou À risque (<70%). Il détermine le nombre de rappels envoyés.',
     targetSelector: '.reliability-badge',
     placement: 'bottom',
   },
   {
     title: 'Suivi SMS',
-    body: "Consultez ici tous les SMS envoyés pour cette réservation : vérification, rappels, et leur statut de livraison.",
+    body: 'Consultez ici tous les SMS envoyés pour cette réservation : vérification, rappels, et leur statut de livraison.',
     targetSelector: '#sms-logs-section',
     placement: 'top',
   },
   {
     title: 'Widget de réservation',
-    body: "Intégrez un formulaire de réservation sur votre site web ou partagez un lien direct. Les réservations apparaissent ici automatiquement.",
+    body: 'Intégrez un formulaire de réservation sur votre site web ou partagez un lien direct. Les réservations apparaissent ici automatiquement.',
     targetSelector: '#leo-connect-btn',
     placement: 'left',
   },

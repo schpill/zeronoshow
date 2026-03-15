@@ -29,17 +29,20 @@ const lifecycleDiagram = `stateDiagram-v2
       <h2 class="text-heading-3">1. Créer une réservation</h2>
       <p class="text-body-sm mt-3 dark:text-slate-400">
         Depuis le Dashboard, cliquez sur "Nouvelle réservation" ou utilisez le formulaire intégré.
-        Remplissez les champs obligatoires : nom du client, téléphone, date/heure et nombre de couverts.
+        Remplissez les champs obligatoires : nom du client, téléphone, date/heure et nombre de
+        couverts.
       </p>
       <p class="text-body-sm mt-2 dark:text-slate-400">
         Si le numéro n'est pas encore vérifié, un SMS de confirmation sera envoyé automatiquement.
         Cochez "Numéro confirmé par appel" si le client a déjà été vérifié.
       </p>
-      <div class="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-800 dark:bg-emerald-900/20">
+      <div
+        class="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-800 dark:bg-emerald-900/20"
+      >
         <p class="text-sm font-semibold text-emerald-800 dark:text-emerald-300">Astuce</p>
         <p class="mt-1 text-sm text-emerald-700 dark:text-emerald-400">
-          Utilisez le champ téléphone pour faire une recherche client automatique.
-          Le score de fiabilité s'affiche dès que le numéro est reconnu.
+          Utilisez le champ téléphone pour faire une recherche client automatique. Le score de
+          fiabilité s'affiche dès que le numéro est reconnu.
         </p>
       </div>
     </section>
@@ -52,20 +55,38 @@ const lifecycleDiagram = `stateDiagram-v2
       <MermaidDiagram :definition="lifecycleDiagram" />
       <div class="mt-4 grid gap-3 sm:grid-cols-2">
         <div class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
-          <span class="inline-block rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-800">Rappel prévu</span>
-          <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">SMS de rappel programmé selon le score de fiabilité.</p>
+          <span
+            class="inline-block rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-800"
+            >Rappel prévu</span
+          >
+          <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            SMS de rappel programmé selon le score de fiabilité.
+          </p>
         </div>
         <div class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
-          <span class="inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-900">Confirmé</span>
-          <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Le client a confirmé sa présence.</p>
+          <span
+            class="inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-900"
+            >Confirmé</span
+          >
+          <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            Le client a confirmé sa présence.
+          </p>
         </div>
         <div class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
-          <span class="inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-900">Présent</span>
+          <span
+            class="inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-900"
+            >Présent</span
+          >
           <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Le client s'est présenté.</p>
         </div>
         <div class="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
-          <span class="inline-block rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-800">No-show</span>
-          <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Le client ne s'est pas présenté.</p>
+          <span
+            class="inline-block rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-800"
+            >No-show</span
+          >
+          <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            Le client ne s'est pas présenté.
+          </p>
         </div>
       </div>
     </section>

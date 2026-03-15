@@ -110,15 +110,31 @@ const popoverStyle = computed(() => {
   const r = targetRect.value
   const placement = step.value?.placement ?? 'bottom'
   if (placement === 'bottom') {
-    return { top: `${r.bottom + 16}px`, left: `${r.left + r.width / 2}px`, transform: 'translateX(-50%)' }
+    return {
+      top: `${r.bottom + 16}px`,
+      left: `${r.left + r.width / 2}px`,
+      transform: 'translateX(-50%)',
+    }
   }
   if (placement === 'top') {
-    return { top: `${r.top - 16}px`, left: `${r.left + r.width / 2}px`, transform: 'translate(-50%, -100%)' }
+    return {
+      top: `${r.top - 16}px`,
+      left: `${r.left + r.width / 2}px`,
+      transform: 'translate(-50%, -100%)',
+    }
   }
   if (placement === 'left') {
-    return { top: `${r.top + r.height / 2}px`, left: `${r.left - 16}px`, transform: 'translate(-100%, -50%)' }
+    return {
+      top: `${r.top + r.height / 2}px`,
+      left: `${r.left - 16}px`,
+      transform: 'translate(-100%, -50%)',
+    }
   }
-  return { top: `${r.top + r.height / 2}px`, left: `${r.right + 16}px`, transform: 'translateY(-50%)' }
+  return {
+    top: `${r.top + r.height / 2}px`,
+    left: `${r.right + 16}px`,
+    transform: 'translateY(-50%)',
+  }
 })
 </script>
 

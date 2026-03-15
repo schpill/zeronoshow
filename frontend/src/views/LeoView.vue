@@ -141,7 +141,9 @@ onMounted(() => {
           <p class="text-overline">Assistant Telegram</p>
           <h1 class="mt-2 flex items-center gap-2 text-heading-2">
             Léo
-            <HelpTooltip content="Léo est votre assistant IA. Il gère les notifications et communique avec vos clients via Telegram ou WhatsApp." />
+            <HelpTooltip
+              content="Léo est votre assistant IA. Il gère les notifications et communique avec vos clients via Telegram ou WhatsApp."
+            />
           </h1>
           <p class="mt-3 max-w-2xl text-body-sm">
             Activez votre assistant, configurez un unique canal par établissement et recevez vos

@@ -6,14 +6,15 @@ import MermaidDiagram from '@/components/help/MermaidDiagram.vue'
   <article class="prose max-w-none">
     <h1 class="text-heading-2">Widget de réservation</h1>
     <p class="text-body mt-4 dark:text-slate-300">
-      Permettez à vos clients de réserver en ligne directement depuis votre site web ou un lien partagé.
+      Permettez à vos clients de réserver en ligne directement depuis votre site web ou un lien
+      partagé.
     </p>
 
     <section class="mt-8">
       <h2 class="text-heading-3">1. Obtenir le lien widget</h2>
       <p class="text-body-sm mt-3 dark:text-slate-400">
-        Allez dans <strong>Léo → Widget de réservation</strong> pour trouver votre lien unique et le code
-        d'intégration iframe. Le lien public permet la réservation sans connexion.
+        Allez dans <strong>Léo → Widget de réservation</strong> pour trouver votre lien unique et le
+        code d'intégration iframe. Le lien public permet la réservation sans connexion.
       </p>
     </section>
 
@@ -49,8 +50,8 @@ import MermaidDiagram from '@/components/help/MermaidDiagram.vue'
     <section class="mt-8">
       <h2 class="text-heading-3">4. Page de succès</h2>
       <p class="text-body-sm mt-3 dark:text-slate-400">
-        Après une réservation réussie, le client est redirigé vers une page de confirmation
-        qui affiche le récapitulatif et le statut "Rappel prévu".
+        Après une réservation réussie, le client est redirigé vers une page de confirmation qui
+        affiche le récapitulatif et le statut "Rappel prévu".
       </p>
     </section>
   </article>

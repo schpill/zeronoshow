@@ -38,7 +38,7 @@ describe('HelpIndexView', () => {
     expect(wrapper.text()).toContain('SMS')
     expect(wrapper.text()).toContain('Score de fiabilité')
     expect(wrapper.text()).toContain('Widget de réservation')
-    expect(wrapper.text()).toContain('Liste d\'attente')
+    expect(wrapper.text()).toContain("Liste d'attente")
     expect(wrapper.text()).toContain('Clients')
     expect(wrapper.text()).toContain('Réputation')
     expect(wrapper.text()).toContain('Léo — Assistant IA')

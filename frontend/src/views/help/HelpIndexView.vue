@@ -29,8 +29,7 @@ const HELP_MODULES: HelpModule[] = [
     slug: 'sms',
     icon: '📱',
     title: 'SMS',
-    description:
-      'Pipeline SMS, types de messages, coût par envoi et webhook de livraison.',
+    description: 'Pipeline SMS, types de messages, coût par envoi et webhook de livraison.',
     keywords: ['sms', 'message', 'coût', 'livraison', 'webhook', 'verification', 'rappel'],
   },
   {
@@ -52,33 +51,29 @@ const HELP_MODULES: HelpModule[] = [
   {
     slug: 'waitlist',
     icon: '⏳',
-    title: 'Liste d\'attente',
-    description:
-      'Gérer votre liste d\'attente, notifier les clients et configurer le lien public.',
+    title: "Liste d'attente",
+    description: "Gérer votre liste d'attente, notifier les clients et configurer le lien public.",
     keywords: ['attente', 'liste', 'notifier', 'créneau', 'libre', 'waitlist'],
   },
   {
     slug: 'customers',
     icon: '👥',
     title: 'Clients',
-    description:
-      'Fiche client, CRM, VIP, liste noire et historique des réservations.',
+    description: 'Fiche client, CRM, VIP, liste noire et historique des réservations.',
     keywords: ['client', 'crm', 'vip', 'liste noire', 'fiche', 'historique'],
   },
   {
     slug: 'reputation',
     icon: '⭐',
     title: 'Réputation',
-    description:
-      'Demandes d\'avis post-visite, intégration Google/TripAdvisor et suivi des clics.',
+    description: "Demandes d'avis post-visite, intégration Google/TripAdvisor et suivi des clics.",
     keywords: ['avis', 'réputation', 'google', 'tripadvisor', 'clic', 'note'],
   },
   {
     slug: 'leo',
     icon: '🤖',
     title: 'Léo — Assistant IA',
-    description:
-      'Assistant Telegram/WhatsApp, notifications en direct et gestion des crédits.',
+    description: 'Assistant Telegram/WhatsApp, notifications en direct et gestion des crédits.',
     keywords: ['leo', 'assistant', 'telegram', 'whatsapp', 'ia', 'chat', 'crédit'],
   },
 ]
@@ -110,7 +105,9 @@ const hasResults = computed(() => filteredModules.value.length > 0)
     <div class="mt-6">
       <label for="help-search" class="sr-only">Rechercher dans l'aide</label>
       <div class="relative">
-        <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+        <span
+          class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"
+        >
           🔍
         </span>
         <input
@@ -153,7 +150,9 @@ const hasResults = computed(() => filteredModules.value.length > 0)
         class="group flex flex-col rounded-[28px] border border-slate-200 bg-white p-5 transition hover:border-emerald-300 hover:shadow-md dark:border-slate-700 dark:bg-slate-900 dark:hover:border-emerald-700"
       >
         <span class="text-2xl">{{ mod.icon }}</span>
-        <h2 class="text-heading-4 mt-3 group-hover:text-emerald-700 dark:group-hover:text-emerald-400">
+        <h2
+          class="text-heading-4 mt-3 group-hover:text-emerald-700 dark:group-hover:text-emerald-400"
+        >
           {{ mod.title }}
         </h2>
         <p class="text-body-sm mt-2 flex-1 dark:text-slate-400">

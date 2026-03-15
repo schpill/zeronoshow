@@ -33,16 +33,16 @@ onMounted(() => {
   void renderDiagram()
 })
 
-watch(() => props.definition, () => {
-  void renderDiagram()
-})
+watch(
+  () => props.definition,
+  () => {
+    void renderDiagram()
+  },
+)
 </script>
 
 <template>
-  <div
-    v-if="error"
-    class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
-  >
+  <div v-if="error" class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
     {{ error }}
   </div>
   <div ref="container" class="overflow-x-auto" />
