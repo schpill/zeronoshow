@@ -18,6 +18,12 @@ class DemoSeeder extends Seeder
 {
     public function run(): void
     {
+        if (! app()->environment(['local', 'staging'])) {
+            $this->command->warn('DemoSeeder ignoré — ne s\'exécute qu\'en local ou staging.');
+
+            return;
+        }
+
         $this->seedCreperie();
         $this->seedCoiffeur();
         $this->seedInfirmiere();
