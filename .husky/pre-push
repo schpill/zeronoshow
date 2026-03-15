@@ -30,17 +30,11 @@ docker compose exec -T \
   api ./vendor/bin/pest --stop-on-failure
 
 echo "[4/5] Frontend - Prettier + ESLint"
-(
-  cd frontend
-  pnpm exec prettier --check .
-  pnpm exec eslint . --cache
-)
+docker compose run --rm frontend pnpm exec prettier --check .
+docker compose run --rm frontend pnpm exec eslint . --cache
 
 echo "[5/5] Frontend - Vitest"
-(
-  cd frontend
-  pnpm exec vitest run
-)
+docker compose run --rm frontend pnpm exec vitest run
 
 echo
 echo "All checks passed. Push allowed."

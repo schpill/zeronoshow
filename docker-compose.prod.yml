@@ -1,4 +1,15 @@
 services:
+  frontend:
+    build:
+      context: ./backend
+      dockerfile: docker/node/Dockerfile
+    container_name: znz_frontend_build
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    networks:
+      - znz_net
+
   nginx:
     image: nginx:1.27-alpine
     container_name: znz_nginx
@@ -194,3 +205,4 @@ volumes:
   letsencrypt:
   postgres_data:
   redis_data:
+  frontend_node_modules:
