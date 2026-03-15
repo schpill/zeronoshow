@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BusinessController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\CustomerCrmController;
 use App\Http\Controllers\Api\DashboardController;
@@ -17,7 +18,6 @@ use App\Http\Controllers\Api\VoiceCreditController;
 use App\Http\Controllers\Api\VoiceSettingsController;
 use App\Http\Controllers\Api\WaitlistController;
 use App\Http\Controllers\Api\WaitlistSettingsController;
-use App\Http\Controllers\Api\BusinessController;
 use App\Http\Controllers\Api\WidgetSettingController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Webhook\LeoWebhookController;
