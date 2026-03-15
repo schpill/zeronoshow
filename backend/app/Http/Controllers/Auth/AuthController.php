@@ -11,9 +11,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Auth', description: 'Business authentication endpoints')]
 class AuthController extends Controller
 {
+    #[OA\Post(
+        path: '/api/v1/auth/register',
+        tags: ['Auth'],
+        summary: 'Register a business account',
+        responses: [new OA\Response(response: 201, description: 'Registered')],
+    )]
     public function register(RegisterRequest $request): JsonResponse
     {
         $business = Business::query()->create([
@@ -33,6 +41,15 @@ class AuthController extends Controller
         ], 201);
     }
 
+    #[OA\Post(
+        path: '/api/v1/auth/login',
+        tags: ['Auth'],
+        summary: 'Login a business account',
+        responses: [
+            new OA\Response(response: 200, description: 'Logged in'),
+            new OA\Response(response: 401, description: 'Invalid credentials'),
+        ],
+    )]
     public function login(Request $request): JsonResponse
     {
         $credentials = $request->validate([
@@ -55,6 +72,13 @@ class AuthController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: '/api/v1/auth/logout',
+        tags: ['Auth'],
+        summary: 'Logout current business token',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 204, description: 'Logged out')],
+    )]
     public function logout(Request $request): JsonResponse
     {
         $request->user()?->currentAccessToken()?->delete();

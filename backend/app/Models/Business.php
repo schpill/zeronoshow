@@ -90,6 +90,11 @@ class Business extends Authenticatable
         return $this->hasMany(VoiceCallLog::class);
     }
 
+    public function smsLogs(): HasMany
+    {
+        return $this->hasMany(SmsLog::class);
+    }
+
     public function reviewRequests(): HasMany
     {
         return $this->hasMany(ReviewRequest::class);

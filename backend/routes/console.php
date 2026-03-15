@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Schedule;
 
 Artisan::command('inspire', function () {
@@ -185,6 +186,9 @@ Schedule::command('waitlist:expire-notifications')->everyMinute()->withoutOverla
 Schedule::command('waitlist:purge-expired')->daily()->withoutOverlapping(10);
 Schedule::command('trial:expiry-emails')->hourly()->withoutOverlapping(10);
 Schedule::command('billing:sync-sms-cost')->monthlyOn(1, '06:00')->withoutOverlapping(60);
+Schedule::call(function (): void {
+    Redis::setex('znz:worker:heartbeat', 60, now()->toIso8601String());
+})->everyMinute()->name('znz-worker-heartbeat')->withoutOverlapping();
 Schedule::command(PurgeSmsLogs::class)->dailyAt('03:30');
 Schedule::command(PurgeLeoMessageLogs::class)->monthly()->withoutOverlapping(60);
 Schedule::command(ExpireReviewRequests::class)->daily()->withoutOverlapping(10);

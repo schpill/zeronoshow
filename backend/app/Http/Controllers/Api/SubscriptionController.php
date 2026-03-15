@@ -7,9 +7,18 @@ use App\Models\SmsLog;
 use App\Services\StripeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Subscription', description: 'Subscription and billing endpoints')]
 class SubscriptionController extends Controller
 {
+    #[OA\Post(
+        path: '/api/v1/subscription/checkout',
+        tags: ['Subscription'],
+        summary: 'Create subscription checkout session',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 200, description: 'Checkout session created')],
+    )]
     public function checkout(Request $request): JsonResponse
     {
         $business = $request->user();
@@ -26,6 +35,13 @@ class SubscriptionController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/api/v1/subscription',
+        tags: ['Subscription'],
+        summary: 'Get current subscription state',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 200, description: 'Subscription state')],
+    )]
     public function show(Request $request): JsonResponse
     {
         $business = $request->user();

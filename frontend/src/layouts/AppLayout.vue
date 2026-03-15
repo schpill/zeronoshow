@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { RouterView } from 'vue-router'
 
 import NavBar from '@/components/NavBar.vue'
@@ -13,6 +13,10 @@ import { apiClient } from '@/api/axios'
 const auth = useAuthStore()
 
 const showTour = ref(false)
+
+onMounted(() => {
+  auth.captureImpersonationTokenFromUrl()
+})
 
 watch(
   () => auth.user?.onboarding_completed_at,

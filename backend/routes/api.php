@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAuditController;
+use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\AdminBusinessController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminSystemController;
 use App\Http\Controllers\Api\BusinessController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\CustomerCrmController;
@@ -40,6 +45,7 @@ Route::prefix('v1')->group(function (): void {
 
     Route::post('/auth/register', [AuthController::class, 'register'])->middleware('throttle:register');
     Route::post('/auth/login', [AuthController::class, 'login'])->middleware('throttle:login');
+    Route::post('/admin/login', [AdminAuthController::class, 'login'])->middleware('throttle:login');
     Route::get('/health', [HealthController::class, 'check']);
     Route::post('/webhooks/twilio', [TwilioWebhookController::class, 'handle'])->middleware('throttle:webhook');
     Route::post('/webhooks/stripe', [StripeWebhookController::class, 'handle']);
@@ -112,4 +118,18 @@ Route::prefix('v1')->group(function (): void {
             Route::delete('/leo/channels/{leoChannel}', [LeoChannelController::class, 'destroy']);
         });
     });
+
+    Route::prefix('admin')
+        ->middleware(['auth:sanctum', 'admin.ability'])
+        ->group(function (): void {
+            Route::post('/logout', [AdminAuthController::class, 'logout']);
+            Route::get('/stats', [AdminDashboardController::class, 'stats']);
+            Route::get('/system/health', [AdminSystemController::class, 'health']);
+            Route::get('/businesses', [AdminBusinessController::class, 'index']);
+            Route::get('/businesses/{business}', [AdminBusinessController::class, 'show']);
+            Route::patch('/businesses/{business}/extend-trial', [AdminBusinessController::class, 'extendTrial']);
+            Route::patch('/businesses/{business}/cancel-subscription', [AdminBusinessController::class, 'cancelSubscription']);
+            Route::post('/businesses/{business}/impersonate', [AdminBusinessController::class, 'impersonate']);
+            Route::get('/audit-logs', [AdminAuditController::class, 'index']);
+        });
 });

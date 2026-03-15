@@ -13,6 +13,7 @@ vi.mock('@/api/axios', () => ({
 describe('auth store', () => {
   beforeEach(() => {
     const storage = new Map<string, string>()
+    const sessionStorageMap = new Map<string, string>()
     vi.stubGlobal('localStorage', {
       getItem: vi.fn((key: string) => storage.get(key) ?? null),
       setItem: vi.fn((key: string, value: string) => {
@@ -25,7 +26,20 @@ describe('auth store', () => {
         storage.clear()
       }),
     })
+    vi.stubGlobal('sessionStorage', {
+      getItem: vi.fn((key: string) => sessionStorageMap.get(key) ?? null),
+      setItem: vi.fn((key: string, value: string) => {
+        sessionStorageMap.set(key, value)
+      }),
+      removeItem: vi.fn((key: string) => {
+        sessionStorageMap.delete(key)
+      }),
+      clear: vi.fn(() => {
+        sessionStorageMap.clear()
+      }),
+    })
     localStorage.clear()
+    sessionStorage.clear()
     setActivePinia(createPinia())
     vi.clearAllMocks()
   })
@@ -36,8 +50,10 @@ describe('auth store', () => {
       business: {
         id: 'biz-1',
         name: 'Le Bistrot',
+        email: 'owner@example.com',
         subscription_status: 'trial',
         trial_ends_at: '2026-03-26T00:00:00Z',
+        onboarding_completed_at: null,
       },
     })
 
@@ -61,6 +77,7 @@ describe('auth store', () => {
       email: 'owner@example.com',
       subscription_status: 'trial',
       trial_ends_at: '2026-03-26T00:00:00Z',
+      onboarding_completed_at: null,
     }
     localStorage.setItem('znz_token', 'token-123')
 
@@ -77,6 +94,16 @@ describe('auth store', () => {
     expect(store.isAuthenticated).toBe(false)
   })
 
+  it('prefers a valid impersonation token from sessionStorage', () => {
+    sessionStorage.setItem('znz_impersonation_token', 'impersonation-token')
+    sessionStorage.setItem('znz_impersonation_expires_at', '2099-03-15T12:00:00Z')
+
+    const store = useAuthStore()
+
+    expect(store.token).toBe('impersonation-token')
+    expect(store.isAuthenticated).toBe(true)
+  })
+
   it('returns false when trial is expired', () => {
     const store = useAuthStore()
     store.user = {
@@ -85,6 +112,7 @@ describe('auth store', () => {
       email: 'owner@example.com',
       subscription_status: 'trial',
       trial_ends_at: '2026-03-01T00:00:00Z',
+      onboarding_completed_at: null,
     }
 
     expect(store.isOnActivePlan).toBe(false)

@@ -18,13 +18,18 @@ vi.mock('@/composables/useReservations', () => ({
   }),
 }))
 
-function makeReservation(overrides: Partial<ReservationRecord> = {}): ReservationRecord {
+function makeReservation(
+  overrides: Partial<Omit<ReservationRecord, 'source'>> & {
+    source?: ReservationRecord['source']
+  } = {},
+): ReservationRecord {
   return {
     id: 'res-1',
     customer_name: 'Marc Dubois',
     scheduled_at: '2026-03-13T20:00:00.000Z',
     guests: 2,
     notes: null,
+    source: overrides.source ?? 'manual',
     status: 'pending_reminder',
     phone_verified: false,
     reminder_2h_sent: false,

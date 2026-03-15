@@ -23,9 +23,18 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Booking Widget', description: 'Public booking widget endpoints')]
 class PublicBookingController extends Controller
 {
+    #[OA\Get(
+        path: '/api/v1/public/widget/{businessToken}/config',
+        tags: ['Booking Widget'],
+        summary: 'Get widget config',
+        parameters: [new OA\Parameter(name: 'businessToken', in: 'path', required: true, schema: new OA\Schema(type: 'string'))],
+        responses: [new OA\Response(response: 200, description: 'Widget config')],
+    )]
     public function config(Business $business): JsonResponse
     {
         /** @var WidgetSetting|null $setting */
@@ -42,6 +51,16 @@ class PublicBookingController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/api/v1/public/widget/{businessToken}/slots',
+        tags: ['Booking Widget'],
+        summary: 'Get available slots',
+        parameters: [
+            new OA\Parameter(name: 'businessToken', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(name: 'date', in: 'query', required: true, schema: new OA\Schema(type: 'string', format: 'date')),
+        ],
+        responses: [new OA\Response(response: 200, description: 'Available slots')],
+    )]
     public function slots(Request $request, Business $business, SlotAvailabilityService $service): JsonResponse
     {
         $date = $request->query('date');
@@ -57,6 +76,13 @@ class PublicBookingController extends Controller
         return response()->json(['slots' => $slots]);
     }
 
+    #[OA\Post(
+        path: '/api/v1/public/widget/{businessToken}/otp/send',
+        tags: ['Booking Widget'],
+        summary: 'Send OTP for widget booking',
+        parameters: [new OA\Parameter(name: 'businessToken', in: 'path', required: true, schema: new OA\Schema(type: 'string'))],
+        responses: [new OA\Response(response: 200, description: 'OTP sent')],
+    )]
     public function sendOtp(
         SendOtpRequest $request,
         Business $business,
@@ -76,6 +102,13 @@ class PublicBookingController extends Controller
         }
     }
 
+    #[OA\Post(
+        path: '/api/v1/public/widget/{businessToken}/otp/verify',
+        tags: ['Booking Widget'],
+        summary: 'Verify widget OTP',
+        parameters: [new OA\Parameter(name: 'businessToken', in: 'path', required: true, schema: new OA\Schema(type: 'string'))],
+        responses: [new OA\Response(response: 200, description: 'OTP verified')],
+    )]
     public function verifyOtp(
         VerifyOtpRequest $request,
         Business $business,
@@ -106,6 +139,13 @@ class PublicBookingController extends Controller
         return response()->json(['guest_token' => $token]);
     }
 
+    #[OA\Post(
+        path: '/api/v1/public/widget/{businessToken}/reservations',
+        tags: ['Booking Widget'],
+        summary: 'Create reservation from widget',
+        parameters: [new OA\Parameter(name: 'businessToken', in: 'path', required: true, schema: new OA\Schema(type: 'string'))],
+        responses: [new OA\Response(response: 201, description: 'Reservation created')],
+    )]
     public function store(
         PublicStoreReservationRequest $request,
         Business $business,

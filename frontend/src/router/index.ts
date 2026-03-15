@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+import { useAdminStore } from '@/stores/admin'
 import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
@@ -87,6 +88,34 @@ const router = createRouter({
 
     // ── Shell authentifié (AppLayout permanent) ────────────────────────────────
     {
+      path: '/admin/login',
+      component: () => import('@/pages/admin/AdminLoginPage.vue'),
+      meta: { adminGuestOnly: true },
+    },
+    {
+      path: '/admin',
+      component: () => import('@/layouts/AdminLayout.vue'),
+      meta: { requiresAdmin: true },
+      children: [
+        {
+          path: 'dashboard',
+          component: () => import('@/pages/admin/AdminDashboardPage.vue'),
+        },
+        {
+          path: 'businesses',
+          component: () => import('@/pages/admin/AdminBusinessListPage.vue'),
+        },
+        {
+          path: 'businesses/:id',
+          component: () => import('@/pages/admin/AdminBusinessDetailPage.vue'),
+        },
+        {
+          path: 'audit',
+          component: () => import('@/pages/admin/AdminAuditPage.vue'),
+        },
+      ],
+    },
+    {
       path: '/',
       component: () => import('@/layouts/AppLayout.vue'),
       meta: { requiresAuth: true },
@@ -156,6 +185,17 @@ router.afterEach(() => {
 
 router.beforeEach((to) => {
   const auth = useAuthStore()
+  const admin = useAdminStore()
+
+  auth.captureImpersonationTokenFromUrl()
+
+  if (to.meta.requiresAdmin && !admin.isAuthenticated) {
+    return '/admin/login'
+  }
+
+  if (to.meta.adminGuestOnly && admin.isAuthenticated) {
+    return '/admin/dashboard'
+  }
 
   if (to.meta.requiresAuth && !auth.isAuthenticated) {
     return '/login'

@@ -10,13 +10,22 @@ use App\Models\Business;
 use App\Services\StripeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Voice', description: 'Voice credit endpoints')]
 class VoiceCreditController extends Controller
 {
     public function __construct(
         private readonly StripeService $stripe,
     ) {}
 
+    #[OA\Get(
+        path: '/api/v1/voice/credits',
+        tags: ['Voice'],
+        summary: 'Get voice credit status',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 200, description: 'Voice credit status')],
+    )]
     public function status(Request $request): VoiceCreditResource
     {
         /** @var Business $business */
@@ -25,6 +34,13 @@ class VoiceCreditController extends Controller
         return new VoiceCreditResource($business->load('leoChannel'));
     }
 
+    #[OA\Post(
+        path: '/api/v1/voice/credits/topup',
+        tags: ['Voice'],
+        summary: 'Top up voice credits',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 200, description: 'Checkout URL returned')],
+    )]
     public function topup(TopUpVoiceRequest $request): JsonResponse
     {
         /** @var Business $business */
@@ -40,6 +56,13 @@ class VoiceCreditController extends Controller
         ]);
     }
 
+    #[OA\Patch(
+        path: '/api/v1/voice/credits/cap',
+        tags: ['Voice'],
+        summary: 'Set voice monthly cap',
+        security: [['bearerAuth' => []]],
+        responses: [new OA\Response(response: 200, description: 'Cap updated')],
+    )]
     public function setCap(SetVoiceCapRequest $request): VoiceCreditResource
     {
         /** @var Business $business */

@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\AllowIframeForWidget;
 use App\Http\Middleware\AllowTelegramWebhookIps;
+use App\Http\Middleware\EnsureAdminAbility;
 use App\Http\Middleware\LeoAddonActiveMiddleware;
 use App\Http\Middleware\RequireActiveSubscription;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -28,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'api/v1/public/widget/*',
         ]);
         $middleware->alias([
+            'admin.ability' => EnsureAdminAbility::class,
             'telegram.allowlist' => AllowTelegramWebhookIps::class,
             'leo.addon' => LeoAddonActiveMiddleware::class,
             'subscription' => RequireActiveSubscription::class,

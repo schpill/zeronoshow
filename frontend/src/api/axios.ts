@@ -7,6 +7,7 @@ import {
   shouldRetryRateLimitedRequest,
 } from '@/api/errorHandling'
 import { useToast } from '@/composables/useToast'
+import { clearImpersonationToken, getActiveBusinessToken } from '@/utils/impersonation'
 
 export interface ApiError {
   status: number
@@ -26,7 +27,7 @@ const instance = axios.create({
 })
 
 instance.interceptors.request.use((config) => {
-  const token = localStorage.getItem('znz_token')
+  const token = getActiveBusinessToken()
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
@@ -45,6 +46,7 @@ instance.interceptors.response.use(
     const requestConfig = (error.config ?? {}) as { method?: string; __rateLimitRetried?: boolean }
 
     if (status === 401) {
+      clearImpersonationToken()
       localStorage.removeItem('znz_token')
       window.location.assign('/login')
     }

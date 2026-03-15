@@ -26,7 +26,7 @@ describe('HelpIndexView', () => {
     setActivePinia(createPinia())
   })
 
-  it('renders all 8 module cards', () => {
+  it('renders all 9 module cards', () => {
     const wrapper = mount(HelpIndexView, {
       global: {
         plugins: [router],
@@ -42,6 +42,7 @@ describe('HelpIndexView', () => {
     expect(wrapper.text()).toContain('Clients')
     expect(wrapper.text()).toContain('Réputation')
     expect(wrapper.text()).toContain('Léo — Assistant IA')
+    expect(wrapper.text()).toContain('API Swagger')
   })
 
   it('search input filters modules by title', async () => {

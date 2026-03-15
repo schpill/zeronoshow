@@ -26,6 +26,7 @@ describe('NavBar', () => {
       email: 'owner@example.com',
       subscription_status: 'trial',
       trial_ends_at: '2026-03-26T00:00:00Z',
+      onboarding_completed_at: null,
     }
 
     const wrapper = mount(NavBar, {
