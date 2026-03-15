@@ -76,3 +76,4 @@
 | Date       | Note                  |
 |------------|-----------------------|
 | 2026-03-15 | Initial generation    |
+| 2026-03-15 | Lessons from phase 11 applied to spec: (1) `pnpm format:check` corrigé en `pnpm exec prettier --check .` dans le critère #13 ; (2) stub `RouterView`/`RouterLink` ajouté dans la section tests frontend ; (3) ne pas importer `vi` de Vitest sans l'utiliser (oxlint bloque le push). |

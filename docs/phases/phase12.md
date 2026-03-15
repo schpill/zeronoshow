@@ -171,12 +171,14 @@
 
 #### 4.20.4 Front-end Tests
 
+> **Lesson from Phase 11:** Any test that mounts a component using `<RouterView />` or `<RouterLink />` (directly or via a layout) MUST stub them. `AdminLayout.vue` uses `<RouterView />` — all page tests that render through `AdminLayout` must include `RouterView: true` and `RouterLink: { props: ['to'], template: '<a :href="to"><slot /></a>' }` in the `global.stubs` option. Also: never import `vi` from Vitest unless it is actually used in that test file — oxlint will fail the pre-push hook.
+
 | Test File                                                              | Test Cases                                                                                                                                                   |
 |------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `src/stores/__tests__/admin.test.ts`                                   | `login()` stores token, `logout()` clears state + localStorage, `isAuthenticated` true after login, `isAuthenticated` false after logout                    |
 | `src/pages/admin/__tests__/AdminLoginPage.test.ts`                     | Form submits on enter, 401 shows error message, 429 shows lockout message, successful login redirects to `/admin/dashboard`                                  |
-| `src/pages/admin/__tests__/AdminDashboardPage.test.ts`                 | Renders 6 stat cards, health panel shows all 4 indicators, green dot for queue healthy, red dot when failed jobs > 0                                         |
-| `src/pages/admin/__tests__/AdminBusinessListPage.test.ts`              | Renders table with business rows, search debounce calls API after 300ms, status filter emits correct API param, row click navigates to detail                |
+| `src/pages/admin/__tests__/AdminDashboardPage.test.ts`                 | Renders 6 stat cards, health panel shows all 4 indicators, green dot for queue healthy, red dot when failed jobs > 0; stub `RouterView` + `RouterLink`      |
+| `src/pages/admin/__tests__/AdminBusinessListPage.test.ts`              | Renders table with business rows, search debounce calls API after 300ms, status filter emits correct API param, row click navigates to detail; stub `RouterView` + `RouterLink` |
 | `src/components/admin/__tests__/StatCard.test.ts`                      | Renders label + value, correct color class applied                                                                                                           |
 
 #### 4.20.5 DevOps / Infrastructure Tasks
@@ -239,7 +241,7 @@
 | 10| Admin audit log has one entry for each of: extend-trial, cancel-subscription, impersonate (verified in DB)        | [ ]       |
 | 11| Impersonation token expires after 15 minutes (verify token TTL in `personal_access_tokens`)                       | [ ]       |
 | 12| System health panel shows correct queue status (green when worker running, red when `znz:worker:heartbeat` absent) | [ ]       |
-| 13| `pnpm lint`, `pnpm format:check`, Pint, PHPStan all pass                                                          | [ ]       |
+| 13| `pnpm lint`, `pnpm exec prettier --check .`, Pint, PHPStan all pass (note: `pnpm format:check` does not exist — use `pnpm exec prettier --check .`) | [ ]       |
 | 14| CI pipeline green on `main` after merge                                                                            | [ ]       |
 
 ---
