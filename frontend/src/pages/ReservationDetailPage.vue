@@ -79,79 +79,77 @@ function handleUpdated(updatedReservation: ReservationRecord) {
 </script>
 
 <template>
+  <div
+    v-if="loading.show.value && !reservation && !pageError"
+    class="flex min-h-[240px] items-center justify-center"
+  >
+    <LoadingSpinner size="lg" label="Chargement de la reservation" />
+  </div>
 
-    <div
-      v-if="loading.show.value && !reservation && !pageError"
-      class="flex min-h-[240px] items-center justify-center"
+  <ErrorMessage
+    v-else-if="pageError"
+    title="Impossible de charger la reservation"
+    :message="pageError"
+    @retry="loadReservation"
+  />
+
+  <template v-else>
+    <section
+      v-if="reservation"
+      class="mb-6 rounded-[28px] border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900"
     >
-      <LoadingSpinner size="lg" label="Chargement de la reservation" />
-    </div>
+      <p class="text-overline">Réservation</p>
+      <h1 class="text-heading-2 mt-2 dark:text-slate-50">{{ reservation.customer_name }}</h1>
+      <p class="mt-3 text-body-sm dark:text-slate-400">
+        {{ reservation.guests }} couverts · {{ reservation.status }}
+      </p>
+      <p v-if="customer" class="mt-4 text-body dark:text-slate-300">
+        Téléphone: <span class="font-mono">{{ customer.phone }}</span>
+      </p>
+      <div class="mt-4 flex flex-wrap gap-3">
+        <button
+          data-test="open-crm"
+          type="button"
+          class="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300"
+          @click="showCrmPanel = true"
+        >
+          Fiche client
+        </button>
+        <button
+          type="button"
+          class="rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-60"
+          :disabled="voiceLoading"
+          @click="handleVoiceCall"
+        >
+          Lancer un appel vocal
+        </button>
+      </div>
+    </section>
 
-    <ErrorMessage
-      v-else-if="pageError"
-      title="Impossible de charger la reservation"
-      :message="pageError"
-      @retry="loadReservation"
+    <BlacklistWarningBanner
+      :visible="Boolean(reservation?.customer_blacklisted || customer?.is_blacklisted)"
+      class="mb-6"
     />
 
-    <template v-else>
-      <section
-        v-if="reservation"
-        class="mb-6 rounded-[28px] border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900"
-      >
-        <p class="text-overline">Réservation</p>
-        <h1 class="text-heading-2 mt-2 dark:text-slate-50">{{ reservation.customer_name }}</h1>
-        <p class="mt-3 text-body-sm dark:text-slate-400">
-          {{ reservation.guests }} couverts · {{ reservation.status }}
-        </p>
-        <p v-if="customer" class="mt-4 text-body dark:text-slate-300">
-          Téléphone: <span class="font-mono">{{ customer.phone }}</span>
-        </p>
-        <div class="mt-4 flex flex-wrap gap-3">
-          <button
-            data-test="open-crm"
-            type="button"
-            class="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300"
-            @click="showCrmPanel = true"
-          >
-            Fiche client
-          </button>
-          <button
-            type="button"
-            class="rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-60"
-            :disabled="voiceLoading"
-            @click="handleVoiceCall"
-          >
-            Lancer un appel vocal
-          </button>
-        </div>
-      </section>
+    <ReservationRow
+      v-if="reservationWithCustomer"
+      class="mb-6"
+      :reservation="reservationWithCustomer"
+      @updated="handleUpdated"
+    />
 
-      <BlacklistWarningBanner
-        :visible="Boolean(reservation?.customer_blacklisted || customer?.is_blacklisted)"
-        class="mb-6"
-      />
+    <SmsLogTable :logs="smsLogs" />
 
-      <ReservationRow
-        v-if="reservationWithCustomer"
-        class="mb-6"
-        :reservation="reservationWithCustomer"
-        @updated="handleUpdated"
-      />
+    <div class="mt-6">
+      <VoiceCallLogView :logs="voiceLogs" :loading="voiceLoading" />
+    </div>
 
-      <SmsLogTable :logs="smsLogs" />
-
-      <div class="mt-6">
-        <VoiceCallLogView :logs="voiceLogs" :loading="voiceLoading" />
-      </div>
-
-      <CustomerCrmPanel
-        v-if="customer"
-        :customer="customer"
-        :open="showCrmPanel"
-        @close="showCrmPanel = false"
-        @updated="customer = $event"
-      />
-    </template>
-
+    <CustomerCrmPanel
+      v-if="customer"
+      :customer="customer"
+      :open="showCrmPanel"
+      @close="showCrmPanel = false"
+      @updated="customer = $event"
+    />
+  </template>
 </template>
