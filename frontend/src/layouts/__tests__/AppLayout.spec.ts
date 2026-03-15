@@ -33,6 +33,8 @@ describe('AppLayout', () => {
         plugins: [pinia],
         stubs: {
           NavBar: true,
+          ToastContainer: true,
+          RouterView: true,
           RouterLink: {
             props: ['to'],
             template: '<a :href="to"><slot /></a>',
