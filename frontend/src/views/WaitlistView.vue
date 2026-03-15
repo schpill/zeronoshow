@@ -168,12 +168,17 @@ const handleRemove = async (id: string) => {
                   @remove="handleRemove"
                   @notify="notify"
                 />
-                <tr v-if="!entries.length">
-                  <td
-                    colspan="6"
-                    class="px-6 py-12 text-center text-sm text-gray-500 dark:text-gray-400"
-                  >
-                    Aucun client en attente pour cette date.
+                <tr v-if="!entries.length && !loading">
+                  <td colspan="6" class="px-6 py-12">
+                    <div class="flex flex-col items-center py-8 text-center">
+                      <span class="text-5xl">⏳</span>
+                      <h3 class="mt-4 text-lg font-bold text-slate-900 dark:text-slate-50">
+                        Aucune liste d'attente active
+                      </h3>
+                      <p class="mt-2 max-w-sm text-sm text-slate-500 dark:text-slate-400">
+                        Ajoutez manuellement un client ou attendez qu'un créneau se libère.
+                      </p>
+                    </div>
                   </td>
                 </tr>
               </tbody>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BusinessController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\CustomerCrmController;
 use App\Http\Controllers\Api\DashboardController;
@@ -54,6 +55,7 @@ Route::prefix('v1')->group(function (): void {
 
     Route::middleware('auth:sanctum')->group(function (): void {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
+        Route::patch('/business/onboarding-complete', [BusinessController::class, 'completeOnboarding']);
         Route::get('/dashboard', [DashboardController::class, 'index']);
         Route::get('/leo/channels', [LeoChannelController::class, 'index']);
         Route::get('/leo/addon-status', [LeoAddonController::class, 'status']);

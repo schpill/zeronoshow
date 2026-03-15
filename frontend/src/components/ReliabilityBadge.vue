@@ -43,7 +43,7 @@ const display = computed(() => {
 
 <template>
   <span
-    class="text-badge inline-flex items-center rounded-full border px-2.5 py-1"
+    class="reliability-badge text-badge inline-flex items-center rounded-full border px-2.5 py-1"
     :class="display.classes"
     :aria-label="`Reliability score: ${display.label}`"
   >

@@ -1,0 +1,17 @@
+flowchart TD
+    A[Réservation créée] --> B{Téléphone vérifié ?}
+    B -- Oui --> C[Consultation du score]
+    B -- Non --> D[Job SendVerificationSms]
+    D --> E[SMS : lien de confirmation]
+    E --> F{Action du client ?}
+    F -- Confirme --> C
+    F -- Pas de réponse, token expiré --> G[Statut : annulé]
+    C --> H{Tier de score ?}
+    H -- ≥90% Fiable --> I[Pas de rappel]
+    H -- 70-89% Moyen --> J[Rappel à -2h]
+    H -- <70% À risque --> K[Rappel à -2h]
+    K --> L[Rappel à -30min]
+    J --> M{Confirmation reçue ?}
+    L --> M
+    M -- Oui --> N[Statut : confirmé]
+    M -- Non, -15min dépassé --> O[Statut : annulé]

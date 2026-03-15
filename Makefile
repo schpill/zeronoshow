@@ -9,6 +9,7 @@ PROD_DIR  := /home/gerald/web/zeronoshow
         shell-api shell-frontend tinker \
         test-be test-fe \
         routes swagger \
+        docs-screenshots \
         go-live
 
 # ─── Local dev ────────────────────────────────────────────────────────────────
@@ -85,6 +86,13 @@ routes:
 
 swagger:
 	$(DOCKER_COMPOSE) run --rm api php artisan l5-swagger:generate
+
+# ─── Docs ─────────────────────────────────────────────────────────────────────
+
+# Capture fresh screenshots for the help center (requires running services)
+# See frontend/scripts/capture-screenshots.ts
+docs-screenshots:
+	$(DOCKER_COMPOSE) run --rm frontend pnpm tsx scripts/capture-screenshots.ts
 
 # ─── Production deploy ────────────────────────────────────────────────────────
 

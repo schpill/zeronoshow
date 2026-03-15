@@ -53,6 +53,7 @@ class Business extends Authenticatable
         'google_place_id',
         'tripadvisor_location_id',
         'public_token',
+        'onboarding_completed_at',
     ];
 
     protected $hidden = [
@@ -76,6 +77,7 @@ class Business extends Authenticatable
         'waitlist_notification_window_minutes' => 'integer',
         'review_requests_enabled' => 'boolean',
         'review_delay_hours' => 'integer',
+        'onboarding_completed_at' => 'datetime',
     ];
 
     public function reservations(): HasMany

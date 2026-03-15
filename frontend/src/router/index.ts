@@ -28,6 +28,22 @@ const router = createRouter({
       component: () => import('@/views/LandingView.vue'),
     },
     {
+      path: '/help',
+      component: () => import('@/layouts/HelpLayout.vue'),
+      children: [
+        {
+          path: '',
+          name: 'help-index',
+          component: () => import('@/views/help/HelpIndexView.vue'),
+        },
+        {
+          path: ':module',
+          name: 'help-module',
+          component: () => import('@/views/help/HelpModuleRouter.vue'),
+        },
+      ],
+    },
+    {
       path: '/login',
       component: () => import('@/pages/LoginPage.vue'),
       meta: { guestOnly: true },

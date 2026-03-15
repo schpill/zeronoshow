@@ -191,6 +191,7 @@ async function handleSubmit() {
           Le SMS de confirmation sera envoyé automatiquement si le numéro n’a pas été vérifié.
         </p>
         <button
+          id="new-reservation-btn"
           type="submit"
           class="inline-flex items-center justify-center rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-70"
           :disabled="loading.create.value"

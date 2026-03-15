@@ -1,0 +1,12 @@
+flowchart LR
+    A[Téléphone] --> B[Recherche historique inter-établissements]
+    B --> C{Historique ?}
+    C -- Non --> D[Score = null → traité comme À risque]
+    C -- Oui --> E[score = présences / total_réservations]
+    E --> F{Valeur du score}
+    F -- ≥90% --> G[Fiable — pas de rappel]
+    F -- 70-89% --> H[Moyen — 1 rappel]
+    F -- <70% --> I[À risque — 2 rappels]
+    N[Statut réservation modifié] --> O[Job RecalculateReliabilityScore]
+    O --> P[Mise à jour customers.reliability_score]
+    P --> B

@@ -34,6 +34,7 @@
             Fonctionnalités
           </a>
           <a href="#tarifs" class="transition-colors hover:text-slate-900">Tarifs</a>
+          <a href="/help" class="transition-colors hover:text-slate-900">Aide</a>
         </div>
 
         <div class="flex items-center gap-3">
@@ -629,6 +630,7 @@
           <a href="#comment" class="hover:text-slate-900">Comment ça marche</a>
           <a href="#fonctionnalites" class="hover:text-slate-900">Fonctionnalités</a>
           <a href="#tarifs" class="hover:text-slate-900">Tarifs</a>
+          <a href="/help" class="hover:text-slate-900">Centre d'aide</a>
           <a href="/login" class="hover:text-slate-900">Connexion</a>
           <a href="/register" class="text-emerald-700 hover:text-emerald-900">Créer un compte</a>
         </div>
