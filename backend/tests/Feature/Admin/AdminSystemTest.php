@@ -11,6 +11,7 @@ uses(RefreshDatabase::class);
 
 it('health endpoint returns all fields', function () {
     $admin = Admin::factory()->create();
+    $lastWebhookAt = now()->subMinutes(5);
 
     DB::table('failed_jobs')->insert([
         'uuid' => (string) str()->uuid(),
@@ -23,7 +24,7 @@ it('health endpoint returns all fields', function () {
 
     SmsLog::factory()->create([
         'twilio_sid' => 'SM123',
-        'created_at' => now()->subMinutes(5),
+        'created_at' => $lastWebhookAt,
     ]);
 
     Redis::shouldReceive('exists')->once()->with('znz:worker:heartbeat')->andReturn(1);
@@ -37,7 +38,7 @@ it('health endpoint returns all fields', function () {
         ->assertJsonPath('failed_jobs_count', 1)
         ->assertJsonPath('redis_ping', true)
         ->assertJsonPath('database_ok', true)
-        ->assertJsonPath('last_twilio_webhook_at', now()->subMinutes(5)->toIso8601String());
+        ->assertJsonPath('last_twilio_webhook_at', $lastWebhookAt->toIso8601String());
 });
 
 it('redis ping failure is reported gracefully', function () {
