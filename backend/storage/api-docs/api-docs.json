@@ -1,0 +1,1456 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "ZeroNoShow API",
+        "description": "ZeroNoShow business, booking, admin and platform management API.",
+        "contact": {
+            "name": "ZeroNoShow",
+            "email": "gerald@zeronoshow.fr"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost",
+            "description": "Application server"
+        }
+    ],
+    "paths": {
+        "/api/v1/admin/audit-logs": {
+            "get": {
+                "tags": [
+                    "Admin Audit"
+                ],
+                "summary": "List admin audit log entries",
+                "operationId": "ce4f5175c10fe5621348aadb61e6b0b3",
+                "parameters": [
+                    {
+                        "name": "admin_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "target_type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "date_from",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "date_to",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated audit logs"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/login": {
+            "post": {
+                "tags": [
+                    "Admin Auth"
+                ],
+                "summary": "Authenticate an admin account",
+                "operationId": "abaa04f41a942c58fca82709cf171c26",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Authenticated"
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    },
+                    "429": {
+                        "description": "Admin lockout active"
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/logout": {
+            "post": {
+                "tags": [
+                    "Admin Auth"
+                ],
+                "summary": "Revoke the current admin token",
+                "operationId": "a29f71551ca93a7f2be0d7937e434892",
+                "responses": {
+                    "204": {
+                        "description": "Logged out"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/businesses": {
+            "get": {
+                "tags": [
+                    "Admin Businesses"
+                ],
+                "summary": "List businesses for the admin backoffice",
+                "operationId": "b21dbca0bc664182082f8d0974e77797",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated businesses"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/businesses/{business}": {
+            "get": {
+                "tags": [
+                    "Admin Businesses"
+                ],
+                "summary": "Show one business with reservations and SMS summary",
+                "operationId": "2154b0d72526b02a7e7da7fce6a04cd1",
+                "parameters": [
+                    {
+                        "name": "business",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Business detail"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/businesses/{business}/extend-trial": {
+            "patch": {
+                "tags": [
+                    "Admin Businesses"
+                ],
+                "summary": "Extend a business trial period",
+                "operationId": "46c67d02b1caac77505dc694384b398f",
+                "parameters": [
+                    {
+                        "name": "business",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "days"
+                                ],
+                                "properties": {
+                                    "days": {
+                                        "type": "integer",
+                                        "maximum": 90,
+                                        "minimum": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Trial extended"
+                    },
+                    "422": {
+                        "description": "Business is not in trial"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/businesses/{business}/cancel-subscription": {
+            "patch": {
+                "tags": [
+                    "Admin Businesses"
+                ],
+                "summary": "Cancel a business subscription locally",
+                "operationId": "24696728962353bb56c8f3a627347889",
+                "parameters": [
+                    {
+                        "name": "business",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "reason"
+                                ],
+                                "properties": {
+                                    "reason": {
+                                        "type": "string",
+                                        "maxLength": 500
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Subscription cancelled"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/businesses/{business}/impersonate": {
+            "post": {
+                "tags": [
+                    "Admin Businesses"
+                ],
+                "summary": "Issue a short-lived impersonation token",
+                "operationId": "c2e4d1c57cfef82543ea615a4924b732",
+                "parameters": [
+                    {
+                        "name": "business",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Impersonation token issued"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/stats": {
+            "get": {
+                "tags": [
+                    "Admin Dashboard"
+                ],
+                "summary": "Return platform KPI stats",
+                "operationId": "d8daf1e91babd32da8c843a990c20977",
+                "responses": {
+                    "200": {
+                        "description": "Stats payload"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/system/health": {
+            "get": {
+                "tags": [
+                    "Admin System"
+                ],
+                "summary": "Return queue, database and Redis health indicators",
+                "operationId": "7bb8101b2848258c58a2d27b4a1f93d3",
+                "responses": {
+                    "200": {
+                        "description": "Health payload"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/customers": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "List customers",
+                "operationId": "fddf8e3800951c00bc5fbd50026d7e6a",
+                "responses": {
+                    "200": {
+                        "description": "Customers list"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/customers/lookup": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Lookup customer by phone",
+                "operationId": "e31c79567e4725b8a20559868b666ebd",
+                "parameters": [
+                    {
+                        "name": "phone",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lookup result"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/dashboard": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get dashboard metrics and reservations",
+                "operationId": "a348324e41ded325da16e029a5efa2ce",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "week",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dashboard payload"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/leo/addon/activate": {
+            "post": {
+                "tags": [
+                    "Leo"
+                ],
+                "summary": "Activate Leo add-on",
+                "operationId": "38a5d71c7428287d0dd1f2a56d1afeee",
+                "responses": {
+                    "200": {
+                        "description": "Leo add-on activated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/leo/addon/deactivate": {
+            "post": {
+                "tags": [
+                    "Leo"
+                ],
+                "summary": "Deactivate Leo add-on",
+                "operationId": "6263b6eb561df5743d8c65ece89fdcea",
+                "responses": {
+                    "204": {
+                        "description": "Leo add-on deactivated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/leo/addon-status": {
+            "get": {
+                "tags": [
+                    "Leo"
+                ],
+                "summary": "Get Leo add-on status",
+                "operationId": "47805e44ed6c2669b042fb6855a464f0",
+                "responses": {
+                    "200": {
+                        "description": "Leo add-on status"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/leo/channels": {
+            "get": {
+                "tags": [
+                    "Leo"
+                ],
+                "summary": "Get Leo channel",
+                "operationId": "19ce57e36c4f96d297a95d9a5e60997b",
+                "responses": {
+                    "200": {
+                        "description": "Leo channel"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Leo"
+                ],
+                "summary": "Create Leo channel",
+                "operationId": "1969fb5a427861ec2542eb542bb7e768",
+                "responses": {
+                    "201": {
+                        "description": "Leo channel created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/leo/channels/{leoChannel}": {
+            "delete": {
+                "tags": [
+                    "Leo"
+                ],
+                "summary": "Delete Leo channel",
+                "operationId": "d6ea2d09a9798fe35db1523b3bd57cbe",
+                "parameters": [
+                    {
+                        "name": "leoChannel",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Leo channel deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Leo"
+                ],
+                "summary": "Update Leo channel",
+                "operationId": "a1e99636245263486d70241c47c80616",
+                "parameters": [
+                    {
+                        "name": "leoChannel",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Leo channel updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/leo/whatsapp/credits": {
+            "get": {
+                "tags": [
+                    "Leo"
+                ],
+                "summary": "Get WhatsApp credit status",
+                "operationId": "b6dd65a88beddeece80ae7b4c51add13",
+                "responses": {
+                    "200": {
+                        "description": "WhatsApp credit status"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/leo/whatsapp/credits/topup": {
+            "post": {
+                "tags": [
+                    "Leo"
+                ],
+                "summary": "Top up WhatsApp credits",
+                "operationId": "d5b4d2615d57d5c46a9ad9c9f8858b61",
+                "responses": {
+                    "200": {
+                        "description": "Checkout URL returned"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/leo/whatsapp/credits/cap": {
+            "patch": {
+                "tags": [
+                    "Leo"
+                ],
+                "summary": "Set WhatsApp monthly cap",
+                "operationId": "3e2c5abf8976a6941b4b92adedcfa51a",
+                "responses": {
+                    "200": {
+                        "description": "Cap updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/public/widget/{businessToken}/config": {
+            "get": {
+                "tags": [
+                    "Booking Widget"
+                ],
+                "summary": "Get widget config",
+                "operationId": "7c8989ed6028a0ae0d034b85c8f25c97",
+                "parameters": [
+                    {
+                        "name": "businessToken",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Widget config"
+                    }
+                }
+            }
+        },
+        "/api/v1/public/widget/{businessToken}/slots": {
+            "get": {
+                "tags": [
+                    "Booking Widget"
+                ],
+                "summary": "Get available slots",
+                "operationId": "e8b033574939c3b66544452d2f2dfe56",
+                "parameters": [
+                    {
+                        "name": "businessToken",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Available slots"
+                    }
+                }
+            }
+        },
+        "/api/v1/public/widget/{businessToken}/otp/send": {
+            "post": {
+                "tags": [
+                    "Booking Widget"
+                ],
+                "summary": "Send OTP for widget booking",
+                "operationId": "8b411fd80e594e463c3cd3ffd9e72623",
+                "parameters": [
+                    {
+                        "name": "businessToken",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OTP sent"
+                    }
+                }
+            }
+        },
+        "/api/v1/public/widget/{businessToken}/otp/verify": {
+            "post": {
+                "tags": [
+                    "Booking Widget"
+                ],
+                "summary": "Verify widget OTP",
+                "operationId": "3bc5bbd6f6c31d1f40d783bd86628f7b",
+                "parameters": [
+                    {
+                        "name": "businessToken",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OTP verified"
+                    }
+                }
+            }
+        },
+        "/api/v1/public/widget/{businessToken}/reservations": {
+            "post": {
+                "tags": [
+                    "Booking Widget"
+                ],
+                "summary": "Create reservation from widget",
+                "operationId": "13f6e83f125319928c1fb68a59662f76",
+                "parameters": [
+                    {
+                        "name": "businessToken",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Reservation created"
+                    }
+                }
+            }
+        },
+        "/api/v1/reservations": {
+            "get": {
+                "tags": [
+                    "Reservations"
+                ],
+                "summary": "List reservations",
+                "operationId": "9bcb2b6816183ff7d8701aa7dcc120e6",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "week",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "source",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reservation list"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Reservations"
+                ],
+                "summary": "Create a reservation",
+                "operationId": "0a898a039908af554f99719b597122de",
+                "responses": {
+                    "201": {
+                        "description": "Reservation created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/reservations/{reservation}": {
+            "get": {
+                "tags": [
+                    "Reservations"
+                ],
+                "summary": "Show one reservation",
+                "operationId": "7909e2b58647ebc12aa4313f71219044",
+                "parameters": [
+                    {
+                        "name": "reservation",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reservation detail"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/reservations/{reservation}/status": {
+            "patch": {
+                "tags": [
+                    "Reservations"
+                ],
+                "summary": "Update reservation status",
+                "operationId": "0ddcb939fb1a65c6b0611e6a6814e2e7",
+                "parameters": [
+                    {
+                        "name": "reservation",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reservation updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/review-requests": {
+            "get": {
+                "tags": [
+                    "Reputation"
+                ],
+                "summary": "List review requests",
+                "operationId": "0fe49ec6ea7c440b6cac47f0daea5883",
+                "responses": {
+                    "200": {
+                        "description": "Review requests"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/review-requests/stats": {
+            "get": {
+                "tags": [
+                    "Reputation"
+                ],
+                "summary": "Get review request stats",
+                "operationId": "2b06032cebfc028ec03d54e03195ba96",
+                "responses": {
+                    "200": {
+                        "description": "Review stats"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/review-settings": {
+            "get": {
+                "tags": [
+                    "Reputation"
+                ],
+                "summary": "Get review settings",
+                "operationId": "110d436c6f606f29d6c60fed16240e5c",
+                "responses": {
+                    "200": {
+                        "description": "Review settings"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Reputation"
+                ],
+                "summary": "Update review settings",
+                "operationId": "463b3a28119ceb8768c6b73a72845d64",
+                "responses": {
+                    "200": {
+                        "description": "Review settings updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/subscription/checkout": {
+            "post": {
+                "tags": [
+                    "Subscription"
+                ],
+                "summary": "Create subscription checkout session",
+                "operationId": "a025e23f54d61a928db2cf0fd1e76fe2",
+                "responses": {
+                    "200": {
+                        "description": "Checkout session created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/subscription": {
+            "get": {
+                "tags": [
+                    "Subscription"
+                ],
+                "summary": "Get current subscription state",
+                "operationId": "3286a6fac2b3c877d429749cb979a092",
+                "responses": {
+                    "200": {
+                        "description": "Subscription state"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/reservations/{reservation}/voice-call": {
+            "post": {
+                "tags": [
+                    "Voice"
+                ],
+                "summary": "Queue a voice call",
+                "operationId": "52742240f6fe84348d09792953b82cf3",
+                "parameters": [
+                    {
+                        "name": "reservation",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Voice call queued"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/reservations/{reservation}/call": {
+            "post": {
+                "tags": [
+                    "Voice"
+                ],
+                "summary": "Initiate a voice call immediately",
+                "operationId": "b955d6ee1185a6a525178224fff26eee",
+                "parameters": [
+                    {
+                        "name": "reservation",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Voice call initiated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/reservations/{reservation}/calls": {
+            "get": {
+                "tags": [
+                    "Voice"
+                ],
+                "summary": "List voice call logs",
+                "operationId": "268a5a5d510b4480aa11a410a2f459a3",
+                "parameters": [
+                    {
+                        "name": "reservation",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Voice call logs"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/voice/credits": {
+            "get": {
+                "tags": [
+                    "Voice"
+                ],
+                "summary": "Get voice credit status",
+                "operationId": "4084f5f2342a88b26eb65acf572d719a",
+                "responses": {
+                    "200": {
+                        "description": "Voice credit status"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/voice/credits/topup": {
+            "post": {
+                "tags": [
+                    "Voice"
+                ],
+                "summary": "Top up voice credits",
+                "operationId": "6b5ac2df646cb4b7edd28a3593f0a248",
+                "responses": {
+                    "200": {
+                        "description": "Checkout URL returned"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/voice/credits/cap": {
+            "patch": {
+                "tags": [
+                    "Voice"
+                ],
+                "summary": "Set voice monthly cap",
+                "operationId": "3ef2d2302c0136914abfc49c9ff9e894",
+                "responses": {
+                    "200": {
+                        "description": "Cap updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/voice/settings": {
+            "get": {
+                "tags": [
+                    "Voice"
+                ],
+                "summary": "Get voice settings",
+                "operationId": "e81cbab7a9087cde5f3943bd2c9bd44e",
+                "responses": {
+                    "200": {
+                        "description": "Voice settings"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Voice"
+                ],
+                "summary": "Update voice settings",
+                "operationId": "c94431451a76956c3bf9561d0c0f2f4d",
+                "responses": {
+                    "200": {
+                        "description": "Voice settings updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/waitlist": {
+            "get": {
+                "tags": [
+                    "Waitlist"
+                ],
+                "summary": "List waitlist entries",
+                "operationId": "206b42ba22d19693f17bcd623a29fe29",
+                "responses": {
+                    "200": {
+                        "description": "Waitlist entries"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Waitlist"
+                ],
+                "summary": "Create waitlist entry",
+                "operationId": "5b9ada1c09787ef2041749ac82d03837",
+                "responses": {
+                    "201": {
+                        "description": "Waitlist entry created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/waitlist/{entry}": {
+            "delete": {
+                "tags": [
+                    "Waitlist"
+                ],
+                "summary": "Delete waitlist entry",
+                "operationId": "1a81730f8e89b60da47214e2fb04a796",
+                "parameters": [
+                    {
+                        "name": "entry",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/waitlist/reorder": {
+            "post": {
+                "tags": [
+                    "Waitlist"
+                ],
+                "summary": "Reorder waitlist entries",
+                "operationId": "7ad1594c3562e312ca9b858893f6c1d0",
+                "responses": {
+                    "200": {
+                        "description": "Reordered"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/waitlist/{entry}/notify": {
+            "post": {
+                "tags": [
+                    "Waitlist"
+                ],
+                "summary": "Notify one waitlist entry",
+                "operationId": "2587ebda88c5b074f5779fa1b35d06e5",
+                "parameters": [
+                    {
+                        "name": "entry",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Notification queued"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register a business account",
+                "operationId": "8cf252e767eb0c4ae9e5307f3fc7153a",
+                "responses": {
+                    "201": {
+                        "description": "Registered"
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login a business account",
+                "operationId": "643b1ef568bcd820eda5f8d045a56929",
+                "responses": {
+                    "200": {
+                        "description": "Logged in"
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout current business token",
+                "operationId": "c8b5aff67b455fcee6c6be01f77a7acb",
+                "responses": {
+                    "204": {
+                        "description": "Logged out"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "apiKey",
+                "description": "Enter token in format: Bearer <token>",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Admin Audit",
+            "description": "Administrative audit log endpoints"
+        },
+        {
+            "name": "Admin Auth",
+            "description": "Authentication endpoints for the ZeroNoShow operator backoffice"
+        },
+        {
+            "name": "Admin Businesses",
+            "description": "Business administration endpoints for the operator backoffice"
+        },
+        {
+            "name": "Admin Dashboard",
+            "description": "Platform KPI endpoints for the operator dashboard"
+        },
+        {
+            "name": "Admin System",
+            "description": "Operational health endpoints for the admin dashboard"
+        },
+        {
+            "name": "Customers",
+            "description": "Customer and CRM endpoints"
+        },
+        {
+            "name": "Dashboard",
+            "description": "Business dashboard endpoints"
+        },
+        {
+            "name": "Leo",
+            "description": "Leo WhatsApp credit endpoints"
+        },
+        {
+            "name": "Booking Widget",
+            "description": "Public booking widget endpoints"
+        },
+        {
+            "name": "Reservations",
+            "description": "Reservation management endpoints"
+        },
+        {
+            "name": "Reputation",
+            "description": "Review settings endpoints"
+        },
+        {
+            "name": "Subscription",
+            "description": "Subscription and billing endpoints"
+        },
+        {
+            "name": "Voice",
+            "description": "Voice settings endpoints"
+        },
+        {
+            "name": "Waitlist",
+            "description": "Waitlist management endpoints"
+        },
+        {
+            "name": "Auth",
+            "description": "Business authentication endpoints"
+        }
+    ]
+}
