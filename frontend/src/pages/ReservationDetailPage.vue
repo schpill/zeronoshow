@@ -2,7 +2,6 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-import AppLayout from '@/layouts/AppLayout.vue'
 import BlacklistWarningBanner from '@/components/crm/BlacklistWarningBanner.vue'
 import CustomerCrmPanel from '@/components/crm/CustomerCrmPanel.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
@@ -80,7 +79,7 @@ function handleUpdated(updatedReservation: ReservationRecord) {
 </script>
 
 <template>
-  <AppLayout>
+
     <div
       v-if="loading.show.value && !reservation && !pageError"
       class="flex min-h-[240px] items-center justify-center"
@@ -154,5 +153,5 @@ function handleUpdated(updatedReservation: ReservationRecord) {
         @updated="customer = $event"
       />
     </template>
-  </AppLayout>
+
 </template>

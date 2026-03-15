@@ -2,7 +2,6 @@
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import AppLayout from '@/layouts/AppLayout.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { useVoiceCredits } from '@/composables/useVoiceCredits'
 
@@ -45,7 +44,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <AppLayout>
+
     <div class="flex min-h-[400px] flex-col items-center justify-center text-center">
       <template v-if="status === 'loading'">
         <LoadingSpinner size="lg" label="Confirmation du rechargement..." />
@@ -76,5 +75,5 @@ onMounted(async () => {
         <p class="mt-3 text-sm text-slate-600">Nous n'avons pas pu confirmer votre rechargement.</p>
       </template>
     </div>
-  </AppLayout>
+
 </template>

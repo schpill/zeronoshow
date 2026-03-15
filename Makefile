@@ -8,6 +8,7 @@ PROD_DIR  := /home/gerald/web/zeronoshow
 .PHONY: up down restart build install test lint fresh seed \
         shell-api shell-frontend tinker \
         test-be test-fe \
+        routes swagger \
         go-live
 
 # ─── Local dev ────────────────────────────────────────────────────────────────
@@ -76,6 +77,14 @@ shell-frontend:
 
 tinker:
 	$(DOCKER_COMPOSE) run --rm api php artisan tinker
+
+# ─── Introspection ────────────────────────────────────────────────────────────
+
+routes:
+	$(DOCKER_COMPOSE) run --rm api php artisan route:list --columns=method,uri,name,action,middleware
+
+swagger:
+	$(DOCKER_COMPOSE) run --rm api php artisan l5-swagger:generate
 
 # ─── Production deploy ────────────────────────────────────────────────────────
 

@@ -87,6 +87,8 @@ make tinker       # php artisan tinker
 | 8 | Voice Calls — Rappel Vocal Automatique | **Complete** (merged 2026-03-14) | docs/phases/phase8.md | docs/dev/phase8.md |
 | 9 | CRM Client + Réputation | **Complete** (merged 2026-03-14) | docs/phases/phase9.md | docs/dev/phase9.md |
 | 10 | Booking Widget — Réservation en Ligne | **Complete** (merged 2026-03-14) | docs/phases/phase10.md | docs/dev/phase10.md |
+| 11 | In-App Help & Onboarding | **Not started** | docs/phases/phase11.md | docs/dev/phase11.md |
+| 12 | Operator Admin Backoffice | **Not started** | docs/phases/phase12.md | docs/dev/phase12.md |
 
 ## Team
 

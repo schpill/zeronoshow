@@ -103,12 +103,12 @@ const statusDotClass = computed(() =>
           {{ subscriptionLabel }}
         </RouterLink>
         <DarkModeToggle />
-        <a
-          href="#reservation-form"
+        <RouterLink
+          to="/dashboard#reservation-form"
           class="inline-flex items-center rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
         >
           Nouvelle réservation
-        </a>
+        </RouterLink>
         <button
           type="button"
           class="inline-flex items-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:text-white"
@@ -126,12 +126,12 @@ const statusDotClass = computed(() =>
       aria-label="Main navigation"
     >
       <div class="flex flex-col gap-3">
-        <a
-          href="#reservation-form"
+        <RouterLink
+          to="/dashboard#reservation-form"
           class="inline-flex items-center justify-center rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-white"
         >
           Nouvelle réservation
-        </a>
+        </RouterLink>
         <RouterLink
           to="/dashboard"
           class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200"

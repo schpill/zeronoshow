@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 
-import AppLayout from '@/layouts/AppLayout.vue'
 import CustomerCrmPanel from '@/components/crm/CustomerCrmPanel.vue'
 import CustomerVipBadge from '@/components/crm/CustomerVipBadge.vue'
 import { useCustomerCrm } from '@/composables/useCustomerCrm'
@@ -38,7 +37,7 @@ function handleUpdated(updatedCustomer: ReservationCustomer) {
 </script>
 
 <template>
-  <AppLayout>
+
     <section class="mb-6 rounded-[32px] border border-slate-200 bg-white p-6">
       <p class="text-overline">Phase 9</p>
       <h1 class="mt-2 text-heading-2">Clients</h1>
@@ -94,5 +93,5 @@ function handleUpdated(updatedCustomer: ReservationCustomer) {
       @close="selectedCustomer = null"
       @updated="handleUpdated"
     />
-  </AppLayout>
+
 </template>

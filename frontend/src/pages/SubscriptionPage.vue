@@ -2,7 +2,6 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-import AppLayout from '@/layouts/AppLayout.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { useSubscription } from '@/composables/useSubscription'
@@ -44,7 +43,7 @@ async function handleCheckout() {
 </script>
 
 <template>
-  <AppLayout>
+
     <div
       v-if="loading && !subscription && !pageError"
       class="flex min-h-[240px] items-center justify-center"
@@ -97,5 +96,5 @@ async function handleCheckout() {
         S’abonner
       </button>
     </section>
-  </AppLayout>
+
 </template>

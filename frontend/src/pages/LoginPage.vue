@@ -51,6 +51,9 @@ async function handleSubmit() {
     <div
       class="w-full max-w-md rounded-[32px] border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/50 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/20"
     >
+      <RouterLink to="/" class="mb-6 inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 transition-colors text-sm">
+        ← Retour à l'accueil
+      </RouterLink>
       <p class="text-overline">Backoffice client</p>
       <h1 class="text-heading-2 mt-2 dark:text-slate-50">Connexion</h1>
       <p class="text-body-sm mt-3 dark:text-slate-400">

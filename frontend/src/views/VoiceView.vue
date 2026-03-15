@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 
-import AppLayout from '@/layouts/AppLayout.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import VoiceCapEditForm from '@/components/voice/VoiceCapEditForm.vue'
@@ -34,7 +33,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <AppLayout>
+
     <div
       v-if="voiceCredits.loading.value && !voiceCredits.status.value"
       class="flex min-h-[240px] items-center justify-center"
@@ -84,5 +83,5 @@ onMounted(() => {
         @submit="voiceCredits.topUp"
       />
     </template>
-  </AppLayout>
+
 </template>

@@ -3,7 +3,6 @@
 import { computed, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 
-import AppLayout from '@/layouts/AppLayout.vue'
 import DateNavigator from '@/components/DateNavigator.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
@@ -113,7 +112,7 @@ const groupedReservations = computed(() => {
 </script>
 
 <template>
-  <AppLayout>
+
     <div
       v-if="loading.fetch.value && reservations.length === 0 && !pageError"
       class="flex min-h-[240px] items-center justify-center"
@@ -262,5 +261,5 @@ const groupedReservations = computed(() => {
         </section>
       </div>
     </template>
-  </AppLayout>
+
 </template>

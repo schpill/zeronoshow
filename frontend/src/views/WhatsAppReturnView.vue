@@ -2,7 +2,6 @@
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import AppLayout from '@/layouts/AppLayout.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { useWhatsAppCredits } from '@/composables/useWhatsAppCredits'
 
@@ -50,7 +49,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <AppLayout>
+
     <div class="flex min-h-[400px] flex-col items-center justify-center text-center">
       <template v-if="status === 'loading'">
         <LoadingSpinner size="lg" label="Confirmation du rechargement..." />
@@ -116,5 +115,5 @@ onMounted(async () => {
         </button>
       </template>
     </div>
-  </AppLayout>
+
 </template>

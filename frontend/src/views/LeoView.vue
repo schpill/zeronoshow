@@ -2,7 +2,6 @@
 import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 
-import AppLayout from '@/layouts/AppLayout.vue'
 import CreateLeoChannelForm from '@/components/leo/CreateLeoChannelForm.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import LeoChannelCard from '@/components/leo/LeoChannelCard.vue'
@@ -123,7 +122,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <AppLayout>
+
     <div v-if="leo.loading.fetch.value" class="flex min-h-[240px] items-center justify-center">
       <LoadingSpinner size="lg" label="Chargement de Léo" />
     </div>
@@ -306,5 +305,5 @@ onMounted(() => {
         </div>
       </div>
     </template>
-  </AppLayout>
+
 </template>

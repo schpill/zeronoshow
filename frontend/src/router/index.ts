@@ -4,51 +4,28 @@ import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(to, _from, savedPosition) {
+    if (savedPosition) return savedPosition
+    if (to.hash) {
+      return new Promise((resolve) => {
+        const poll = (attempts: number) => {
+          const el = document.querySelector(to.hash)
+          if (el) {
+            resolve({ el: to.hash, behavior: 'smooth', top: 16 })
+          } else if (attempts < 30) {
+            setTimeout(() => poll(attempts + 1), 100)
+          }
+        }
+        setTimeout(() => poll(0), 230)
+      })
+    }
+    return { top: 0 }
+  },
   routes: [
+    // ── Pages publiques sans layout ────────────────────────────────────────────
     {
       path: '/',
       component: () => import('@/views/LandingView.vue'),
-    },
-    {
-      path: '/dashboard',
-      component: () => import('@/pages/Dashboard.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/leo',
-      name: 'leo',
-      component: () => import('@/views/LeoView.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/leo/whatsapp/topup/return',
-      name: 'leo-whatsapp-return',
-      component: () => import('@/views/WhatsAppReturnView.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/leo/voice/topup/return',
-      name: 'leo-voice-return',
-      component: () => import('@/views/VoiceReturnView.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/voice',
-      name: 'voice',
-      component: () => import('@/views/VoiceView.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/voice',
-      name: 'voice',
-      component: () => import('@/views/VoiceView.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/voice/topup/return',
-      name: 'voice-return',
-      component: () => import('@/views/VoiceReturnView.vue'),
-      meta: { requiresAuth: true },
     },
     {
       path: '/login',
@@ -59,31 +36,6 @@ const router = createRouter({
       path: '/register',
       component: () => import('@/pages/RegisterPage.vue'),
       meta: { guestOnly: true },
-    },
-    {
-      path: '/subscription',
-      component: () => import('@/pages/SubscriptionPage.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/reservations/:id',
-      component: () => import('@/pages/ReservationDetailPage.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/waitlist',
-      component: () => import('@/views/WaitlistView.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/customers',
-      component: () => import('@/views/CustomersView.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/reputation',
-      component: () => import('@/views/ReputationView.vue'),
-      meta: { requiresAuth: true },
     },
     {
       path: '/waitlist/confirmed',
@@ -116,7 +68,74 @@ const router = createRouter({
       name: 'booking-iframe',
       component: () => import('@/views/public/WidgetIframeEntrypoint.vue'),
     },
+
+    // ── Shell authentifié (AppLayout permanent) ────────────────────────────────
+    {
+      path: '/',
+      component: () => import('@/layouts/AppLayout.vue'),
+      meta: { requiresAuth: true },
+      children: [
+        {
+          path: 'dashboard',
+          component: () => import('@/pages/Dashboard.vue'),
+        },
+        {
+          path: 'leo',
+          name: 'leo',
+          component: () => import('@/views/LeoView.vue'),
+        },
+        {
+          path: 'leo/whatsapp/topup/return',
+          name: 'leo-whatsapp-return',
+          component: () => import('@/views/WhatsAppReturnView.vue'),
+        },
+        {
+          path: 'leo/voice/topup/return',
+          name: 'leo-voice-return',
+          component: () => import('@/views/VoiceReturnView.vue'),
+        },
+        {
+          path: 'voice',
+          name: 'voice',
+          component: () => import('@/views/VoiceView.vue'),
+        },
+        {
+          path: 'voice/topup/return',
+          name: 'voice-return',
+          component: () => import('@/views/VoiceReturnView.vue'),
+        },
+        {
+          path: 'subscription',
+          component: () => import('@/pages/SubscriptionPage.vue'),
+        },
+        {
+          path: 'reservations/:id',
+          component: () => import('@/pages/ReservationDetailPage.vue'),
+        },
+        {
+          path: 'waitlist',
+          component: () => import('@/views/WaitlistView.vue'),
+        },
+        {
+          path: 'customers',
+          component: () => import('@/views/CustomersView.vue'),
+        },
+        {
+          path: 'reputation',
+          component: () => import('@/views/ReputationView.vue'),
+        },
+      ],
+    },
   ],
+})
+
+router.afterEach(() => {
+  const main = document.getElementById('page-main')
+  if (!main) return
+  main.classList.remove('page-enter')
+  void main.offsetWidth // force reflow
+  main.classList.add('page-enter')
+  main.addEventListener('animationend', () => main.classList.remove('page-enter'), { once: true })
 })
 
 router.beforeEach((to) => {

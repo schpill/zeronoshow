@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 
-import AppLayout from '@/layouts/AppLayout.vue'
 import ReviewRequestTable from '@/components/reputation/ReviewRequestTable.vue'
 import ReviewSettingsCard from '@/components/reputation/ReviewSettingsCard.vue'
 import ReviewStatsBar from '@/components/reputation/ReviewStatsBar.vue'
@@ -23,7 +22,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <AppLayout>
+
     <section class="mb-6 rounded-[32px] border border-slate-200 bg-white p-6">
       <p class="text-overline">Phase 9</p>
       <h1 class="mt-2 text-heading-2">Réputation</h1>
@@ -37,5 +36,5 @@ onMounted(() => {
       <ReviewStatsBar :stats="reputation.stats.value" />
       <ReviewRequestTable :requests="reputation.requests.value" />
     </div>
-  </AppLayout>
+
 </template>
