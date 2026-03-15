@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\VoiceCreditController;
 use App\Http\Controllers\Api\VoiceSettingsController;
 use App\Http\Controllers\Api\WaitlistController;
 use App\Http\Controllers\Api\WaitlistSettingsController;
+use App\Http\Controllers\Api\BusinessController;
 use App\Http\Controllers\Api\WidgetSettingController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Webhook\LeoWebhookController;
@@ -54,6 +55,7 @@ Route::prefix('v1')->group(function (): void {
 
     Route::middleware('auth:sanctum')->group(function (): void {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
+        Route::patch('/business/onboarding-complete', [BusinessController::class, 'completeOnboarding']);
         Route::get('/dashboard', [DashboardController::class, 'index']);
         Route::get('/leo/channels', [LeoChannelController::class, 'index']);
         Route::get('/leo/addon-status', [LeoAddonController::class, 'status']);

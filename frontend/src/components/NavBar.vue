@@ -96,6 +96,13 @@ const statusDotClass = computed(() =>
           Appels
         </RouterLink>
         <RouterLink
+          to="/help"
+          class="inline-flex items-center rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-800"
+        >
+          Aide
+        </RouterLink>
+        <RouterLink
+          id="subscription-nav"
           to="/subscription"
           class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-100"
         >
@@ -167,6 +174,12 @@ const statusDotClass = computed(() =>
           class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200"
         >
           Appels
+        </RouterLink>
+        <RouterLink
+          to="/help"
+          class="inline-flex items-center justify-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200"
+        >
+          Aide
         </RouterLink>
         <RouterLink
           to="/subscription"

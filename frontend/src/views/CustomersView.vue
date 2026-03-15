@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 
 import CustomerCrmPanel from '@/components/crm/CustomerCrmPanel.vue'
 import CustomerVipBadge from '@/components/crm/CustomerVipBadge.vue'
+import EmptyState from '@/components/help/EmptyState.vue'
 import { useCustomerCrm } from '@/composables/useCustomerCrm'
 import type { ReservationCustomer } from '@/types/reservations'
 
@@ -59,6 +60,12 @@ function handleUpdated(updatedCustomer: ReservationCustomer) {
   </section>
 
   <section class="grid gap-4">
+    <EmptyState
+      v-if="!crm.customers.value.length && !crm.loading.value"
+      icon="👥"
+      title="Aucun client encore"
+      description="Vos clients apparaîtront ici automatiquement après leur première réservation."
+    />
     <article
       v-for="customer in crm.customers.value"
       :key="customer.id"

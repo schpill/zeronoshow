@@ -4,6 +4,8 @@ import { computed, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 
 import DateNavigator from '@/components/DateNavigator.vue'
+import EmptyState from '@/components/help/EmptyState.vue'
+import HelpTooltip from '@/components/help/HelpTooltip.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import ReservationForm from '@/components/ReservationForm.vue'
@@ -133,7 +135,13 @@ const groupedReservations = computed(() => {
       <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
         <div>
           <p class="text-overline">Dashboard</p>
-          <h1 class="text-heading-1 mt-2 dark:text-slate-50">Réservations</h1>
+          <h1 class="text-heading-1 mt-2 dark:text-slate-50">
+            Réservations
+            <HelpTooltip
+              content="Score moyen de fiabilité de vos clients et taux de no-show sur la semaine glissante."
+              class="ml-2"
+            />
+          </h1>
           <p class="text-body mt-4 max-w-2xl dark:text-slate-300">
             Vue journée ou semaine, coût SMS et suivi opérationnel complet.
           </p>
@@ -166,12 +174,18 @@ const groupedReservations = computed(() => {
               Semaine
             </button>
           </div>
-          <p class="text-caption dark:text-slate-400">{{ summary }}</p>
+          <p class="text-caption dark:text-slate-400">
+            {{ summary }}
+            <HelpTooltip
+              content="Le taux de no-show est calculé sur la semaine glissante : nombre de no-shows divisé par le total des réservations."
+              class="ml-1"
+            />
+          </p>
         </div>
       </div>
     </section>
 
-    <StatsBar :stats="stats" />
+    <StatsBar id="dashboard-stats" :stats="stats" />
 
     <div class="flex items-center gap-2">
       <label class="text-sm text-slate-500">Source :</label>

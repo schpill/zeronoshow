@@ -7,6 +7,7 @@ export interface BusinessUser {
   subscription_status: SubscriptionStatus
   trial_ends_at: string
   leo_addon_active?: boolean
+  onboarding_completed_at: string | null
 }
 
 export interface AuthResponse {

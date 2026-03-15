@@ -1,0 +1,15 @@
+stateDiagram-v2
+    [*] --> pending_verification : Réservation créée (téléphone non vérifié)
+    [*] --> pending_reminder : Réservation créée (téléphone vérifié)
+    pending_verification --> pending_reminder : Client confirme via lien SMS
+    pending_verification --> cancelled_no_confirmation : Token expiré
+    pending_reminder --> confirmed : Client confirme le rappel
+    pending_reminder --> cancelled_by_client : Client annule via SMS
+    pending_reminder --> no_show : Établissement marque no-show
+    confirmed --> show : Établissement marque présent
+    confirmed --> no_show : Établissement marque no-show
+    confirmed --> cancelled_by_client : Client annule (dans le délai)
+    show --> [*]
+    no_show --> [*]
+    cancelled_by_client --> [*]
+    cancelled_no_confirmation --> [*]

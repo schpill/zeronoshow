@@ -16,6 +16,7 @@ export default defineConfig({
     }),
   ].filter(Boolean),
   server: {
+    allowedHosts: ['nginx'],
     proxy: {
       '/api': {
         target: 'http://localhost:8000',

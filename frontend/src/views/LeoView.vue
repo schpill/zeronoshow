@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 
 import CreateLeoChannelForm from '@/components/leo/CreateLeoChannelForm.vue'
+import HelpTooltip from '@/components/help/HelpTooltip.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import LeoChannelCard from '@/components/leo/LeoChannelCard.vue'
 import WhatsAppCreditCard from '@/components/leo/WhatsAppCreditCard.vue'
@@ -138,13 +139,17 @@ onMounted(() => {
       <div class="flex flex-wrap items-center justify-between gap-4">
         <div>
           <p class="text-overline">Assistant Telegram</p>
-          <h1 class="mt-2 text-heading-2">Léo</h1>
+          <h1 class="mt-2 flex items-center gap-2 text-heading-2">
+            Léo
+            <HelpTooltip content="Léo est votre assistant IA. Il gère les notifications et communique avec vos clients via Telegram ou WhatsApp." />
+          </h1>
           <p class="mt-3 max-w-2xl text-body-sm">
             Activez votre assistant, configurez un unique canal par établissement et recevez vos
             notifications métier en direct.
           </p>
         </div>
         <button
+          id="leo-connect-btn"
           v-if="leo.addonStatus.value.active && !leo.channel.value"
           type="button"
           class="rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white"

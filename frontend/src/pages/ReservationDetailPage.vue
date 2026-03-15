@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router'
 import BlacklistWarningBanner from '@/components/crm/BlacklistWarningBanner.vue'
 import CustomerCrmPanel from '@/components/crm/CustomerCrmPanel.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
+import HelpTooltip from '@/components/help/HelpTooltip.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import ReservationRow from '@/components/ReservationRow.vue'
 import SmsLogTable from '@/components/SmsLogTable.vue'
@@ -138,7 +139,14 @@ function handleUpdated(updatedReservation: ReservationRecord) {
       @updated="handleUpdated"
     />
 
-    <SmsLogTable :logs="smsLogs" />
+    <div id="sms-logs-section" class="relative">
+      <div class="absolute right-0 top-0">
+        <HelpTooltip
+          content="Statuts du SMS : en file d'attente, envoyé, remis (livré sur le téléphone), ou échoué."
+        />
+      </div>
+      <SmsLogTable :logs="smsLogs" />
+    </div>
 
     <div class="mt-6">
       <VoiceCallLogView :logs="voiceLogs" :loading="voiceLoading" />

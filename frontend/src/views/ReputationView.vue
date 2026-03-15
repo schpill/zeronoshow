@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 
+import EmptyState from '@/components/help/EmptyState.vue'
 import ReviewRequestTable from '@/components/reputation/ReviewRequestTable.vue'
 import ReviewSettingsCard from '@/components/reputation/ReviewSettingsCard.vue'
 import ReviewStatsBar from '@/components/reputation/ReviewStatsBar.vue'
@@ -33,6 +34,12 @@ onMounted(() => {
   <div class="grid gap-6">
     <ReviewSettingsCard />
     <ReviewStatsBar :stats="reputation.stats.value" />
-    <ReviewRequestTable :requests="reputation.requests.value" />
+    <EmptyState
+      v-if="reputation.requests.value.length === 0"
+      icon="⭐"
+      title="Aucun avis reçu"
+      description="Vos avis clients apparaîtront ici une fois la première demande envoyée."
+    />
+    <ReviewRequestTable v-else :requests="reputation.requests.value" />
   </div>
 </template>

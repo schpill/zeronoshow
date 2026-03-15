@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Resources\BusinessResource;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\Business;
@@ -63,14 +64,6 @@ class AuthController extends Controller
 
     private function businessPayload(Business $business): array
     {
-        return [
-            'id' => $business->id,
-            'name' => $business->name,
-            'email' => $business->email,
-            'phone' => $business->phone,
-            'trial_ends_at' => optional($business->trial_ends_at)->toIso8601String(),
-            'subscription_status' => $business->subscription_status,
-            'leo_addon_active' => (bool) $business->leo_addon_active,
-        ];
+        return (new BusinessResource($business))->toArray(request());
     }
 }
